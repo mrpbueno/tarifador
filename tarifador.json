@@ -2,7 +2,7 @@
   "rawname": "tarifador",
   "repo": "unsupported",
   "name": "Tarifador",
-  "version": "14.0.3",
+  "version": "14.0.2",
   "publisher": "mrpbueno",
   "license": "GPLv3+",
   "licenselink": "http://www.gnu.org/licenses/gpl-3.0.txt",
@@ -10,7 +10,7 @@
   "category": "Reports",
   "description": "Tarifador para FreePBX.",
   "depends": {
-    "version": "14.0.0",
+    "version": "14.0",
     "phpversion": "5.6"
   },
   "supported": {
