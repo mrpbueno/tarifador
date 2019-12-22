@@ -1,0 +1,49 @@
+<module>
+    <rawname>tarifador</rawname>
+    <repo>unsupported</repo>
+    <name>Tarifador</name>
+    <version>14.0.2</version>
+    <category>Reports</category>
+    <Publisher>mrpbueno</Publisher>
+    <info>https://github.com/mrpbueno/tarifador</info>
+    <license>GPLv3+</license>
+    <licenselink>http://www.gnu.org/licenses/gpl-3.0.txt</licenselink>
+    <menuitems>
+        <tarifador>Tarifador</tarifador>
+    </menuitems>
+    <depends>
+        <version>14.0.0</version>
+    </depends>
+    <requirements>
+        <module>pinsets</module>
+    </requirements>
+    <supported>14.0.0</supported>
+    <database>
+    <table name="tarifador_rate">
+        <field name="id" type="integer" primaryKey="true" autoincrement="true"/>
+        <field name="seq" type="integer" primarykey="true"/>
+        <field name="name" type="string" length="50" notnull="true"/>
+        <field name="telco" type="string" length="50" notnull="true"/>
+        <field name="dial_pattern" type="string" length="50" notnull="true"/>
+        <field name="rate" type="float" notnull="true"/>
+        <field name="start" type="date" notnull="true"/>
+        <field name="end" type="date" notnull="true"/>
+    </table>
+    <table name="tarifador_pinuser">
+        <field name="id" type="integer" primarykey="true" autoincrement="true"/>
+        <field name="pin" type="string" length="9" notnull="true"/>
+        <field name="user" type="string" length="50" notnull="true"/>
+        <field name="department" type="string" length="50" notnull="true"/>
+        <field name="enabled" type="boolean" notnull="true"/>
+        <key name="pin" type="unique">
+            <column name="pin"/>
+        </key>
+    </table>
+    </database>
+    <updateurl>https://raw.githubusercontent.com/mrpbueno/tarifador/master/tarifador.json</updateurl>
+    <description>Tarifador para FreePBX</description>
+    <changelog>
+        *14.0.2* Refatoração do código *beta
+        *14.0.1* Initial Dev Release *beta
+    </changelog>
+</module>
