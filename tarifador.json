@@ -1,7 +1,6 @@
-{"module":[
 {
   "rawname": "tarifador",
-  "repo": "unsupported",
+  "repo": "local",
   "name": "Tarifador",
   "version": "14.0.3",
   "publisher": "mrpbueno",
@@ -21,5 +20,4 @@
   "location": "https:\/\/github.com\/mrpbueno\/tarifador\/archive\/14.0.3.zip",
   "md5sum": "d408dad82da804d19e0ef26aad48f097",
   "packaged": "1577028195"
-}]
-  }
+}
