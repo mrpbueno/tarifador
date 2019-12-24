@@ -1,6 +1,6 @@
 <module>
     <rawname>tarifador</rawname>
-    <repo>local</repo>
+    <repo>unsupported</repo>
     <name>Tarifador</name>
     <version>14.0.3</version>
     <category>Reports</category>
