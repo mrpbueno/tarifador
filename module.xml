@@ -1,8 +1,8 @@
 <module>
     <rawname>tarifador</rawname>
-    <repo>unsupported</repo>
+    <repo>local</repo>
     <name>Tarifador</name>
-    <version>14.0.2</version>
+    <version>14.0.3</version>
     <category>Reports</category>
     <Publisher>mrpbueno</Publisher>
     <info>https://github.com/mrpbueno/tarifador</info>
