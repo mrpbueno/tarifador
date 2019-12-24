@@ -13,7 +13,7 @@ class Tarifador extends FreePBX_Helpers implements BMO
 {
     use RateTrait, CallTrait, PinUserTrait;
 
-    /** @var \FreePBX\BMO  */
+    /** @var BMO */
     private $FreePBX = null;
     /**
      * Tarifador constructor.
