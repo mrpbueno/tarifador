@@ -42,7 +42,7 @@ trait PinUserTrait
             $stmt->execute();
         } catch (PDOException $e) {
             if ($e->errorInfo[1] == 1062) {
-                echo "<script>javascript:alert('"._("Error! Duplicate pin.")."')</script>";
+                echo "<script>javascript:alert('"._("Erro! PIN duplicado.")."')</script>";
                 return false;
             } else {
                 echo "<script>javascript:alert('"._($stmt->getMessage()."<br><br>".$sql)."')</script>";
@@ -226,5 +226,23 @@ trait PinUserTrait
         $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         return $data;
+    }
+
+    /**
+     * @param $pin
+     * @return string
+     */
+    private function getPinuser($pin)
+    {
+        if (empty($pin)) {
+            return '';
+        }
+        $sql = "SELECT user FROM tarifador_pinuser WHERE pin = :pin LIMIT 1";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':pin', $pin, PDO::PARAM_STR);
+        $stmt->execute();
+        $pinuser = $stmt->fetchObject();
+
+        return isset($pinuser->user) ? $pinuser->user : _("Sem Cadastro");
     }
 }

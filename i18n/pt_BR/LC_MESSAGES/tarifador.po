@@ -1,13 +1,13 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: tarifador\n"
-"POT-Creation-Date: 2019-02-17 19:22-0300\n"
-"PO-Revision-Date: 2019-02-17 21:14-0300\n"
+"POT-Creation-Date: 2020-01-29 19:10-0300\n"
+"PO-Revision-Date: 2020-01-29 19:12-0300\n"
 "Language-Team: https://github.com/mrpbueno/tarifador\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 2.2.4\n"
 "X-Poedit-Basepath: ..\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Poedit-KeywordsList: _(\n"
@@ -16,24 +16,46 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: i18n\n"
 
-#: Tarifador.class.php:97
+#: Tarifador.class.php:100
 msgid "Excluir"
 msgstr ""
 
-#: Tarifador.class.php:98
+#: Tarifador.class.php:101
 msgid "Redefinir"
 msgstr ""
 
-#: Tarifador.class.php:99
+#: Tarifador.class.php:102 views/pinuser/grid.php:101
 msgid "Enviar"
 msgstr ""
 
-#: Tarifador.class.php:152
-msgid "Invalid Request"
-msgstr "Requisição inválida"
+#: Tarifador.class.php:171
+msgid "Solicitação Inválida"
+msgstr ""
 
-#: Traits/PinUserTrait.php:35
-msgid "Error! Duplicate pin."
+#: Traits/CallTrait.php:171
+msgid "Interna"
+msgstr ""
+
+#: Traits/CallTrait.php:174
+msgid "Saída"
+msgstr ""
+
+#: Traits/CallTrait.php:177
+msgid "Entrada"
+msgstr ""
+
+#: Traits/PinUserTrait.php:23 Traits/PinUserTrait.php:48
+#: Traits/RateTrait.php:70 Traits/RateTrait.php:96 Traits/RateTrait.php:118
+#: Traits/RateTrait.php:136
+msgid "<br><br>"
+msgstr ""
+
+#: Traits/PinUserTrait.php:45
+msgid "Erro! PIN duplicado."
+msgstr ""
+
+#: Traits/PinUserTrait.php:246
+msgid "Sem Cadastro"
 msgstr ""
 
 #: views/call/form.php:12
@@ -44,7 +66,7 @@ msgstr ""
 msgid "Selecione a data/hora de início"
 msgstr ""
 
-#: views/call/form.php:39 views/call/grid.php:34
+#: views/call/form.php:39 views/call/grid.php:38
 msgid "Origem"
 msgstr ""
 
@@ -52,12 +74,12 @@ msgstr ""
 msgid "Digite o número de origem"
 msgstr ""
 
-#: views/call/form.php:63
-msgid "Código de conta"
+#: views/call/form.php:63 views/call/grid.php:37
+msgid "Usuário"
 msgstr ""
 
 #: views/call/form.php:75
-msgid "Digite o código de conta"
+msgid "Digite o nome do usuário"
 msgstr ""
 
 #: views/call/form.php:89
@@ -68,7 +90,7 @@ msgstr ""
 msgid "Selecione a data/hora do fim"
 msgstr ""
 
-#: views/call/form.php:116 views/call/grid.php:36
+#: views/call/form.php:116 views/call/grid.php:41
 msgid "Destino"
 msgstr ""
 
@@ -76,7 +98,7 @@ msgstr ""
 msgid "Digite o número de destino"
 msgstr ""
 
-#: views/call/form.php:140 views/call/grid.php:40
+#: views/call/form.php:140 views/call/grid.php:43
 msgid "Estado"
 msgstr ""
 
@@ -85,20 +107,20 @@ msgid "Todos"
 msgstr ""
 
 #: views/call/form.php:146
-msgid "Atendido"
-msgstr ""
+msgid "ANSWERED"
+msgstr "Atendido"
 
 #: views/call/form.php:147
-msgid "Ocupado"
-msgstr ""
+msgid "BUSY"
+msgstr "Ocupado"
 
 #: views/call/form.php:148
-msgid "Falha"
-msgstr ""
+msgid "FAILED"
+msgstr "Falha"
 
 #: views/call/form.php:149
-msgid "Não atendido"
-msgstr ""
+msgid "NO ANSWER"
+msgstr "Não atendido"
 
 #: views/call/form.php:158
 msgid "Selecione o estado da chamada"
@@ -108,41 +130,46 @@ msgstr ""
 msgid "Buscar"
 msgstr ""
 
-#: views/call/grid.php:33
+#: views/call/grid.php:36
 msgid "Data / Hora"
 msgstr ""
 
-#: views/call/grid.php:35
-msgid "Canal de origem"
+#: views/call/grid.php:39 views/pinuser/form.php:42 views/pinuser/grid.php:40
+#: views/rate/form.php:18 views/rate/grid.php:24
+msgid "Nome"
 msgstr ""
 
-#: views/call/grid.php:37
-msgid "Canal de destino"
+#: views/call/grid.php:40
+msgid "DDR"
 msgstr ""
 
-#: views/call/grid.php:38
-msgid "Códido de conta"
+#: views/call/grid.php:42
+msgid "App"
 msgstr ""
 
-#: views/call/grid.php:39
-msgid "Aplicação"
+#: views/call/grid.php:44
+msgid "Espera"
 msgstr ""
 
-#: views/call/grid.php:41
+#: views/call/grid.php:45
 msgid "Duração"
 msgstr ""
 
-#: views/call/grid.php:42 views/rate/form.php:98 views/rate/grid.php:24
+#: views/call/grid.php:46
+msgid "Tipo"
+msgstr ""
+
+#: views/call/grid.php:47 views/rate/form.php:98 views/rate/grid.php:27
 msgid "Tarifa"
 msgstr ""
 
-#: views/call/grid.php:43
+#: views/call/grid.php:48
 msgid "Custo"
 msgstr ""
 
-#: views/default.php:2
+#: views/default.php:2 views/rnav.php:3
 msgid "Tarifador"
-msgstr "Tarifador"
+msgstr ""
 
 #: views/pinuser/form.php:1
 msgid "Edição do PIN do Usuário"
@@ -152,7 +179,7 @@ msgstr ""
 msgid "Novo PIN do usuário"
 msgstr ""
 
-#: views/pinuser/form.php:18 views/pinuser/grid.php:28
+#: views/pinuser/form.php:18 views/pinuser/grid.php:39
 msgid "PIN"
 msgstr ""
 
@@ -160,63 +187,78 @@ msgstr ""
 msgid "Número PIN do usuário"
 msgstr ""
 
-#: views/pinuser/form.php:42 views/pinuser/grid.php:29 views/rate/form.php:18
-#: views/rate/grid.php:21
-msgid "Nome"
-msgstr ""
-
 #: views/pinuser/form.php:54
 msgid "Digite o nome do usuário do PIN"
 msgstr ""
 
-#: views/pinuser/form.php:66 views/pinuser/grid.php:30
+#: views/pinuser/form.php:66 views/pinuser/grid.php:41
 msgid "Departamento / Setor"
 msgstr ""
 
-#: views/pinuser/form.php:78
+#: views/pinuser/form.php:84
 msgid "Digite o departamento / setor do usuário"
 msgstr ""
 
-#: views/pinuser/form.php:90
+#: views/pinuser/form.php:96
 msgid "Habilitado?"
 msgstr ""
 
-#: views/pinuser/form.php:95
+#: views/pinuser/form.php:101
 msgid "Sim"
 msgstr ""
 
-#: views/pinuser/form.php:95
+#: views/pinuser/form.php:101
 msgid "Não"
 msgstr ""
 
-#: views/pinuser/form.php:104
+#: views/pinuser/form.php:110
 msgid ""
 "Para desabilitar o PIN, vá para o módulo <a href='config.php?"
 "display=pinsets'>Conjunto de PINs</a>"
 msgstr ""
 
-#: views/pinuser/form.php:116
+#: views/pinuser/form.php:122
 msgid "Conjunto de PINs"
 msgstr ""
 
-#: views/pinuser/form.php:134
+#: views/pinuser/form.php:142
 msgid "Conjunto de PINs do usuário"
 msgstr ""
 
-#: views/pinuser/grid.php:7
+#: views/pinuser/grid.php:8
 msgid "Sincronizar PINs"
 msgstr ""
 
-#: views/pinuser/grid.php:31 views/rate/grid.php:27
+#: views/pinuser/grid.php:17 views/pinuser/grid.php:64
+msgid "Upload de CSV"
+msgstr ""
+
+#: views/pinuser/grid.php:42 views/rate/grid.php:30
 msgid "Ações"
 msgstr ""
 
-#: views/pinuser/grid.php:40
+#: views/pinuser/grid.php:51
 msgid "Aguarde!"
 msgstr ""
 
-#: views/pinuser/grid.php:43
+#: views/pinuser/grid.php:54
 msgid "Sincronizando ..."
+msgstr ""
+
+#: views/pinuser/grid.php:74
+msgid "Arquivo CSV"
+msgstr ""
+
+#: views/pinuser/grid.php:79
+msgid "Localizar"
+msgstr ""
+
+#: views/pinuser/grid.php:90
+msgid "O cabeçalho do arquivo deve conter: pin, user, department"
+msgstr ""
+
+#: views/pinuser/grid.php:96
+msgid "Arquivo para Importar"
 msgstr ""
 
 #: views/rate/form.php:1
@@ -231,7 +273,7 @@ msgstr ""
 msgid "Digite o nome da tarifa"
 msgstr ""
 
-#: views/rate/form.php:42 views/rate/grid.php:22
+#: views/rate/form.php:42 views/rate/grid.php:25
 msgid "Operadora"
 msgstr ""
 
@@ -239,7 +281,7 @@ msgstr ""
 msgid "Digite o nome da operadora"
 msgstr ""
 
-#: views/rate/form.php:66 views/rate/grid.php:23
+#: views/rate/form.php:66 views/rate/grid.php:26
 msgid "Padrão de discagem"
 msgstr ""
 
@@ -277,7 +319,7 @@ msgstr ""
 msgid "Digite a tarifa por minuto"
 msgstr ""
 
-#: views/rate/form.php:122 views/rate/grid.php:25
+#: views/rate/form.php:122 views/rate/grid.php:28
 msgid "Início da vigência"
 msgstr ""
 
@@ -285,7 +327,7 @@ msgstr ""
 msgid "Selecione o início da vigência da tarifa"
 msgstr ""
 
-#: views/rate/form.php:146 views/rate/grid.php:26
+#: views/rate/form.php:146 views/rate/grid.php:29
 msgid "Fim da vigência"
 msgstr ""
 
@@ -301,10 +343,6 @@ msgstr ""
 msgid "Menu"
 msgstr ""
 
-#: views/rnav.php:3
-msgid "Tarifador"
-msgstr ""
-
 #: views/rnav.php:4
 msgid "Tarifas"
 msgstr ""
@@ -312,15 +350,3 @@ msgstr ""
 #: views/rnav.php:5
 msgid "Usuários"
 msgstr ""
-
-msgid "ANSWERED"
-msgstr "Atendido"
-
-msgid "BUSY"
-msgstr "Ocupado"
-
-msgid "FAILED"
-msgstr "Falha"
-
-msgid "NO ANSWER"
-msgstr "Não atendido"

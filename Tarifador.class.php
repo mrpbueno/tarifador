@@ -168,7 +168,7 @@ class Tarifador extends FreePBX_Helpers implements BMO
                 return $this->getUser($_REQUEST);
                 break;
             default:
-                return json_encode(['status' => false, 'message' => _("Invalid Request")]);
+                return json_encode(['status' => false, 'message' => _("Solicitação Inválida")]);
         }
     }
 

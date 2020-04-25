@@ -69,9 +69,7 @@ trait CallTrait
             }
         $stmt->execute();
         $cdrs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        if (!is_array($cdrs)) {
-            $cdrs = null;
-        }
+        $cdrs = is_array($cdrs) ? $cdrs : null;
 
         foreach ($cdrs as $key => $value) {
             $cdrs[$key]['accountcode'] = $this->getPinuser($value['accountcode']);
@@ -92,46 +90,6 @@ trait CallTrait
     }
 
     /**
-     * @param $pin
-     * @return string
-     */
-    private function getPinuser($pin)
-    {
-        if (empty($pin)) {
-            return '';
-        }
-        $sql = "SELECT user FROM tarifador_pinuser WHERE pin = :pin LIMIT 1";
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':pin', $pin, PDO::PARAM_STR);
-        $stmt->execute();
-        $pinuser = $stmt->fetchObject();
-
-        return isset($pinuser->user) ? $pinuser->user : _("Sem Cadastro");
-    }
-
-    /**
-     * @param $number
-     * @param $calldate
-     * @return mixed
-     */
-    private function getRate($number, $calldate)
-    {
-        $sql = 'SELECT * FROM tarifador_rate WHERE start <= :calldate AND end >= :calldate ORDER BY seq ASC';
-        $stmt = $this->db->prepare($sql);
-        $date = date('Y-m-d',strtotime($calldate));
-        $stmt->bindParam(':calldate', $date, PDO::PARAM_STR);
-        $stmt->execute();
-        $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $rates = is_array($data) ? $data : null;
-
-        foreach ($rates as $rate) {
-            if ($this->match($rate['dial_pattern'], $number)) {
-                return $rate;
-            }
-        }
-    }
-
-    /**
      * @param $number
      * @param $calldate
      * @param $billsec
@@ -139,8 +97,6 @@ trait CallTrait
      */
     private function cost($number, $calldate, $billsec)
     {
-        $rate = $this->getRate($number, $calldate);
-
         if ($billsec > 3) {
             if ( $billsec > 30 ) {
                 $aux = ( $billsec / 6 );
@@ -153,20 +109,15 @@ trait CallTrait
         } else {
             $billsec = 0;
         }
+        $rates = $this->getRate($calldate);
+        foreach ($rates as $rate) {
+            if ($this->match($rate['dial_pattern'], $number)) {
+                $cost['rate'] = is_null($rate['name']) ? '---' : $rate['name'];
+                $cost['cost'] = number_format($billsec * $rate['rate'], 2);
 
-        $cost['rate'] = is_null($rate['name']) ? '---' : $rate['name'];
-        $cost['cost'] = number_format($billsec * $rate['rate'], 2);
-
-        return $cost;
-    }
-
-    /**
-     * @param $id
-     * @return mixed
-     */
-    private function getOneCall($id)
-    {
-        return $id;
+                return $cost;
+            }
+        }
     }
 
     /**
@@ -197,6 +148,15 @@ trait CallTrait
         $pattern = "/^".str_replace($search, $replace, $dial_pattern)."$/i";
 
         return preg_match($pattern, $number);
+    }
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    private function getOneCall($id)
+    {
+        return $id;
     }
 
     /**

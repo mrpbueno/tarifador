@@ -159,4 +159,22 @@ trait RateTrait
 
         return $data;
     }
+
+    /**
+     * @param $number
+     * @param $calldate
+     * @return mixed
+     */
+    private function getRate($calldate)
+    {
+        $sql = 'SELECT name, dial_pattern, rate FROM tarifador_rate WHERE start <= :calldate AND end >= :calldate ORDER BY seq ASC';
+        $stmt = $this->db->prepare($sql);
+        $date = date('Y-m-d',strtotime($calldate));
+        $stmt->bindParam(':calldate', $date, PDO::PARAM_STR);
+        $stmt->execute();
+        $rates = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $rates = is_array($rates) ? $rates : null;
+
+        return $rates;
+    }
 }

@@ -143,10 +143,10 @@
                                 <div class="col-md-7">
                                     <select class="form-control" name="disposition" id="disposition">
                                         <option selected="selected" value=""><?php echo _("Todos") ?></option>
-                                        <option value="ANSWERED"><?php echo _("Atendido") ?></option>
-                                        <option value="BUSY"><?php echo _("Ocupado") ?></option>
-                                        <option value="FAILED"><?php echo _("Falha") ?></option>
-                                        <option value="NO ANSWER"><?php echo _("Não atendido") ?></option>
+                                        <option value="ANSWERED"><?php echo _("ANSWERED") ?></option>
+                                        <option value="BUSY"><?php echo _("BUSY") ?></option>
+                                        <option value="FAILED"><?php echo _("FAILED") ?></option>
+                                        <option value="NO ANSWER"><?php echo _("NO ANSWER") ?></option>
                                     </select>
                                 </div>
                             </div>
