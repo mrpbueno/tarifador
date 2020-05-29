@@ -6,7 +6,7 @@
   "publisher": "mrpbueno",
   "license": "GPLv3+",
   "licenselink": "http://www.gnu.org/licenses/gpl-3.0.txt",
-  "changelog": "*14.0.3* Melhorias no código",
+  "changelog": "*14.0.3* Melhorias no código\n14.0.2: Melhorias no codigo *beta\n*14.0.1* Initial Dev Release *beta",
   "category": "Reports",
   "description": "Tarifador para FreePBX.",
   "depends": {
