@@ -34,7 +34,7 @@ $request .= "&disposition=".$_REQUEST['disposition'];
 	<thead>
 		<tr>
             <th data-field="calldate" data-sortable="true" data-formatter="dateTimeFormatter"><?php echo _("Data / Hora")?></th>
-            <th data-field="accountcode" data-sortable="true"><?php echo _("Usuário")?></th>
+            <th data-field="user" data-sortable="true"><?php echo _("Usuário")?></th>
             <th data-field="src" data-sortable="true"><?php echo _("Origem")?></th>
             <th data-field="cnam" data-sortable="true"><?php echo _("Nome")?></th>
             <th data-field="did" data-sortable="true"><?php echo _("DDR")?></th>

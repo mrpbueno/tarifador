@@ -50,8 +50,10 @@ trait CallTrait
             ];
         }
 
-        $sql = 'SELECT calldate, accountcode, src, cnam, did, dst, lastapp, disposition, duration, billsec';
-        $sql .= ' FROM asteriskcdrdb.cdr WHERE calldate BETWEEN :startDate AND :endDate ';
+        $sql = 'SELECT calldate, t.user, src, cnam, did, dst, lastapp, disposition, duration, billsec, (duration -  billsec) AS wait ';
+        $sql .= 'FROM asteriskcdrdb.cdr ';
+        $sql .= 'LEFT JOIN asterisk.tarifador_pinuser t ON accountcode = t.pin ';
+        $sql .= 'WHERE calldate BETWEEN :startDate AND :endDate ';
         if (is_array($filters))
             foreach ($filters as $filter) {
                 $sql .= " AND " . $filter['sql'];
@@ -72,8 +74,6 @@ trait CallTrait
         $cdrs = is_array($cdrs) ? $cdrs : null;
 
         foreach ($cdrs as $key => $value) {
-            $cdrs[$key]['accountcode'] = $this->getPinuser($value['accountcode']);
-            $cdrs[$key]['wait'] = $cdrs[$key]['duration'] - $cdrs[$key]['billsec'];
             if (strlen($cdrs[$key]['src']) == 4 && strlen($cdrs[$key]['dst']) != 4) {
                 $cost = $this->cost($cdrs[$key]['dst'],$cdrs[$key]['calldate'],$cdrs[$key]['billsec']);
                 $cdrs[$key]['cost'] = $cost['cost'];
