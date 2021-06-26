@@ -9,6 +9,12 @@ use FreePBX\modules\Tarifador\Traits\CallTrait;
 use FreePBX\modules\Tarifador\Traits\PinUserTrait;
 use FreePBX\modules\Tarifador\Traits\RateTrait;
 
+/**
+ * Class Tarifador
+ * @package FreePBX\modules
+ * @author Mauro <https://github.com/mrpbueno>
+ */
+
 class Tarifador extends FreePBX_Helpers implements BMO
 {
     use RateTrait, CallTrait, PinUserTrait;

@@ -4,6 +4,11 @@ namespace FreePBX\modules\Tarifador\Traits;
 
 use PDO;
 
+/**
+ * Trait CallTrait
+ * @package FreePBX\modules\Tarifador\Traits
+ * @author Mauro <https://github.com/mrpbueno>
+ */
 trait CallTrait
 {
     /**

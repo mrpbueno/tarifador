@@ -6,6 +6,11 @@ namespace FreePBX\modules\Tarifador\Traits;
 use PDO;
 use PDOException;
 
+/**
+ * Trait PinUserTrait
+ * @package FreePBX\modules\Tarifador\Traits
+ * @author Mauro <https://github.com/mrpbueno>
+ */
 trait PinUserTrait
 {
     /**
