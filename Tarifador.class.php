@@ -21,6 +21,18 @@ class Tarifador extends FreePBX_Helpers implements BMO
 
     /** @var BMO */
     private $FreePBX = null;
+    /** @var integer  */
+    private $id;
+    /** @var string  */
+    private $page;
+    /** @var string  */
+    private $action;
+    /** @var string  */
+    private $view;
+    /** @var string  */
+    private $command;
+    /** @var string  */
+    private $jdata;
     /**
      * Tarifador constructor.
      *
@@ -34,6 +46,12 @@ class Tarifador extends FreePBX_Helpers implements BMO
         }
         $this->FreePBX = $freepbx;
         $this->db = $freepbx->Database;
+        $this->id = $this->getReq('id', '');
+        $this->page = $this->getReq('page', '');
+        $this->action = $this->getReq('action', '');
+        $this->view = $this->getReq('view', '');
+        $this->command = $this->getReq('command', '');
+        $this->jdata = $this->getReq('jdata', '');
     }
 
     public function install()
@@ -49,36 +67,32 @@ class Tarifador extends FreePBX_Helpers implements BMO
     /**
      * Processes form submission and pre-page actions.
      *
-     * @param string $page Display name
-     * @return bool
+     * @return mixed
      * @throws Exception
      */
-    public function doConfigPageInit($page)
+    public function doConfigPageInit()
     {
-        $action = $this->getReq('action', '');
-        $id = $this->getReq('id', '');
-        $page = $this->getReq('page', '');
-
-        switch ($page) {
+        switch ($this->page) {
             case 'rate':
-                switch ($action) {
+                switch ($this->action) {
                     case 'add':
                         return $this->addRate($_REQUEST);
                         break;
                     case 'delete':
-                        return $this->deleteRate($id);
+                        return $this->deleteRate($this->id);
                         break;
                     case 'edit':
                         $this->updateRate($_REQUEST);
                         break;
                 }
+                break;
             case 'pinuser':
-                switch ($action) {
+                switch ($this->action) {
                     case 'sync':
                         return $this->syncPinuser();
                         break;
                     case 'delete':
-                        return $this->deletePinuser($id);
+                        return $this->deletePinuser($this->id);
                         break;
                     case 'edit':
                         $this->updatePinuser($_REQUEST);
@@ -87,7 +101,7 @@ class Tarifador extends FreePBX_Helpers implements BMO
                         $this->importPinuser($_REQUEST);
                         break;
                 }
-            break;
+                break;
         }
     }
 
@@ -147,10 +161,10 @@ class Tarifador extends FreePBX_Helpers implements BMO
      */
     public function ajaxHandler()
     {
-        switch($_REQUEST['command']) {
+        switch($this->command) {
             case "getJSON":
-                $page = !empty($_REQUEST['page']) ? $_REQUEST['page'] : '';
-                if ('grid' == $_REQUEST['jdata']) {
+                $page = !empty($this->page) ? $this->page : '';
+                if ('grid' == $this->jdata) {
                     switch ($page) {
                         case 'call':
                             return $this->getListCdr($_REQUEST);
@@ -184,7 +198,7 @@ class Tarifador extends FreePBX_Helpers implements BMO
      */
     public function getRightNav($request)
     {
-        return load_view(__DIR__."/views/rnav.php",array());
+        return load_view(__DIR__."/views/rnav.php",[]);
     }
 
     /**
@@ -197,35 +211,50 @@ class Tarifador extends FreePBX_Helpers implements BMO
     {
         switch ($page) {
             case 'call':
-                $content = load_view(__DIR__ . '/views/call/grid.php');
-                if ('form' == $_REQUEST['view']) {
-                    $content = load_view(__DIR__ . '/views/call/form.php');
-                    if (isset($_REQUEST['id']) && !empty($_REQUEST['id'])) {
-                        $content = load_view(__DIR__.'/views/call/form.php', $this->getOneCall($_REQUEST['id']));
-                    }
-                }
-                return load_view(__DIR__.'/views/default.php', ['content' => $content]);
+                return $this->callPage();
                 break;
             case 'rate':
-                $content = load_view(__DIR__ . '/views/rate/grid.php');
-                if ('form' == $_REQUEST['view']) {
-                    $content = load_view(__DIR__ . '/views/rate/form.php');
-                    if (isset($_REQUEST['id']) && !empty($_REQUEST['id'])) {
-                        $content = load_view(__DIR__.'/views/rate/form.php', $this->getOneRate($_REQUEST['id']));
-                    }
-                }
-                return load_view(__DIR__.'/views/default.php', ['content' => $content]);
+                return $this->ratePage();
                 break;
             case 'pinuser':
-                $content = load_view(__DIR__ . '/views/pinuser/grid.php');
-                if('form' == $_REQUEST['view']){
-                    $content = load_view(__DIR__ . '/views/pinuser/form.php');
-                    if(isset($_REQUEST['id']) && !empty($_REQUEST['id'])){
-                        $content = load_view(__DIR__.'/views/pinuser/form.php', $this->getOnePinuser($_REQUEST['id']));
-                    }
-                }
-                return load_view(__DIR__.'/views/default.php', ['content' => $content]);
+                return $this->pinuserPage();
                 break;
         }
+    }
+
+    private function callPage()
+    {
+        $content = load_view(__DIR__ . '/views/call/grid.php');
+        if ('form' == $this->view) {
+            $content = load_view(__DIR__ . '/views/call/form.php');
+            if (isset($this->id) && !empty($this->id)) {
+                $content = load_view(__DIR__.'/views/call/form.php', $this->getOneCall($this->id));
+            }
+        }
+        return load_view(__DIR__.'/views/default.php', ['content' => $content, 'title' => _("Lista de chamadas")]);
+    }
+
+    private function ratePage()
+    {
+        $content = load_view(__DIR__ . '/views/rate/grid.php');
+        if ('form' == $this->view) {
+            $content = load_view(__DIR__ . '/views/rate/form.php');
+            if (isset($this->id) && !empty($this->id)) {
+                $content = load_view(__DIR__.'/views/rate/form.php', $this->getOneRate($this->id));
+            }
+        }
+        return load_view(__DIR__.'/views/default.php', ['content' => $content, 'title' => _("Lista de tarifas")]);
+    }
+
+    private function pinuserPage()
+    {
+        $content = load_view(__DIR__ . '/views/pinuser/grid.php');
+        if('form' == $this->view){
+            $content = load_view(__DIR__ . '/views/pinuser/form.php');
+            if(isset($this->id) && !empty($this->id)){
+                $content = load_view(__DIR__.'/views/pinuser/form.php', $this->getOnePinuser($this->id));
+            }
+        }
+        return load_view(__DIR__.'/views/default.php', ['content' => $content, 'title' => _("Lista de usuários")]);
     }
 }
