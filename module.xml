@@ -2,7 +2,7 @@
     <rawname>tarifador</rawname>
     <repo>unsupported</repo>
     <name>Tarifador</name>
-    <version>14.0.4</version>
+    <version>14.0.5</version>
     <category>Reports</category>
     <Publisher>mrpbueno</Publisher>
     <info>https://github.com/mrpbueno/tarifador</info>
@@ -43,6 +43,7 @@
     <updateurl>https://raw.githubusercontent.com/mrpbueno/tarifador/master/tarifador.json</updateurl>
     <description>Tarifador para FreePBX</description>
     <changelog>
+        *14.0.5* Melhorias no código *beta
         *14.0.4* Melhorias no código *beta
         *14.0.3* Melhorias no código *beta
         *14.0.2* Melhorias no código *beta
