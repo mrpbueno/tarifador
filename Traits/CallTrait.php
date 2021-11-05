@@ -55,7 +55,7 @@ trait CallTrait
             ];
         }
 
-        $sql = 'SELECT calldate, t.user, src, cnam, did, dst, lastapp, disposition, duration, billsec, (duration -  billsec) AS wait ';
+        $sql = 'SELECT calldate, uniqueid, t.user, src, cnam, did, dst, lastapp, disposition, duration, billsec, (duration -  billsec) AS wait ';
         $sql .= 'FROM asteriskcdrdb.cdr ';
         $sql .= 'LEFT JOIN asterisk.tarifador_pinuser t ON accountcode = t.pin ';
         $sql .= 'WHERE calldate BETWEEN :startDate AND :endDate ';
@@ -65,9 +65,9 @@ trait CallTrait
             }
         $sql .= ' ORDER BY calldate ASC';
         $stmt = $this->db->prepare($sql);
-        $sartDate = $post['startDate'].' '.$post['startTime'];
+        $startDate = $post['startDate'].' '.$post['startTime'];
         $endDate = $post['endDate'].' '.$post['endTime'];
-        $stmt->bindParam(':startDate',$sartDate,PDO::PARAM_STR);
+        $stmt->bindParam(':startDate',$startDate,PDO::PARAM_STR);
         $stmt->bindParam(':endDate',$endDate,PDO::PARAM_STR);
 
         if (is_array($filters))

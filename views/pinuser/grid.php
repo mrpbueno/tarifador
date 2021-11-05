@@ -1,29 +1,34 @@
-<div id="toolbar-all">
-    <div class="col-md-6">
-        <form action="?display=tarifador&page=pinuser&action=sync" method="post">
-            <button type="submit"
-                    class="btn btn-default"
-                    data-toggle="modal"
-                    data-target="#sync">
-                <i class="fa fa-refresh"></i> <?php echo _("Sincronizar PINs")?>
-            </button>
-        </form>
-    </div>
-    <div class="col-md-6">
+<div id="buttons-toolbar">
+    <form action="?display=tarifador&page=pinuser&action=sync" method="post">
+    <div class="btn-group" role="group">
+       <button type="submit"
+               class="btn btn-default"
+               data-toggle="modal"
+               data-target="#sync">
+           <i class="fa fa-refresh"></i> <?php echo _("Sincronizar PINs")?>
+       </button>
+
         <button type="button"
                 class="btn btn-default"
                 data-toggle="modal"
                 data-target="#import">
             <i class="fa fa-upload"></i> <?php echo _("Upload de CSV")?>
         </button>
+        <button type="button"
+                class="btn btn-default"
+                onclick="exportToPDF()">
+            <i class="fa fa-download"></i> <?php echo _("PDF")?>
+        </button>
     </div>
+    </form>
 </div>
+
 <table id="pinuser"
        data-url="ajax.php?module=tarifador&command=getJSON&jdata=grid&page=pinuser"
        data-cache="false"
        data-state-save="true"
        data-state-save-id-table="pinuser_grid"
-       data-toolbar="#toolbar-all"
+       data-toolbar="#buttons-toolbar"
        data-maintain-selected="true"
        data-show-columns="true"
        data-show-toggle="true"
@@ -108,27 +113,24 @@
     </div>
 </div>
 <script type="text/javascript" charset="utf-8">
+
     $(document).ready(function() {
         $('#pinuser').bootstrapTable({
             exportDataType: $(this).val(),
-            exportTypes: ['json', 'xml', 'csv', 'txt', 'sql', 'excel', 'pdf'],
+            exportTypes: ['csv', 'excel'],
             exportOptions: {
                 fileName: 'exportPinUser',
-                jspdf: {
-                    orientation: 'p',
-                    format: 'a4',
-                    margins: {left:10, right:10, top:20, bottom:20},
-                    autotable: {
-                        theme: 'striped',
-                        styles: {
-                            cellWidth: 'auto',
-                            minCellWidth: '1',
-                            overflow: 'linebreak',
-                        },
-                        tableWidth: 'auto',
-                    }
-                }
             }
         });
     });
+
+    function exportToPDF(){
+        let jsPDF = window.jspdf.jsPDF;
+        let doc = new jsPDF();
+        doc.autoTable({
+            html: '#pinuser',
+            margin: { top: 5, right: 5, left: 5, bottom: 5 },
+        });
+        doc.save('exportPinUser.pdf');
+    }
 </script>

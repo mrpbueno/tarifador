@@ -13,12 +13,22 @@ $request .= empty($_POST['endTime']) ? '23:59' : $_POST['endTime'];
 $request .= "&dst=".$_REQUEST['dst'];
 $request .= "&disposition=".$_REQUEST['disposition'];
 ?>
+
+<div id="buttons-toolbar">
+    <div class="btn-group" role="group">
+        <button type="button"
+                class="btn btn-default"
+                onclick="exportToPDF()">
+            <i class="fa fa-download"></i> <?php echo _("PDF")?>
+        </button>
+    </div>
+</div>
+
 <table id="tarifador"
        data-url="ajax.php?module=tarifador&command=getJSON&jdata=grid&page=call<?=$request?>"
        data-cache="false"
        data-state-save="true"
        data-state-save-id-table="tarifador_grid"
-       data-toolbar="#toolbar-all"
        data-maintain-selected="true"
        data-show-columns="true"
        data-show-toggle="true"
@@ -29,11 +39,13 @@ $request .= "&disposition=".$_REQUEST['disposition'];
        data-export-footer="true"
        data-show-refresh="true"
        data-show-footer="true"
+       data-toolbar="#buttons-toolbar"
        data-page-list="[10, 25, 50, 100, 200, 400, 800, 1600, ALL]"
        class="table table-sm small">
 	<thead>
 		<tr>
-            <th data-field="calldate" data-sortable="true" data-formatter="dateTimeFormatter"><?php echo _("Data / Hora")?></th>
+            <th data-field="calldate" data-sortable="true" data-formatter="callDateFormatter"><?php echo _("Data / Hora")?></th>
+            <th data-field="uniqueid" data-sortable="true"><?php echo _("ID")?></th>
             <th data-field="user" data-sortable="true"><?php echo _("Usuário")?></th>
             <th data-field="src" data-sortable="true"><?php echo _("Origem")?></th>
             <th data-field="cnam" data-sortable="true"><?php echo _("Nome")?></th>
@@ -49,25 +61,26 @@ $request .= "&disposition=".$_REQUEST['disposition'];
 		</tr>
 	</thead>
 </table>
+
 <script type="text/javascript" charset="utf-8">
+
     $(document).ready(function() {
         $('#tarifador').bootstrapTable({
             exportDataType: $(this).val(),
-            exportTypes: ['json', 'xml', 'csv', 'txt', 'sql', 'excel', 'pdf'],
+            exportTypes: ['csv', 'excel'],
             exportOptions: {
                 fileName: 'exportCall',
-                jspdf: {
-                    orientation: 'l',
-                    format: 'a4',
-                    margins: {left:10, right:10, top:20, bottom:20},
-                    autotable: {
-                        theme: 'grid',
-                        tableWidth: 'wrap',
-                        styles: {cellWidth: 'wrap', overflow: 'linebreak'},
-                        columnStyles: {text: {cellWidth: 'wrap'}}
-                    }
-                }
             }
         });
     });
+
+    function exportToPDF(){
+        let jsPDF = window.jspdf.jsPDF;
+        let doc = new jsPDF({orientation: "landscape"});
+        doc.autoTable({
+            html: '#tarifador',
+            margin: { top: 5, right: 5, left: 5, bottom: 5 },
+        });
+        doc.save('exportCall.pdf');
+    }
 </script>

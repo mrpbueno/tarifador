@@ -1,12 +1,24 @@
-<div id="toolbar-all">
-    <a href="?display=tarifador&page=rate&view=form" class="btn btn-default"><i class="fa fa-plus"></i>&nbsp;<?php echo _("Adicionar Tarifa")?></a>
+<div id="buttons-toolbar">
+    <div class="btn-group" role="group">
+        <button type="button"
+                class="btn btn-default"
+                onclick="location.href='?display=tarifador&page=rate&view=form';">
+            <i class="fa fa-plus"></i>&nbsp;<?php echo _("Adicionar Tarifa")?>
+        </button>
+        <button type="button"
+                class="btn btn-default"
+                onclick="exportToPDF()">
+            <i class="fa fa-download"></i> <?php echo _("PDF")?>
+        </button>
+    </div>
 </div>
+
 <table id="rate"
        data-url="ajax.php?module=tarifador&command=getJSON&jdata=grid&page=rate"
        data-cache="false"
        data-state-save="true"
        data-state-save-id-table="rate_grid"
-       data-toolbar="#toolbar-all"
+       data-toolbar="#buttons-toolbar"
        data-maintain-selected="true"
        data-show-columns="true"
        data-show-toggle="true"
@@ -35,23 +47,9 @@
     $(document).ready(function() {
         $('#rate').bootstrapTable({
             exportDataType: $(this).val(),
-            exportTypes: ['json', 'xml', 'csv', 'txt', 'sql', 'excel', 'pdf'],
+            exportTypes: ['csv', 'excel'],
             exportOptions: {
                 fileName: 'exportRate',
-                jspdf: {
-                    orientation: 'p',
-                    format: 'a4',
-                    margins: {left:10, right:10, top:20, bottom:20},
-                    autotable: {
-                        theme: 'striped',
-                        styles: {
-                            cellWidth: 'auto',
-                            minCellWidth: '1',
-                            overflow: 'linebreak',
-                        },
-                        tableWidth: 'auto',
-                    }
-                }
             }
         });
     });
@@ -70,4 +68,14 @@
             }
         });
     });
+
+    function exportToPDF(){
+        let jsPDF = window.jspdf.jsPDF;
+        let doc = new jsPDF();
+        doc.autoTable({
+            html: '#rate',
+            margin: { top: 5, right: 5, left: 5, bottom: 5 },
+        });
+        doc.save('exportRate.pdf');
+    }
 </script>

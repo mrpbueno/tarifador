@@ -4,6 +4,7 @@ namespace FreePBX\modules;
 
 use Exception;
 use FreePBX\BMO;
+use FreePBX\Database;
 use FreePBX\FreePBX_Helpers;
 use FreePBX\modules\Tarifador\Traits\CallTrait;
 use FreePBX\modules\Tarifador\Traits\PinUserTrait;
@@ -20,7 +21,9 @@ class Tarifador extends FreePBX_Helpers implements BMO
     use RateTrait, CallTrait, PinUserTrait;
 
     /** @var BMO */
-    private $FreePBX = null;
+    private $freepbx = null;
+    /** @var  Database*/
+    private $db;
     /** @var integer  */
     private $id;
     /** @var string  */
@@ -44,7 +47,7 @@ class Tarifador extends FreePBX_Helpers implements BMO
         if ($freepbx == null) {
             throw new Exception("Not given a FreePBX Object");
         }
-        $this->FreePBX = $freepbx;
+        $this->freepbx = $freepbx;
         $this->db = $freepbx->Database;
         $this->id = $this->getReq('id', '');
         $this->page = $this->getReq('page', '');
