@@ -16,9 +16,24 @@
         </button>
         <button type="button"
                 class="btn btn-default"
+                title="<?php echo _("Download PDF")?>"
                 onclick="exportToPDF()">
-            <i class="fa fa-download"></i> <?php echo _("PDF")?>
+            <i class="fa fa-file-pdf-o"></i> <?php echo _("PDF")?>
         </button>
+        <a type="button"
+           class="btn btn-default"
+           title="<?php echo _("Download Excel")?>"
+           download="exportPinUser.xls"
+           onclick="return ExcellentExport.excel(this, 'pinuser', 'call');">
+            <i class="fa fa-file-excel-o"></i> <?php echo _("XLS")?>
+        </a>
+        <a type="button"
+           class="btn btn-default"
+           title="<?php echo _("Download CSV")?>"
+           download="exportPinUser.csv"
+           onclick="return ExcellentExport.csv(this, 'pinuser');">
+            <i class="fa fa-file-text-o"></i> <?php echo _("CSV")?>
+        </a>
     </div>
     </form>
 </div>
@@ -31,11 +46,9 @@
        data-toolbar="#buttons-toolbar"
        data-maintain-selected="true"
        data-show-columns="true"
-       data-show-toggle="true"
        data-toggle="table"
        data-pagination="true"
        data-search="true"
-       data-show-export="true"
        data-show-refresh="true"
        data-page-list="[10, 25, 50, 100, 200, 400, 800, 1600]"
        class="table table-sm"">
@@ -113,16 +126,6 @@
     </div>
 </div>
 <script type="text/javascript" charset="utf-8">
-
-    $(document).ready(function() {
-        $('#pinuser').bootstrapTable({
-            exportDataType: $(this).val(),
-            exportTypes: ['csv', 'excel'],
-            exportOptions: {
-                fileName: 'exportPinUser',
-            }
-        });
-    });
 
     function exportToPDF(){
         let jsPDF = window.jspdf.jsPDF;

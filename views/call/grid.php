@@ -18,9 +18,24 @@ $request .= "&disposition=".$_REQUEST['disposition'];
     <div class="btn-group" role="group">
         <button type="button"
                 class="btn btn-default"
+                title="<?php echo _("Download PDF")?>"
                 onclick="exportToPDF()">
-            <i class="fa fa-download"></i> <?php echo _("PDF")?>
+            <i class="fa fa-file-pdf-o"></i> <?php echo _("PDF")?>
         </button>
+        <a type="button"
+                class="btn btn-default"
+                title="<?php echo _("Download Excel")?>"
+                download="exportCall.xls"
+                onclick="return ExcellentExport.excel(this, 'tarifador', 'call');">
+            <i class="fa fa-file-excel-o"></i> <?php echo _("XLS")?>
+        </a>
+        <a type="button"
+           class="btn btn-default"
+           title="<?php echo _("Download CSV")?>"
+           download="exportCall.csv"
+           onclick="return ExcellentExport.csv(this, 'tarifador');">
+            <i class="fa fa-file-text-o"></i> <?php echo _("CSV")?>
+        </a>
     </div>
 </div>
 
@@ -31,11 +46,9 @@ $request .= "&disposition=".$_REQUEST['disposition'];
        data-state-save-id-table="tarifador_grid"
        data-maintain-selected="true"
        data-show-columns="true"
-       data-show-toggle="true"
        data-toggle="table"
        data-pagination="true"
        data-search="true"
-       data-show-export="true"
        data-export-footer="true"
        data-show-refresh="true"
        data-show-footer="true"
@@ -64,16 +77,6 @@ $request .= "&disposition=".$_REQUEST['disposition'];
 
 <script type="text/javascript" charset="utf-8">
 
-    $(document).ready(function() {
-        $('#tarifador').bootstrapTable({
-            exportDataType: $(this).val(),
-            exportTypes: ['csv', 'excel'],
-            exportOptions: {
-                fileName: 'exportCall',
-            }
-        });
-    });
-
     function exportToPDF(){
         let jsPDF = window.jspdf.jsPDF;
         let doc = new jsPDF({orientation: "landscape"});
@@ -83,4 +86,6 @@ $request .= "&disposition=".$_REQUEST['disposition'];
         });
         doc.save('exportCall.pdf');
     }
+
+
 </script>

@@ -7,9 +7,24 @@
         </button>
         <button type="button"
                 class="btn btn-default"
+                title="<?php echo _("Download PDF")?>"
                 onclick="exportToPDF()">
-            <i class="fa fa-download"></i> <?php echo _("PDF")?>
+            <i class="fa fa-file-pdf-o"></i> <?php echo _("PDF")?>
         </button>
+        <a type="button"
+           class="btn btn-default"
+           title="<?php echo _("Download Excel")?>"
+           download="exportRate.xls"
+           onclick="return ExcellentExport.excel(this, 'rate', 'call');">
+            <i class="fa fa-file-excel-o"></i> <?php echo _("XLS")?>
+        </a>
+        <a type="button"
+           class="btn btn-default"
+           title="<?php echo _("Download CSV")?>"
+           download="exportRate.csv"
+           onclick="return ExcellentExport.csv(this, 'rate');">
+            <i class="fa fa-file-text-o"></i> <?php echo _("CSV")?>
+        </a>
     </div>
 </div>
 
@@ -21,14 +36,12 @@
        data-toolbar="#buttons-toolbar"
        data-maintain-selected="true"
        data-show-columns="true"
-       data-show-toggle="true"
        data-show-refresh="true"
        data-reorderable-rows="true"
        data-use-row-attr-func="true"
        data-toggle="table"
        data-pagination="true"
        data-search="true"
-       data-show-export="true"
        data-page-list="[10, 25, 50, 100, 200, 400, 800, 1600]"
        class="table table-sm">
 	<thead>
@@ -44,15 +57,7 @@
 	</thead>
 </table>
 <script type="text/javascript" charset="utf-8">
-    $(document).ready(function() {
-        $('#rate').bootstrapTable({
-            exportDataType: $(this).val(),
-            exportTypes: ['csv', 'excel'],
-            exportOptions: {
-                fileName: 'exportRate',
-            }
-        });
-    });
+
     $('#rate').on('reorder-row.bs.table', function (e, data){
         var order = [];
         $.each(data, function (i, value) {
