@@ -43,6 +43,7 @@
     <updateurl>https://raw.githubusercontent.com/mrpbueno/tarifador/master/tarifador.json</updateurl>
     <description>Tarifador para FreePBX</description>
     <changelog>
+        *14.0.5.1* Update PDF CSV XLS export
         *14.0.5* Melhorias no código *beta
         *14.0.4* Melhorias no código *beta
         *14.0.3* Melhorias no código *beta
