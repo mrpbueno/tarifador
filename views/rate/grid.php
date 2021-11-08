@@ -15,7 +15,7 @@
            class="btn btn-default"
            title="<?php echo _("Download Excel")?>"
            download="exportRate.xls"
-           onclick="return ExcellentExport.excel(this, 'rate', 'call');">
+           onclick="return ExcellentExport.excel(this, 'rate', 'rate');">
             <i class="fa fa-file-excel-o"></i> <?php echo _("XLS")?>
         </a>
         <a type="button"

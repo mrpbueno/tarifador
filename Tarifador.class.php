@@ -7,6 +7,7 @@ use FreePBX\BMO;
 use FreePBX\Database;
 use FreePBX\FreePBX_Helpers;
 use FreePBX\modules\Tarifador\Traits\CallTrait;
+use FreePBX\modules\Tarifador\Traits\CelTrait;
 use FreePBX\modules\Tarifador\Traits\PinUserTrait;
 use FreePBX\modules\Tarifador\Traits\RateTrait;
 
@@ -18,7 +19,7 @@ use FreePBX\modules\Tarifador\Traits\RateTrait;
 
 class Tarifador extends FreePBX_Helpers implements BMO
 {
-    use RateTrait, CallTrait, PinUserTrait;
+    use RateTrait, CallTrait, PinUserTrait, CelTrait;
 
     /** @var BMO */
     private $freepbx = null;
@@ -150,6 +151,7 @@ class Tarifador extends FreePBX_Helpers implements BMO
             case "updateOrderRate":
             case "getDepartment":
             case "getUser":
+            case "getCel":
                 return true;
             break;
             default:
@@ -189,6 +191,9 @@ class Tarifador extends FreePBX_Helpers implements BMO
                 break;
             case "getUser":
                 return $this->getUser($_REQUEST);
+                break;
+            case "getCel":
+                return $this->getCel($_REQUEST);
                 break;
             default:
                 return json_encode(['status' => false, 'message' => _("Solicitação Inválida")]);
