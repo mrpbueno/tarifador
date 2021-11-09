@@ -3,6 +3,7 @@
 
 namespace FreePBX\modules\Tarifador\Traits;
 
+use FreePBX\modules\Tarifador\Utils\Sanitize;
 use PDO;
 use PDOException;
 
@@ -25,14 +26,14 @@ trait RateTrait
     }
 
     /**
-     * @param $id
+     * @param int $id
      * @return array
      */
     private function getOneRate($id)
     {
         $sql = "SELECT * FROM tarifador_rate WHERE id = :id LIMIT 1";
         $stmt = $this->Database->prepare($sql);
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->bindParam(':id', Sanitize::int($id), PDO::PARAM_INT);
         $stmt->execute();
         $row = $stmt->fetchObject();
 
@@ -48,7 +49,7 @@ trait RateTrait
     }
 
     /**
-     * @param $post
+     * @param array $post
      * @return bool|void
      */
     private function addRate($post)
@@ -63,12 +64,12 @@ trait RateTrait
         $sql = "INSERT INTO tarifador_rate (name, telco, dial_pattern, rate, start, end) ";
         $sql .= "VALUES (:name, :telco, :dial_pattern, :rate, :start, :end)";
         $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':name', $post['name'], PDO::PARAM_STR);
-        $stmt->bindParam(':telco', $post['telco'], PDO::PARAM_STR);
-        $stmt->bindParam(':dial_pattern', $post['dial_pattern'], PDO::PARAM_STR);
-        $stmt->bindParam(':rate', $post['rate'], PDO::PARAM_STR);
-        $stmt->bindParam(':start', $post['start'], PDO::PARAM_STR);
-        $stmt->bindParam(':end', $post['end'], PDO::PARAM_INT);
+        $stmt->bindParam(':name', Sanitize::string($post['name']), PDO::PARAM_STR);
+        $stmt->bindParam(':telco', Sanitize::string($post['telco']), PDO::PARAM_STR);
+        $stmt->bindParam(':dial_pattern', Sanitize::string($post['dial_pattern']), PDO::PARAM_STR);
+        $stmt->bindParam(':rate', Sanitize::string($post['rate']), PDO::PARAM_STR);
+        $stmt->bindParam(':start', Sanitize::string($post['start']), PDO::PARAM_STR);
+        $stmt->bindParam(':end', Sanitize::string($post['end']), PDO::PARAM_STR);
         try {
             $stmt->execute();
         } catch (PDOException $e) {
@@ -80,7 +81,7 @@ trait RateTrait
     }
 
     /**
-     * @param $post
+     * @param array $post
      * @return bool|void
      */
     private function updateRate($post)
@@ -88,13 +89,13 @@ trait RateTrait
         $sql = 'UPDATE tarifador_rate SET name = :name, telco = :telco, dial_pattern = :dial_pattern, ';
         $sql .= 'rate = :rate, start = :start, end = :end WHERE id = :id';
         $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':id', $post['id'], PDO::PARAM_INT);
-        $stmt->bindParam(':name', $post['name'], PDO::PARAM_STR);
-        $stmt->bindParam(':telco', $post['telco'], PDO::PARAM_STR);
-        $stmt->bindParam(':dial_pattern', $post['dial_pattern'], PDO::PARAM_STR);
-        $stmt->bindParam(':rate', $post['rate'], PDO::PARAM_STR);
-        $stmt->bindParam(':start', $post['start'], PDO::PARAM_STR);
-        $stmt->bindParam(':end', $post['end'], PDO::PARAM_INT);
+        $stmt->bindParam(':id', Sanitize::int($post['id']), PDO::PARAM_INT);
+        $stmt->bindParam(':name', Sanitize::string($post['name']), PDO::PARAM_STR);
+        $stmt->bindParam(':telco', Sanitize::string($post['telco']), PDO::PARAM_STR);
+        $stmt->bindParam(':dial_pattern', Sanitize::string($post['dial_pattern']), PDO::PARAM_STR);
+        $stmt->bindParam(':rate', Sanitize::string($post['rate']), PDO::PARAM_STR);
+        $stmt->bindParam(':start', Sanitize::string($post['start']), PDO::PARAM_STR);
+        $stmt->bindParam(':end', Sanitize::string($post['end']), PDO::PARAM_STR);
         try {
             $stmt->execute();
         } catch (PDOException $e) {
@@ -106,7 +107,7 @@ trait RateTrait
     }
 
     /**
-     * @param $post
+     * @param array $post
      * @return bool
      */
     private function updateOrderRate($post)
@@ -127,11 +128,12 @@ trait RateTrait
     }
 
     /**
-     * @param $id
+     * @param int $id
      * @return bool|void
      */
     private function deleteRate($id)
     {
+        $id = Sanitize::int($id);
         $sql = "DELETE FROM tarifador_rate WHERE id = :id";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
@@ -145,18 +147,21 @@ trait RateTrait
     }
 
     /**
-     * @param $dial_pattern
-     * @param $start
-     * @param $end
+     * @param string $dialPattern
+     * @param string $start
+     * @param string $end
      * @return mixed
      */
-    private function testDate($dial_pattern, $start, $end)
+    private function testDate($dialPattern, $start, $end)
     {
+        $dialPattern = Sanitize::string($dialPattern);
+        $start = Sanitize::string($start);
+        $end = Sanitize::string($end);
         $sql = "SELECT dial_pattern, start, end FROM tarifador_rate WHERE dial_pattern = :dial_pattern ";
         $sql .= "AND ((start BETWEEN :start AND :end) OR (end BETWEEN :start AND :end) ";
         $sql .= "OR (start < :start AND end > :end)) LIMIT 1";
         $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':dial_pattern', $dial_pattern, PDO::PARAM_STR);
+        $stmt->bindParam(':dial_pattern', $dialPattern, PDO::PARAM_STR);
         $stmt->bindParam(':start', $start, PDO::PARAM_STR);
         $stmt->bindParam(':end', $end, PDO::PARAM_STR);
         $stmt->execute();
@@ -166,15 +171,15 @@ trait RateTrait
     }
 
     /**
-     * @param $number
-     * @param $calldate
+     * @param string $callDate
      * @return mixed
      */
-    private function getRate($calldate)
+    private function getRate($callDate)
     {
+        $callDate = Sanitize::string($callDate);
         $sql = 'SELECT name, dial_pattern, rate FROM tarifador_rate WHERE start <= :calldate AND end >= :calldate ORDER BY seq ASC';
         $stmt = $this->db->prepare($sql);
-        $date = date('Y-m-d',strtotime($calldate));
+        $date = date('Y-m-d',strtotime($callDate));
         $stmt->bindParam(':calldate', $date, PDO::PARAM_STR);
         $stmt->execute();
         $rates = $stmt->fetchAll(PDO::FETCH_ASSOC);

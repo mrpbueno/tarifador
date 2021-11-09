@@ -2,7 +2,7 @@
 
 namespace FreePBX\modules\Tarifador\Traits;
 
-
+use FreePBX\modules\Tarifador\Utils\Sanitize;
 use PDO;
 use PDOException;
 
@@ -14,14 +14,14 @@ use PDOException;
 trait PinUserTrait
 {
     /**
-     * @param $id
+     * @param int $id
      * @return bool|void
      */
-    private function deletePinuser($id)
+    private function deletePinUser($id)
     {
         $sql = "DELETE FROM tarifador_pinuser WHERE id = :id";
         $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->bindParam(':id', Sanitize::int($id), PDO::PARAM_INT);
         try {
             $stmt->execute();
         } catch (PDOException $e) {
@@ -33,24 +33,24 @@ trait PinUserTrait
     }
 
     /**
-     * @param $post
+     * @param array $post
      * @return bool|void
      */
-    private function updatePinuser($post)
+    private function updatePinUser($post)
     {
         $sql = "UPDATE tarifador_pinuser SET user = :user, department = :department WHERE id = :id";
         $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':id', $post['id'], PDO::PARAM_INT);
-        $stmt->bindParam(':user', $post['user'], PDO::PARAM_STR);
-        $stmt->bindParam(':department', $post['department'], PDO::PARAM_STR);
+        $stmt->bindParam(':id', Sanitize::int($post['id']), PDO::PARAM_INT);
+        $stmt->bindParam(':user',  Sanitize::string($post['user']), PDO::PARAM_STR);
+        $stmt->bindParam(':department', Sanitize::string($post['department']), PDO::PARAM_STR);
         try {
             $stmt->execute();
         } catch (PDOException $e) {
             if ($e->errorInfo[1] == 1062) {
-                echo "<script>javascript:alert('"._("Erro! PIN duplicado.")."')</script>";
+                echo "<script>alert('" ._("Erro! PIN duplicado.")."')</script>";
                 return false;
             } else {
-                echo "<script>javascript:alert('"._($stmt->getMessage()."<br><br>".$sql)."')</script>";
+                echo "<script>alert('" ._($stmt->getMessage()."<br><br>".$sql)."')</script>";
                 return false;
             }
         }
@@ -59,16 +59,17 @@ trait PinUserTrait
     }
 
     /**
-     * @param $data
+     * @param array $data
+     * @return void
      */
-    private function addPinuser($data)
+    private function addPinUser($data)
     {
         $sql = "INSERT INTO tarifador_pinuser (pin, user, department, enabled) VALUES (:pin, :user, :department, :enabled)";
         $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':pin', $data['pin'], PDO::PARAM_STR);
-        $stmt->bindParam(':user', $data['user'], PDO::PARAM_STR);
-        $stmt->bindParam(':department', $data['department'], PDO::PARAM_STR);
-        $stmt->bindParam(':enabled', $data['enabled'], PDO::PARAM_INT);
+        $stmt->bindParam(':pin', Sanitize::string($data['pin']), PDO::PARAM_STR);
+        $stmt->bindParam(':user', Sanitize::string($data['user']), PDO::PARAM_STR);
+        $stmt->bindParam(':department', Sanitize::string($data['department']), PDO::PARAM_STR);
+        $stmt->bindParam(':enabled', Sanitize::int($data['enabled']), PDO::PARAM_INT);
         try {
             $stmt->execute();
         } catch (PDOException $e) {
@@ -82,9 +83,9 @@ trait PinUserTrait
     }
 
     /**
-     *
+     * @return void
      */
-    private function syncPinuser()
+    private function syncPinUser()
     {
         $sql = "UPDATE tarifador_pinuser SET enabled = 0 ";
         $stmt = $this->db->prepare($sql);
@@ -99,7 +100,7 @@ trait PinUserTrait
                 if ($d['passwords'] != "") {
                     $passwords = explode("\n", $d['passwords']);
                     foreach ($passwords as $key => $value) {
-                        $this->addPinuser([
+                        $this->addPinUser([
                             'pin' => $value,
                             'user' => '---',
                             'department' => '---',
@@ -117,23 +118,23 @@ trait PinUserTrait
     /**
      * @return array|null
      */
-    private function getListPinuser()
+    private function getListPinUser()
     {
-        $sql = 'SELECT * FROM tarifador_pinuser';
+        $sql = "SELECT * FROM tarifador_pinuser";
         $data = $this->db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
 
         return is_array($data) ? $data : null;
     }
 
     /**
-     * @param $id
+     * @param int $id
      * @return array
      */
-    private function getOnePinuser($id)
+    private function getOnePinUser($id)
     {
         $sql = "SELECT * FROM tarifador_pinuser WHERE id = :id LIMIT 1";
         $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->bindParam(':id', Sanitize::int($id), PDO::PARAM_INT);
         $stmt->execute();
         $pinuser = $stmt->fetchObject();
 
@@ -155,9 +156,10 @@ trait PinUserTrait
     }
 
     /**
-     * @param $post
+     * @param array $post
+     * @return void
      */
-    private function importPinuser($post)
+    private function importPinUser($post)
     {
         if (isset($_FILES['user_file']) && $_FILES['user_file']['tmp_name'] != '') {
             $extension = pathinfo($_FILES["user_file"]["name"], PATHINFO_EXTENSION);
@@ -171,9 +173,9 @@ trait PinUserTrait
                         $rows[] = array_combine($header, $row);
                     }
                     foreach ($rows as $row) {
-                        $pin = isset($row['pin']) ? htmlspecialchars(trim($row['pin'])) : '';
-                        $user = isset($row['user']) ? htmlspecialchars(trim($row['user'])) : '';
-                        $department = isset($row['department']) ? htmlspecialchars(trim($row['department'])) : '';
+                        $pin = isset($row['pin']) ? Sanitize::string(trim($row['pin'])) : '';
+                        $user = isset($row['user']) ? Sanitize::string(trim($row['user'])) : '';
+                        $department = isset($row['department']) ? Sanitize::string(trim($row['department'])) : '';
                         if ($pin != '' && $user != '' && $department != '') {
                             $sql = "UPDATE tarifador_pinuser SET user = :user, department = :department WHERE pin = :pin";
                             $stmt = $this->db->prepare($sql);
@@ -189,7 +191,7 @@ trait PinUserTrait
                                     'department' => $department,
                                     'enabled' => 1
                                 ];
-                                $this->addPinuser($data);
+                                $this->addPinUser($data);
                             }
                         }
                     }
@@ -201,14 +203,14 @@ trait PinUserTrait
     }
 
     /**
-     * @param $request
+     * @param array $request
      * @return mixed
      */
     private function getDepartment($request)
     {
         $sql = "SELECT DISTINCT department AS name FROM tarifador_pinuser WHERE department LIKE :department LIMIT 10";
         $stmt = $this->db->prepare($sql);
-        $department = '%'.$request['term'].'%';
+        $department = '%'.Sanitize::string($request['term']).'%';
         $stmt->bindParam(':department', $department, PDO::PARAM_STR);
         $stmt->execute();
         $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -217,7 +219,7 @@ trait PinUserTrait
     }
 
     /**
-     * @param $request
+     * @param array $request
      * @return mixed
      */
     private function getUser($request)
@@ -225,7 +227,7 @@ trait PinUserTrait
         $sql = "SELECT pin AS id, user AS text FROM tarifador_pinuser WHERE user LIKE :user LIMIT 10";
         $stmt = $this->db->prepare($sql);
         $q = isset($request['q']) ? $request['q'] : '';
-        $user = '%'.$q.'%';
+        $user = '%'.Sanitize::string($q).'%';
         $stmt->bindParam(':user', $user, PDO::PARAM_STR);
         $stmt->execute();
         $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -234,17 +236,15 @@ trait PinUserTrait
     }
 
     /**
-     * @param $pin
+     * @param string $pin
      * @return string
      */
-    private function getPinuser($pin)
+    private function getPinUser($pin)
     {
-        if (empty($pin)) {
-            return '';
-        }
+        if (empty($pin)) return '';
         $sql = "SELECT user FROM tarifador_pinuser WHERE pin = :pin LIMIT 1";
         $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':pin', $pin, PDO::PARAM_STR);
+        $stmt->bindParam(':pin', Sanitize::string($pin), PDO::PARAM_STR);
         $stmt->execute();
         $pinuser = $stmt->fetchObject();
 

@@ -93,16 +93,16 @@ class Tarifador extends FreePBX_Helpers implements BMO
             case 'pinuser':
                 switch ($this->action) {
                     case 'sync':
-                        return $this->syncPinuser();
+                        return $this->syncPinUser();
                         break;
                     case 'delete':
-                        return $this->deletePinuser($this->id);
+                        return $this->deletePinUser($this->id);
                         break;
                     case 'edit':
-                        $this->updatePinuser($_REQUEST);
+                        $this->updatePinUser($_REQUEST);
                         break;
                     case 'import':
-                        $this->importPinuser($_REQUEST);
+                        $this->importPinUser($_REQUEST);
                         break;
                 }
                 break;

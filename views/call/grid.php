@@ -98,12 +98,14 @@ $request .= "&disposition=".$_REQUEST['disposition'];
                     <thead>
                     <th data-field="eventtime" data-sortable="true" data-formatter="callDateFormatter"><?php echo _("Data / Hora")?></th>
                     <th data-field="eventtype" data-sortable="true" ><?php echo _("Evento")?></th>
-                    <th data-field="uniqueid" data-sortable="true" ><?php echo _("UniqueID")?></th>
-                    <th data-field="linkedid" data-sortable="true" ><?php echo _("LinkedID")?></th>
-                    <th data-field="cid_num" data-sortable="true" ><?php echo _("Cid num")?></th>
-                    <th data-field="exten" data-sortable="true" ><?php echo _("Número")?></th>
+                    <th data-field="cid_num" data-sortable="true" ><?php echo _("Número")?></th>
+                    <th data-field="cid_name" data-sortable="true" ><?php echo _("Nome")?></th>
+                    <th data-field="exten" data-sortable="true" ><?php echo _("Exten")?></th>
+                    <th data-field="cid_dnid" data-sortable="true" ><?php echo _("DNID")?></th>
                     <th data-field="context" data-sortable="true" ><?php echo _("Contexto")?></th>
                     <th data-field="channame" data-sortable="true"><?php echo _("Canal")?></th>
+                    <th data-field="uniqueid" data-sortable="true" ><?php echo _("UniqueID")?></th>
+                    <th data-field="linkedid" data-sortable="true" ><?php echo _("LinkedID")?></th>
                     </thead>
                 </table>
 
@@ -138,7 +140,7 @@ $request .= "&disposition=".$_REQUEST['disposition'];
         table.bootstrapTable('removeAll');
         table.bootstrapTable('refreshOptions', {
             showRefresh: true,
-            url: "ajax.php?module=tarifador&command=getCel&linkedid="+uniqueid
+            url: "ajax.php?module=tarifador&command=getCel&uniqueid="+uniqueid
         });
     });
     });

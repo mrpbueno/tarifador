@@ -2,6 +2,7 @@
 
 namespace FreePBX\modules\Tarifador\Traits;
 
+use FreePBX\modules\Tarifador\Utils\Sanitize;
 use PDO;
 
 /**
@@ -12,7 +13,7 @@ use PDO;
 trait CallTrait
 {
     /**
-     * @param $post
+     * @param array $post
      * @return array|null
      */
     private function getListCdr($post)
@@ -23,7 +24,7 @@ trait CallTrait
             $filters[] = [
                 'placeholder' => ':src',
                 'sql' => 'src = :src',
-                'value' => $post['src'],
+                'value' => Sanitize::string($post['src']),
                 'param_type' => PDO::PARAM_STR,
             ];
         }
@@ -32,7 +33,7 @@ trait CallTrait
             $filters[] = [
                 'placeholder' => ':dst',
                 'sql' => 'dst = :dst',
-                'value' => $post['dst'],
+                'value' => Sanitize::string($post['dst']),
                 'param_type' => PDO::PARAM_STR,
             ];
         }
@@ -41,7 +42,7 @@ trait CallTrait
             $filters[] = [
                 'placeholder' => ':accountcode',
                 'sql' => 'accountcode = :accountcode',
-                'value' => $post['accountcode'],
+                'value' => Sanitize::string($post['accountcode']),
                 'param_type' => PDO::PARAM_STR,
             ];
         }
@@ -50,7 +51,7 @@ trait CallTrait
             $filters[] = [
                 'placeholder' => ':disposition',
                 'sql' => 'disposition = :disposition',
-                'value' => $post['disposition'],
+                'value' => Sanitize::string($post['disposition']),
                 'param_type' => PDO::PARAM_STR,
             ];
         }
@@ -65,10 +66,10 @@ trait CallTrait
             }
         $sql .= ' ORDER BY calldate ASC';
         $stmt = $this->db->prepare($sql);
-        $startDate = $post['startDate'].' '.$post['startTime'];
-        $endDate = $post['endDate'].' '.$post['endTime'];
-        $stmt->bindParam(':startDate',$startDate,PDO::PARAM_STR);
-        $stmt->bindParam(':endDate',$endDate,PDO::PARAM_STR);
+        $startDate = Sanitize::string($post['startDate'].' '.$post['startTime']);
+        $endDate = Sanitize::string($post['endDate'].' '.$post['endTime']);
+        $stmt->bindParam(':startDate', $startDate, PDO::PARAM_STR);
+        $stmt->bindParam(':endDate', $endDate, PDO::PARAM_STR);
 
         if (is_array($filters))
             foreach ($filters as $filter) {
@@ -95,30 +96,30 @@ trait CallTrait
     }
 
     /**
-     * @param $number
-     * @param $calldate
-     * @param $billsec
+     * @param string $number
+     * @param string $callDate
+     * @param int $billSec
      * @return mixed
      */
-    private function cost($number, $calldate, $billsec)
+    private function cost($number, $callDate, $billSec)
     {
-        if ($billsec > 3) {
-            if ( $billsec > 30 ) {
-                $aux = ( $billsec / 6 );
+        if ($billSec > 3) {
+            if ( $billSec > 30 ) {
+                $aux = ( $billSec / 6 );
                 if ( $aux > floor($aux) )
-                    $billsec = ( floor($aux) + 1 ) * 6;
-                $billsec = $billsec / 60;
+                    $billSec = ( floor($aux) + 1 ) * 6;
+                $billSec = $billSec / 60;
             } else {
-                $billsec = 0.5;
+                $billSec = 0.5;
             }
         } else {
-            $billsec = 0;
+            $billSec = 0;
         }
-        $rates = $this->getRate($calldate);
+        $rates = $this->getRate($callDate);
         foreach ($rates as $rate) {
             if ($this->match($rate['dial_pattern'], $number)) {
                 $cost['rate'] = is_null($rate['name']) ? '---' : $rate['name'];
-                $cost['cost'] = number_format($billsec * $rate['rate'], 2);
+                $cost['cost'] = number_format($billSec * $rate['rate'], 2);
 
                 return $cost;
             }
@@ -126,13 +127,13 @@ trait CallTrait
     }
 
     /**
-     * @param $dial_pattern
-     * @param $number
-     * @return false|int
+     * @param string $dialPattern
+     * @param string $number
+     * @return boolean
      */
-    private function match($dial_pattern, $number)
+    private function match($dialPattern, $number)
     {
-        if (preg_match_all("#\[[^]]*\]#",$dial_pattern, $out)) {
+        if (preg_match_all("#\[[^]]*\]#",$dialPattern, $out)) {
             $out = $out[0];
             foreach($out as $key => $value) {
                 $temp = "";
@@ -145,18 +146,18 @@ trait CallTrait
                 }
                 $result[$key] = "[".$temp."]";
             }
-            $dial_pattern = str_replace($out, $result, $dial_pattern);
+            $dialPattern = str_replace($out, $result, $dialPattern);
         }
 
         $search  = ["X","Z","N", ".", "!"];
         $replace  = ["[0-9]","[1-9]","[2-9]", "[[0-9]|.*]", ".*"];
-        $pattern = "/^".str_replace($search, $replace, $dial_pattern)."$/i";
+        $pattern = "/^".str_replace($search, $replace, $dialPattern)."$/i";
 
         return preg_match($pattern, $number);
     }
 
     /**
-     * @param $id
+     * @param int $id
      * @return mixed
      */
     private function getOneCall($id)
@@ -165,8 +166,8 @@ trait CallTrait
     }
 
     /**
-     * @param $src
-     * @param $dst
+     * @param string $src
+     * @param string $dst
      * @return string
      */
     private function callType($src, $dst) {
