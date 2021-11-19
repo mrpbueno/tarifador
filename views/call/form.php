@@ -1,4 +1,4 @@
-<form autocomplete="off" action="" method="post" class="fpbx-submit" id="hwform" name="hwform">
+<form autocomplete="off" action="" method="post" class="fpbx-submit" id="call-form" name="call-form">
     <input type="hidden" name="action" id="action" value="search">
     <div class="row">
         <div class="col-md-6">
@@ -16,7 +16,7 @@
                                     <input type='date' class="form-control" id="startDate" name="startDate" value="<?php echo empty($_POST['startDate']) ? date('Y-m-d') : $_POST['startDate']; ?>">
                                 </div>
                                 <div class="col-md-3">
-                                    <input type='time' class="form-control" id="startime" name="startTime" value="<?php echo empty($_POST['startTime']) ? '00:00' : $_POST['startTime']; ?>">
+                                    <input type='time' class="form-control" id="starTime" name="startTime" value="<?php echo empty($_POST['startTime']) ? '00:00' : $_POST['startTime']; ?>">
                                 </div>
                             </div>
                         </div>

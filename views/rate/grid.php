@@ -56,31 +56,5 @@
 		</tr>
 	</thead>
 </table>
-<script type="text/javascript" charset="utf-8">
 
-    $('#rate').on('reorder-row.bs.table', function (e, data){
-        var order = [];
-        $.each(data, function (i, value) {
-            order[i] = {id : value.id, seq : i};
-        });
-        $.ajax({
-            type: 'POST',
-            url: 'ajax.php?module=tarifador&command=updateOrderRate',
-            data: {'data' : order},
-            dataType: 'json',
-            success: function(data) {
-                fpbxToast(_('A ordem da tarifa foi atualizada.'),_('Updated'),'success');
-            }
-        });
-    });
-
-    function exportToPDF(){
-        let jsPDF = window.jspdf.jsPDF;
-        let doc = new jsPDF();
-        doc.autoTable({
-            html: '#rate',
-            margin: { top: 5, right: 5, left: 5, bottom: 5 },
-        });
-        doc.save('exportRate.pdf');
-    }
-</script>
+<script type="text/javascript" src="modules/tarifador/assets/js/views/rate.js"></script>

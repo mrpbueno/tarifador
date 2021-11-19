@@ -125,15 +125,5 @@
         </div>
     </div>
 </div>
-<script type="text/javascript" charset="utf-8">
 
-    function exportToPDF(){
-        let jsPDF = window.jspdf.jsPDF;
-        let doc = new jsPDF();
-        doc.autoTable({
-            html: '#pinuser',
-            margin: { top: 5, right: 5, left: 5, bottom: 5 },
-        });
-        doc.save('exportPinUser.pdf');
-    }
-</script>
+<script type="text/javascript" src="modules/tarifador/assets/js/views/pinuser.js"></script>

@@ -152,6 +152,7 @@ class Tarifador extends FreePBX_Helpers implements BMO
             case "getDepartment":
             case "getUser":
             case "getCel":
+            case "getDisposition":
                 return true;
             break;
             default:
@@ -194,6 +195,9 @@ class Tarifador extends FreePBX_Helpers implements BMO
                 break;
             case "getCel":
                 return $this->getCel($_REQUEST);
+                break;
+            case "getDisposition":
+                return $this->getDisposition($_REQUEST);
                 break;
             default:
                 return json_encode(['status' => false, 'message' => _("Solicitação Inválida")]);
