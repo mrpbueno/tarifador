@@ -64,7 +64,13 @@
                                     <i class="fa fa-question-circle fpbx-help-icon" data-for="accountcode"></i>
                                 </div>
                                 <div class="col-md-7">
-                                    <select class="accountcode form-control" name="accountcode"></select>
+                                    <select class="form-control" name="accountcode" id="accountcode">
+                                        <option <?php if(isset($_POST["accountcode"])) echo"selected"; ?>
+                                                value="<?php echo $_POST["accountcode"]?>">
+                                            <?php echo $_POST["userName"]; ?>
+                                        </option>
+                                    </select>
+                                    <input type="hidden" name="userName" value="<?php echo $_POST["userName"]?>" id="userName">
                                 </div>
                             </div>
                         </div>
@@ -142,11 +148,11 @@
                                 </div>
                                 <div class="col-md-7">
                                     <select class="form-control" name="disposition" id="disposition">
-                                        <option selected="selected" value=""><?php echo _("Todos") ?></option>
-                                        <option value="ANSWERED"><?php echo _("ANSWERED") ?></option>
-                                        <option value="BUSY"><?php echo _("BUSY") ?></option>
-                                        <option value="FAILED"><?php echo _("FAILED") ?></option>
-                                        <option value="NO ANSWER"><?php echo _("NO ANSWER") ?></option>
+                                        <option value=""><?php echo _("Todos") ?></option>
+                                        <option <?php if($_POST["disposition"] == "ANSWERED") echo"selected"; ?> value="ANSWERED"><?php echo _("ANSWERED") ?></option>
+                                        <option <?php if($_POST["disposition"] == "BUSY") echo"selected"; ?> value="BUSY"><?php echo _("BUSY") ?></option>
+                                        <option <?php if($_POST["disposition"] == "FAILED") echo"selected"; ?> value="FAILED"><?php echo _("FAILED") ?></option>
+                                        <option <?php if($_POST["disposition"] == "NO ANSWER") echo"selected"; ?> value="NO ANSWER"><?php echo _("NO ANSWER") ?></option>
                                     </select>
                                 </div>
                             </div>

@@ -20,10 +20,11 @@ trait CallTrait
     {
         $post = $this->filterDateTime($post);
         $filters = $this->filterSelect($post);
-        $limit = !empty($post["limit"]) ? Sanitize::int($post["limit"]) : 100;
-        $start = !empty($post["offset"]) ? Sanitize::int($post["offset"]) : 0;
-        $order = ($post["order"] == 'desc') ? 'desc' : 'asc';
-        $orderBy = !empty($post["sort"]) ? Sanitize::string($post["sort"]) : "calldate";
+        $limit = isset($post["limit"]) ? Sanitize::int($post["limit"]) : 100;
+        $start = isset($post["offset"]) ? Sanitize::int($post["offset"]) : 0;
+        $order = isset($post["order"]) ? $post["order"] : "asc";
+        $order = ($order == "asc") ? "asc" : "desc";
+        $orderBy = isset($post["sort"]) ? Sanitize::string($post["sort"]) : "calldate";
         switch ($orderBy) {
             case "calldate":
             case "uniqueid":

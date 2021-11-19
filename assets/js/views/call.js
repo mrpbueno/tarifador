@@ -107,8 +107,9 @@ $(function() {
 });
 
 $(function () {
-    $('.accountcode').select2({
+    $('#accountcode').select2({
         placeholder: 'Selecione uma opção',
+        allowClear: true,
         minimumInputLength: 3,
         ajax: {
             url: 'ajax.php?module=tarifador&command=getUser',
@@ -123,6 +124,14 @@ $(function () {
         }
     });
 });
+
+$(function () {
+    $("#accountcode").on('change', function() {
+        $('input[name="userName"]').val($("#accountcode").find(':selected').text());
+    });
+
+});
+
 
 function requestForm(){
     return $("#call-form").serialize();
