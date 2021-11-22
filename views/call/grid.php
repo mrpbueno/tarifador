@@ -6,21 +6,21 @@
                 class="btn btn-default"
                 title="<?php echo _("Download PDF")?>"
                 onclick="exportToPDF()">
-            <i class="fa fa-file-pdf-o"></i> <?php echo _("PDF")?>
+            <i class="fa fa-file-pdf-o"></i>
         </button>
         <a type="button"
                 class="btn btn-default"
                 title="<?php echo _("Download Excel")?>"
                 download="exportCall.xls"
                 onclick="return ExcellentExport.excel(this, 'tarifador', 'call');">
-            <i class="fa fa-file-excel-o"></i> <?php echo _("XLS")?>
+            <i class="fa fa-file-excel-o"></i>
         </a>
         <a type="button"
            class="btn btn-default"
            title="<?php echo _("Download CSV")?>"
            download="exportCall.csv"
            onclick="return ExcellentExport.csv(this, 'tarifador');">
-            <i class="fa fa-file-text-o"></i> <?php echo _("CSV")?>
+            <i class="fa fa-file-text-o"></i>
         </a>
     </div>
 </div>

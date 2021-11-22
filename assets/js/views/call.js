@@ -28,7 +28,7 @@ function queryParams(params){
 }
 
 function dispositionFormatter(value) {
-    let disposition = {"ANSWERED":"Atendido","BUSY":"Ocupado","FAILED":"Falha","NO ANSWER":"Não Atendido"};
+    let disposition = {"ANSWERED":"Atendida","BUSY":"Ocupado","FAILED":"Falha","NO ANSWER":"Não Atendida"};
     return disposition[value];
 }
 
@@ -87,7 +87,7 @@ function costFormatter(val, row) {
 }
 
 function sumCostFormatter(data) {
-    field = this.field;
+    let field = this.field;
     let result = data.reduce(function(sum, row) {
         return sum + (+row[field]);
     }, 0);

@@ -1,29 +1,30 @@
 <div id="buttons-toolbar">
     <div class="btn-group" role="group">
         <button type="button"
+                title="<?php echo _("Adicionar Tarifa")?>"
                 class="btn btn-default"
                 onclick="location.href='?display=tarifador&page=rate&view=form';">
-            <i class="fa fa-plus"></i>&nbsp;<?php echo _("Adicionar Tarifa")?>
+            <i class="fa fa-plus-circle"></i>
         </button>
         <button type="button"
                 class="btn btn-default"
                 title="<?php echo _("Download PDF")?>"
                 onclick="exportToPDF()">
-            <i class="fa fa-file-pdf-o"></i> <?php echo _("PDF")?>
+            <i class="fa fa-file-pdf-o"></i>
         </button>
         <a type="button"
            class="btn btn-default"
            title="<?php echo _("Download Excel")?>"
            download="exportRate.xls"
            onclick="return ExcellentExport.excel(this, 'rate', 'rate');">
-            <i class="fa fa-file-excel-o"></i> <?php echo _("XLS")?>
+            <i class="fa fa-file-excel-o"></i>
         </a>
         <a type="button"
            class="btn btn-default"
            title="<?php echo _("Download CSV")?>"
            download="exportRate.csv"
            onclick="return ExcellentExport.csv(this, 'rate');">
-            <i class="fa fa-file-text-o"></i> <?php echo _("CSV")?>
+            <i class="fa fa-file-text-o"></i>
         </a>
     </div>
 </div>

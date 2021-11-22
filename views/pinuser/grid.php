@@ -3,36 +3,38 @@
     <div class="btn-group" role="group">
        <button type="submit"
                class="btn btn-default"
+               title="<?php echo _("Sincronizar PINs")?>"
                data-toggle="modal"
                data-target="#sync">
-           <i class="fa fa-refresh"></i> <?php echo _("Sincronizar PINs")?>
+           <i class="fa fa-refresh"></i>
        </button>
 
         <button type="button"
                 class="btn btn-default"
+                title="<?php echo _("Upload de CSV")?>"
                 data-toggle="modal"
                 data-target="#import">
-            <i class="fa fa-upload"></i> <?php echo _("Upload de CSV")?>
+            <i class="fa fa-upload"></i>
         </button>
         <button type="button"
                 class="btn btn-default"
                 title="<?php echo _("Download PDF")?>"
                 onclick="exportToPDF()">
-            <i class="fa fa-file-pdf-o"></i> <?php echo _("PDF")?>
+            <i class="fa fa-file-pdf-o"></i>
         </button>
         <a type="button"
            class="btn btn-default"
            title="<?php echo _("Download Excel")?>"
            download="exportPinUser.xls"
            onclick="return ExcellentExport.excel(this, 'pinuser', 'pinuser');">
-            <i class="fa fa-file-excel-o"></i> <?php echo _("XLS")?>
+            <i class="fa fa-file-excel-o"></i>
         </a>
         <a type="button"
            class="btn btn-default"
            title="<?php echo _("Download CSV")?>"
            download="exportPinUser.csv"
            onclick="return ExcellentExport.csv(this, 'pinuser');">
-            <i class="fa fa-file-text-o"></i> <?php echo _("CSV")?>
+            <i class="fa fa-file-text-o"></i>
         </a>
     </div>
     </form>
