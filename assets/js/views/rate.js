@@ -14,14 +14,14 @@ $('#rate').on('reorder-row.bs.table', function (e, data){
     });
 });
 
-function exportToPDF(){
+function exportToPDF(name){
     let jsPDF = window.jspdf.jsPDF;
     let doc = new jsPDF({format: "a4"});
     doc.autoTable({
         html: '#rate',
         margin: { top: 5, right: 5, left: 5, bottom: 5 },
     });
-    doc.save('exportRate.pdf');
+    doc.save(name+'_ExportRate.pdf');
 }
 
 function rateFormatter(val, row){

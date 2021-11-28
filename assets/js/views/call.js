@@ -1,20 +1,20 @@
-function exportToPDF(){
+function exportToPDF(name){
     let jsPDF = window.jspdf.jsPDF;
     let doc = new jsPDF({orientation: "landscape",format: "a4"});
     doc.autoTable({
         html: '#tarifador',
         margin: { top: 5, right: 5, left: 5, bottom: 5 },
     });
-    doc.save('exportCall.pdf');
+    doc.save(name+'_ExportCall.pdf');
 }
 
-function exportChartToPDF() {
+function exportChartToPDF(name) {
     let jsPDF = window.jspdf.jsPDF;
     var doc = new jsPDF({orientation: "landscape", format: 'a4'});
     html2canvas(document.querySelector('#dispositionChart')).then(function(canvas){
         var imgData = canvas.toDataURL('image/png');
         doc.addImage(imgData, 'PNG', 10, 10, 281, 66);
-        doc.save('exportChart.pdf');
+        doc.save(name+'_ExportChart.pdf');
     });
 }
 

@@ -19,20 +19,20 @@
         <button type="button"
                 class="btn btn-default"
                 title="<?php echo _("Download PDF")?>"
-                onclick="exportToPDF()">
+                onclick="exportToPDF('<?php echo \FreePBX::Config()->get('FREEPBX_SYSTEM_IDENT'); ?>')">
             <i class="fa fa-file-pdf-o"></i>
         </button>
         <a type="button"
            class="btn btn-default"
            title="<?php echo _("Download Excel")?>"
-           download="exportPinUser.xls"
+           download="<?php echo \FreePBX::Config()->get('FREEPBX_SYSTEM_IDENT'); ?>_ExportPinUser.xls"
            onclick="return ExcellentExport.excel(this, 'pinuser', 'pinuser');">
             <i class="fa fa-file-excel-o"></i>
         </a>
         <a type="button"
            class="btn btn-default"
            title="<?php echo _("Download CSV")?>"
-           download="exportPinUser.csv"
+           download="<?php echo \FreePBX::Config()->get('FREEPBX_SYSTEM_IDENT'); ?>_ExportPinUser.csv"
            onclick="return ExcellentExport.csv(this, 'pinuser');">
             <i class="fa fa-file-text-o"></i>
         </a>

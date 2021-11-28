@@ -5,20 +5,20 @@
         <button type="button"
                 class="btn btn-default"
                 title="<?php echo _("Download PDF")?>"
-                onclick="exportToPDF()">
+                onclick="exportToPDF('<?php echo \FreePBX::Config()->get('FREEPBX_SYSTEM_IDENT'); ?>')">
             <i class="fa fa-file-pdf-o"></i>
         </button>
         <a type="button"
                 class="btn btn-default"
                 title="<?php echo _("Download Excel")?>"
-                download="exportCall.xls"
+                download="<?php echo \FreePBX::Config()->get('FREEPBX_SYSTEM_IDENT'); ?>_ExportCall.xls"
                 onclick="return ExcellentExport.excel(this, 'tarifador', 'call');">
             <i class="fa fa-file-excel-o"></i>
         </a>
         <a type="button"
            class="btn btn-default"
            title="<?php echo _("Download CSV")?>"
-           download="exportCall.csv"
+           download="<?php echo \FreePBX::Config()->get('FREEPBX_SYSTEM_IDENT'); ?>_ExportCall.csv"
            onclick="return ExcellentExport.csv(this, 'tarifador');">
             <i class="fa fa-file-text-o"></i>
         </a>
@@ -68,7 +68,7 @@
                 <a href="#dispositionChart"
                    title="<?php echo _("Download PDF")?>"
                    class="fa fa-bar-chart"
-                   onclick="exportChartToPDF()"
+                   onclick="exportChartToPDF('<?php echo \FreePBX::Config()->get('FREEPBX_SYSTEM_IDENT'); ?>')"
                    aria-hidden="true"></a> <?php echo _("Estado das chamadas")?>
             </div>
             <div class="panel-body">
