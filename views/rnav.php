@@ -3,4 +3,5 @@
     <a class="list-group-item" href="?display=tarifador"><?php echo _("Tarifador"); ?></a>
     <a class="list-group-item" href="?display=tarifador&page=rate"><?php echo _("Tarifas"); ?></a>
     <a class="list-group-item" href="?display=tarifador&page=pinuser"><?php echo _("Usuários"); ?></a>
+    <a class="list-group-item" href="?display=tarifador&page=stats"><?php echo _("Estatísticas"); ?></a>
 </div>

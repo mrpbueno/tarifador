@@ -153,6 +153,9 @@ class Tarifador extends FreePBX_Helpers implements BMO
             case "getUser":
             case "getCel":
             case "getDisposition":
+            case "getTopSrcCount":
+            case "getTopDstCount":
+            case "getCallsHour":
                 return true;
             break;
             default:
@@ -199,6 +202,14 @@ class Tarifador extends FreePBX_Helpers implements BMO
             case "getDisposition":
                 return $this->getDisposition($_REQUEST);
                 break;
+            case "getTopSrcCount":
+                return $this->getTopSrcCount($_REQUEST);
+                break;
+            case "getTopDstCount":
+                return $this->getTopDstCount($_REQUEST);
+                break;
+            case "getCallsHour":
+                return $this->getCallsHour($_REQUEST);
             default:
                 return json_encode(['status' => false, 'message' => _("Solicitação Inválida")]);
         }
@@ -230,6 +241,9 @@ class Tarifador extends FreePBX_Helpers implements BMO
                 break;
             case 'pinuser':
                 return $this->pinuserPage();
+                break;
+            case 'stats':
+                return $this->statsPage();
                 break;
         }
     }
@@ -268,5 +282,11 @@ class Tarifador extends FreePBX_Helpers implements BMO
             }
         }
         return load_view(__DIR__.'/views/default.php', ['content' => $content, 'title' => _("Lista de usuários")]);
+    }
+
+    private function statsPage()
+    {
+        $content = load_view(__DIR__ . '/views/stats/chart.php');
+        return load_view(__DIR__.'/views/default.php', ['content' => $content, 'title' => _("Estatísticas")]);
     }
 }

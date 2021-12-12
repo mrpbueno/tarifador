@@ -262,4 +262,88 @@ trait CallTrait
 
         return $post;
     }
+
+    private function getTopSrcCount($post)
+    {
+        $post = $this->filterDateTime($post);
+        $filters = $this->filterSelect($post);
+        $sql = "SELECT src, COUNT(src) AS total ";
+        $sql .= "FROM asteriskcdrdb.cdr ";
+        $sql .= "WHERE calldate BETWEEN :startDateTime AND :endDateTime ";
+        if (is_array($filters))
+            foreach ($filters as $filter) {
+                $sql .= " AND " . $filter['sql'];
+            }
+        $sql .= " GROUP BY src ORDER BY total DESC LIMIT 50";
+
+        $stmt = $this->db->prepare($sql);
+        $startDateTime = $post['startDate'].' '.$post['startTime'];
+        $endDateTime = $post['endDate'].' '.$post['endTime'];
+        $stmt->bindParam(':startDateTime', $startDateTime, PDO::PARAM_STR);
+        $stmt->bindParam(':endDateTime', $endDateTime, PDO::PARAM_STR);
+
+        if (is_array($filters))
+            foreach ($filters as $filter) {
+                $stmt->bindParam($filter['placeholder'], $filter['value'], $filter['param_type']);
+            }
+        $stmt->execute();
+        $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return is_array($data) ? $data : null;
+    }
+
+    private function getTopDstCount($post)
+    {
+        $post = $this->filterDateTime($post);
+        $filters = $this->filterSelect($post);
+        $sql = "SELECT dst, COUNT(dst) AS total ";
+        $sql .= "FROM asteriskcdrdb.cdr ";
+        $sql .= "WHERE calldate BETWEEN :startDateTime AND :endDateTime ";
+        if (is_array($filters))
+            foreach ($filters as $filter) {
+                $sql .= " AND " . $filter['sql'];
+            }
+        $sql .= " GROUP BY dst ORDER BY total DESC LIMIT 40";
+
+        $stmt = $this->db->prepare($sql);
+        $startDateTime = $post['startDate'].' '.$post['startTime'];
+        $endDateTime = $post['endDate'].' '.$post['endTime'];
+        $stmt->bindParam(':startDateTime', $startDateTime, PDO::PARAM_STR);
+        $stmt->bindParam(':endDateTime', $endDateTime, PDO::PARAM_STR);
+
+        if (is_array($filters))
+            foreach ($filters as $filter) {
+                $stmt->bindParam($filter['placeholder'], $filter['value'], $filter['param_type']);
+            }
+        $stmt->execute();
+        $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return is_array($data) ? $data : null;
+    }
+
+    public function getCallsHour($post)
+    {
+        $post = $this->filterDateTime($post);
+        $filters = $this->filterSelect($post);
+        $sql = "SELECT HOUR(calldate) AS hour, COUNT(calldate) AS total ";
+        $sql .= "FROM asteriskcdrdb.cdr ";
+        $sql .= "WHERE calldate BETWEEN :startDateTime AND :endDateTime ";
+        if (is_array($filters))
+            foreach ($filters as $filter) {
+                $sql .= " AND " . $filter['sql'];
+            }
+        $sql .= " GROUP BY hour ORDER BY hour";
+
+        $stmt = $this->db->prepare($sql);
+        $startDateTime = $post['startDate'].' '.$post['startTime'];
+        $endDateTime = $post['endDate'].' '.$post['endTime'];
+        $stmt->bindParam(':startDateTime', $startDateTime, PDO::PARAM_STR);
+        $stmt->bindParam(':endDateTime', $endDateTime, PDO::PARAM_STR);
+
+        if (is_array($filters))
+            foreach ($filters as $filter) {
+                $stmt->bindParam($filter['placeholder'], $filter['value'], $filter['param_type']);
+            }
+        $stmt->execute();
+        $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return is_array($data) ? $data : null;
+    }
 }

@@ -159,11 +159,22 @@ $(function () {
                         borderWidth: 1
                     }]
                 },
+                plugins: [ChartDataLabels],
                 options: {
                     maintainAspectRatio: false,
                     scales: {
                         y: {
                             beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        datalabels: {
+                            anchor: 'end',
+                            align: 'top',
+                            formatter: Math.round,
+                            font: {
+                                weight: 'bold'
+                            }
                         }
                     }
                 }
