@@ -184,6 +184,9 @@ class Tarifador extends FreePBX_Helpers implements BMO
                         case 'pinuser':
                             return $this->getListPinuser();
                             break;
+                        case 'stats':
+                            return $this->getTotalCalls($_REQUEST);
+                            break;
                     }
                 }
                 break;
@@ -210,6 +213,7 @@ class Tarifador extends FreePBX_Helpers implements BMO
                 break;
             case "getCallsHour":
                 return $this->getCallsHour($_REQUEST);
+                break;
             default:
                 return json_encode(['status' => false, 'message' => _("Solicitação Inválida")]);
         }

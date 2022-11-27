@@ -2,7 +2,7 @@
     <rawname>tarifador</rawname>
     <repo>unsupported</repo>
     <name>Tarifador</name>
-    <version>14.0.5.7</version>
+    <version>14.0.5.8</version>
     <category>Reports</category>
     <Publisher>mrpbueno</Publisher>
     <info>https://github.com/mrpbueno/tarifador</info>
@@ -44,6 +44,7 @@
     <updateurl>https://raw.githubusercontent.com/mrpbueno/tarifador/master/tarifador.json</updateurl>
     <description>Tarifador para FreePBX</description>
     <changelog>
+        *14.0.5.8* Adicionado expressões regulares do Asterisk no campo de pesquisa
         *14.0.5.7* Adicionado estatísticas das chamadas
         *14.0.5.6* Melhorias no código
 		*14.0.5.5* Melhorias no código

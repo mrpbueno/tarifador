@@ -3,6 +3,19 @@ function requestForm(){
     return $("#call-form").serialize();
 }
 
+function queryParams(params){
+    let formData = $("#call-form").serialize();
+    $.each(formData.split('&'), function(k,v) {
+        let parts = v.split('=');
+        params[parts[0]] = parts[1];
+    });
+    return params;
+}
+
+function numberFormatter(val, row) {
+    return new Number(val).toLocaleString('pt-BR');
+}
+
 function exportTopSrcCountChart(name) {
     let jsPDF = window.jspdf.jsPDF;
     let doc = new jsPDF({orientation: "landscape", format: 'a4'});

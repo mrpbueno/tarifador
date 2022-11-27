@@ -35,7 +35,7 @@ trait CallTrait
                 $orderBy = "calldate";
         }
         $sql = "SELECT SQL_CALC_FOUND_ROWS calldate, uniqueid, t.user, src, cnam, did, dst, ";
-        $sql .= "lastapp, disposition, duration, billsec, (duration -  billsec) AS wait ";
+        $sql .= "lastapp, disposition, billsec, (duration -  billsec) AS wait ";
         $sql .= "FROM asteriskcdrdb.cdr ";
         $sql .= "LEFT JOIN asterisk.tarifador_pinuser t ON accountcode = t.pin ";
         $sql .= "WHERE calldate BETWEEN :startDateTime AND :endDateTime ";
@@ -55,6 +55,7 @@ trait CallTrait
             foreach ($filters as $filter) {
                 $stmt->bindParam($filter['placeholder'], $filter['value'], $filter['param_type']);
             }
+
         $stmt->execute();
         $cdrs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -141,19 +142,31 @@ trait CallTrait
         $filters = '';
 
         if (!empty($post['src']) && isset($post['src'])) {
+            $sql = 'src = :src';
+            $value = Sanitize::string($post['src']);
+            if ('_' == substr($post['src'],0,1 )) {
+                $sql = 'src RLIKE :src';
+                $value = $this->asteriskRegExp($value);
+            }
             $filters[] = [
                 'placeholder' => ':src',
-                'sql' => 'src = :src',
-                'value' => Sanitize::string($post['src']),
+                'sql' => $sql,
+                'value' => $value,
                 'param_type' => PDO::PARAM_STR,
             ];
         }
 
         if (!empty($post['dst']) && isset($post['dst'])) {
+            $sql = 'dst = :dst';
+            $value = Sanitize::string($post['dst']);
+            if ('_' == substr($post['dst'],0,1 )) {
+                $sql = 'dst RLIKE :dst';
+                $value = $this->asteriskRegExp($value);
+            }
             $filters[] = [
                 'placeholder' => ':dst',
-                'sql' => 'dst = :dst',
-                'value' => Sanitize::string($post['dst']),
+                'sql' => $sql,
+                'value' => $value,
                 'param_type' => PDO::PARAM_STR,
             ];
         }
@@ -263,6 +276,10 @@ trait CallTrait
         return $post;
     }
 
+    /**
+     * @param $post
+     * @return array|null
+     */
     private function getTopSrcCount($post)
     {
         $post = $this->filterDateTime($post);
@@ -291,6 +308,10 @@ trait CallTrait
         return is_array($data) ? $data : null;
     }
 
+    /**
+     * @param $post
+     * @return array|null
+     */
     private function getTopDstCount($post)
     {
         $post = $this->filterDateTime($post);
@@ -319,6 +340,10 @@ trait CallTrait
         return is_array($data) ? $data : null;
     }
 
+    /**
+     * @param $post
+     * @return array|null
+     */
     public function getCallsHour($post)
     {
         $post = $this->filterDateTime($post);
@@ -345,5 +370,66 @@ trait CallTrait
         $stmt->execute();
         $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return is_array($data) ? $data : null;
+    }
+
+    /**
+     * @param $post
+     * @return array|null
+     */
+    public function getTotalCalls($post)
+    {
+        $post = $this->filterDateTime($post);
+        $filters = $this->filterSelect($post);
+        $sql = "SELECT COUNT(billsec) AS total, ROUND((SUM(billsec))/60,1) AS minutes, ROUND((SUM(billsec)/COUNT(billsec))/60,1) AS avg ";
+        $sql .= "FROM asteriskcdrdb.cdr ";
+        $sql .= "WHERE calldate BETWEEN :startDateTime AND :endDateTime ";
+        if (is_array($filters))
+            foreach ($filters as $filter) {
+                $sql .= " AND " . $filter['sql'];
+            }
+
+        $stmt = $this->db->prepare($sql);
+        $startDateTime = $post['startDate'].' '.$post['startTime'];
+        $endDateTime = $post['endDate'].' '.$post['endTime'];
+        $stmt->bindParam(':startDateTime', $startDateTime, PDO::PARAM_STR);
+        $stmt->bindParam(':endDateTime', $endDateTime, PDO::PARAM_STR);
+
+        if (is_array($filters))
+            foreach ($filters as $filter) {
+                $stmt->bindParam($filter['placeholder'], $filter['value'], $filter['param_type']);
+            }
+        $stmt->execute();
+        $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return is_array($data) ? $data : null;
+    }
+
+    /**
+     * @param $number
+     * @return string
+     */
+    private function asteriskRegExp($number)
+    {
+        $number = urldecode($number);
+        if ( '__' == substr($number,0,2) ) {
+            $number = substr($number,1);
+        } elseif ( '_' == substr($number,0,1 ) ) {
+            $chars = preg_split('//', substr($number,1), -1, PREG_SPLIT_NO_EMPTY);
+            $number = '';
+            foreach ($chars as $chr) {
+                if ( $chr == 'X' ) {
+                    $number .= '[0-9]';
+                } elseif ( $chr == 'Z' ) {
+                    $number .= '[1-9]';
+                } elseif ( $chr == 'N' ) {
+                    $number .= '[2-9]';
+                } elseif ( $chr == '.' ) {
+                    $number .= '.+';
+                } else {
+                    $number .= $chr;
+                }
+            }
+        }
+
+        return "^".$number."\$";
     }
 }

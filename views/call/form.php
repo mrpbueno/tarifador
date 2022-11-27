@@ -48,7 +48,17 @@
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <span id="src-help" class="help-block fpbx-help-block"><?php echo _("Digite o número de origem")?></span>
+                        <span id="src-help" class="help-block fpbx-help-block">
+                            <?php echo _("Digite o número de origem ou <BR>")?>
+                            <?php echo _("Utilize expressões regulares do Asterisk.<br>")?>
+                            <?php echo _("Exemplo: _2[ZZ9]NX.<br>")?>
+                            <?php echo _("<b>Regras:</b><br>")?>
+                            <?php echo _("<b>X</b> = corresponde a qualquer dígito entre 0-9<br>")?>
+                            <?php echo _("<b>Z</b> = corresponde a qualquer dígito entre 1-9<br>")?>
+                            <?php echo _("<b>N</b> = corresponde a qualquer dígito entre 2-9<br>")?>
+                            <?php echo _("<b>[1237-9]</b> = corresponde a qualquer dígito ou letra entre colchetes (neste exemplo: 1,2,3,7,8,9)<br>")?>
+                            <?php echo _("<b>.</b> = curinga, corresponde a um ou mais dígitos<br>")?>
+                        </span>
                     </div>
                 </div>
             </div>
@@ -131,7 +141,17 @@
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <span id="dst-help" class="help-block fpbx-help-block"><?php echo _("Digite o número de destino")?></span>
+                        <span id="dst-help" class="help-block fpbx-help-block">
+                            <?php echo _("Digite o número de destino ou <BR>")?>
+                            <?php echo _("Utilize expressões regulares do Asterisk.<br>")?>
+                            <?php echo _("Exemplo: _2[ZZ9]NX.<br>")?>
+                            <?php echo _("<b>Regras:</b><br>")?>
+                            <?php echo _("<b>X</b> = corresponde a qualquer dígito entre 0-9<br>")?>
+                            <?php echo _("<b>Z</b> = corresponde a qualquer dígito entre 1-9<br>")?>
+                            <?php echo _("<b>N</b> = corresponde a qualquer dígito entre 2-9<br>")?>
+                            <?php echo _("<b>[1237-9]</b> = corresponde a qualquer dígito ou letra entre colchetes (neste exemplo: 1,2,3,7,8,9)<br>")?>
+                            <?php echo _("<b>.</b> = curinga, corresponde a um ou mais dígitos<br>")?>
+                        </span>
                     </div>
                 </div>
             </div>
