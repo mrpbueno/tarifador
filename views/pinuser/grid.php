@@ -6,7 +6,7 @@
                title="<?php echo _("Sincronizar PINs")?>"
                data-toggle="modal"
                data-target="#sync">
-           <i class="fa fa-refresh"></i>
+           <i class="fa fa-refresh"></i> <?php echo _("Sincronizar"); ?>
        </button>
 
         <button type="button"
@@ -14,7 +14,7 @@
                 title="<?php echo _("Upload de CSV")?>"
                 data-toggle="modal"
                 data-target="#import">
-            <i class="fa fa-upload"></i>
+            <i class="fa fa-upload"></i> <?php echo _("Upload"); ?>
         </button>
         <button type="button"
                 class="btn btn-default"

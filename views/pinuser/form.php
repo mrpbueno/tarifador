@@ -1,3 +1,22 @@
+<?php
+// ======================================================================
+// DEFINIÇÃO SEGURA DE VARIÁVEIS
+// ======================================================================
+$id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+
+if ($id !== false && $id !== null) {
+    $pin        = htmlspecialchars($pin, ENT_QUOTES, 'UTF-8');
+    $user       = htmlspecialchars($user, ENT_QUOTES, 'UTF-8');
+    $department = htmlspecialchars($department, ENT_QUOTES, 'UTF-8');
+    $enabled    = htmlspecialchars($enabled, ENT_QUOTES, 'UTF-8');
+} else {
+    $pin        = _("Será gerado automaticamente");
+    $user       = '';
+    $department = '';
+    $enabled    = '1';
+    $pinsets    = array();
+}
+?>
 <h3><?php echo ($id ? _("Edição do PIN do Usuário") : _("Novo PIN do usuário")) ?></h3>
 <form autocomplete="off"
       action=""
@@ -73,7 +92,7 @@
                                    id="department"
                                    name="department"
                                    data-provide="typeahead"
-                                   value="<?php echo $department?>">
+                                   value="<?php echo $department ?>">
                         </div>
                     </div>
                 </div>
@@ -127,7 +146,7 @@
                                <?php foreach ((array)$pinsets as  $pinset): ?>
                                <li>
                                    <a href="config.php?display=pinsets&view=form&itemid=<?php echo $pinset['pinsets_id'] ?>">
-                                       <?php echo $pinset['description'] ?>
+                                       <?php echo htmlspecialchars($pinset['description'], ENT_QUOTES, 'UTF-8'); ?>
                                    </a>
                                </li>
                                <?php endforeach; ?>

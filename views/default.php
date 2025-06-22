@@ -1,5 +1,5 @@
 <div class="container-fluid">
-	<h1><?php echo _("Tarifador")?></h1>
+	<h1><i class="fa fa-phone"></i> <?php echo _("Tarifador")?></h1>
     <h3><?php echo $title; ?></h3>
 	<div class = "display full-border">
 		<div class="row">

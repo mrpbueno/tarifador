@@ -1,3 +1,18 @@
+<?php
+// ======================================================================
+// DEFINIÇÃO SEGURA DE VARIÁVEIS
+// ======================================================================
+// A função load_view() do FreePBX extrai as chaves do array de dados em variáveis.
+
+$src_value = isset($_POST['src']) ? htmlspecialchars($_POST['src'], ENT_QUOTES, 'UTF-8') : '';
+$disposition_value = isset($_POST['disposition']) ? htmlspecialchars($_POST['disposition'], ENT_QUOTES, 'UTF-8') : '';
+$accountcode_value = isset($_POST['accountcode']) ? htmlspecialchars($_POST['accountcode'], ENT_QUOTES, 'UTF-8') : '';
+$userName_value = isset($_POST['userName']) ? htmlspecialchars($_POST['userName'], ENT_QUOTES, 'UTF-8') : '';
+$startDate_value = empty($_POST['startDate']) ? date('Y-m-d') : htmlspecialchars($_POST['startDate'], ENT_QUOTES, 'UTF-8');
+$startTime_value = empty($_POST['startTime']) ? '00:00' : htmlspecialchars($_POST['startTime'], ENT_QUOTES, 'UTF-8');
+$endDate_value = empty($_POST['endDate']) ? date('Y-m-d') : htmlspecialchars($_POST['endDate'], ENT_QUOTES, 'UTF-8');
+$endTime_value = empty($_POST['endTime']) ? '23:59' : htmlspecialchars($_POST['endTime'], ENT_QUOTES, 'UTF-8');
+?>
 <form autocomplete="off" action="" method="post" class="fpbx-submit" id="call-form" name="call-form">
     <input type="hidden" name="action" id="action" value="search">
     <div class="row">
@@ -13,10 +28,10 @@
                                     <i class="fa fa-question-circle fpbx-help-icon" data-for="calldate"></i>
                                 </div>
                                 <div class="col-md-4">
-                                    <input type='date' class="form-control" id="startDate" name="startDate" value="<?php echo empty($_POST['startDate']) ? date('Y-m-d') : $_POST['startDate']; ?>">
+                                    <input type='date' class="form-control" id="startDate" name="startDate" value="<?php echo $startDate_value; ?>">
                                 </div>
                                 <div class="col-md-3">
-                                    <input type='time' class="form-control" id="starTime" name="startTime" value="<?php echo empty($_POST['startTime']) ? '00:00' : $_POST['startTime']; ?>">
+                                    <input type='time' class="form-control" id="starTime" name="startTime" value="<?php echo $startTime_value; ?>">
                                 </div>
                             </div>
                         </div>
@@ -40,7 +55,7 @@
                                     <i class="fa fa-question-circle fpbx-help-icon" data-for="src"></i>
                                 </div>
                                 <div class="col-md-7">
-                                    <input type="text" class="form-control" id="src" name="src" value="<?php echo $_POST['src']; ?>">
+                                    <input type="text" class="form-control" id="src" name="src" value="<?php echo $src_value; ?>">
                                 </div>
                             </div>
                         </div>
@@ -75,12 +90,12 @@
                                 </div>
                                 <div class="col-md-7">
                                     <select class="form-control" name="accountcode" id="accountcode">
-                                        <option <?php if(isset($_POST["accountcode"])) echo"selected"; ?>
-                                                value="<?php echo $_POST["accountcode"]?>">
-                                            <?php echo $_POST["userName"]; ?>
+                                        <option <?php if(isset($accountcode_value)) echo"selected"; ?>
+                                                value="<?php echo $accountcode_value?>">
+                                            <?php echo $userName_value; ?>
                                         </option>
                                     </select>
-                                    <input type="hidden" name="userName" value="<?php echo $_POST["userName"]?>" id="userName">
+                                    <input type="hidden" name="userName" value="<?php echo $userName_value?>" id="userName">
                                 </div>
                             </div>
                         </div>
@@ -106,10 +121,10 @@
                                     <i class="fa fa-question-circle fpbx-help-icon" data-for="endDate"></i>
                                 </div>
                                 <div class="col-md-4">
-                                    <input type='date' class="form-control" id="endDate" name="endDate" value="<?php echo empty($_POST['endDate']) ? date('Y-m-d') : $_POST['endDate']; ?>">
+                                    <input type='date' class="form-control" id="endDate" name="endDate" value="<?php echo $endDate_value; ?>">
                                 </div>
                                 <div class="col-md-3">
-                                    <input type='time' class="form-control" id="endTime" name="endTime" value="<?php echo empty($_POST['endTime']) ? '23:59' : $_POST['endTime']; ?>">
+                                    <input type='time' class="form-control" id="endTime" name="endTime" value="<?php echo $endTime_value; ?>">
                                 </div>
                             </div>
                         </div>
@@ -169,10 +184,10 @@
                                 <div class="col-md-7">
                                     <select class="form-control" name="disposition" id="disposition">
                                         <option value=""><?php echo _("Todos") ?></option>
-                                        <option <?php if($_POST["disposition"] == "ANSWERED") echo"selected"; ?> value="ANSWERED"><?php echo _("ANSWERED") ?></option>
-                                        <option <?php if($_POST["disposition"] == "BUSY") echo"selected"; ?> value="BUSY"><?php echo _("BUSY") ?></option>
-                                        <option <?php if($_POST["disposition"] == "FAILED") echo"selected"; ?> value="FAILED"><?php echo _("FAILED") ?></option>
-                                        <option <?php if($_POST["disposition"] == "NO ANSWER") echo"selected"; ?> value="NO ANSWER"><?php echo _("NO ANSWER") ?></option>
+                                        <option <?php if($disposition_value == "ANSWERED") echo"selected"; ?> value="ANSWERED"><?php echo _("ANSWERED") ?></option>
+                                        <option <?php if($disposition_value == "BUSY") echo"selected"; ?> value="BUSY"><?php echo _("BUSY") ?></option>
+                                        <option <?php if($disposition_value == "FAILED") echo"selected"; ?> value="FAILED"><?php echo _("FAILED") ?></option>
+                                        <option <?php if($disposition_value == "NO ANSWER") echo"selected"; ?> value="NO ANSWER"><?php echo _("NO ANSWER") ?></option>
                                     </select>
                                 </div>
                             </div>

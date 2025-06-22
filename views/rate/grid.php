@@ -4,7 +4,7 @@
                 title="<?php echo _("Adicionar Tarifa")?>"
                 class="btn btn-default"
                 onclick="location.href='?display=tarifador&page=rate&view=form';">
-            <i class="fa fa-plus-circle"></i>
+            <i class="fa fa-plus"></i> <?php echo _("Adicionar"); ?>
         </button>
         <button type="button"
                 class="btn btn-default"
