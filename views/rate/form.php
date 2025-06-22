@@ -21,7 +21,12 @@ if ($id !== false && $id !== null) {
     $start         = '';
     $end           = '';
 }
+$toast_message_json = isset($_SESSION['toast_message']) ? json_encode($_SESSION['toast_message']) : null;
+if ($toast_message_json) {
+    unset($_SESSION['toast_message']);
+}
 ?>
+<div id="grid-container" <?php if ($toast_message_json): ?>data-toast='<?php echo $toast_message_json; ?>'<?php endif; ?>>
 <h3><?php echo ($itemid ? _("Editar tarifa") : _("Nova tarifa")) ?></h3>
 <form autocomplete="off"
       action=""
@@ -185,3 +190,4 @@ if ($id !== false && $id !== null) {
     </div>
     <!--END End-->
 </form>
+</div>
