@@ -166,8 +166,7 @@ $(function () {
                         ],
                         borderWidth: 1
                     }]
-                },
-                plugins: [ChartDataLabels],
+                },                
                 options: {
                     maintainAspectRatio: false,
                     scales: {
