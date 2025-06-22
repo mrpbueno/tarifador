@@ -219,6 +219,8 @@ trait PinUserTrait
     }
 
     /**
+     * Busca usuários para popular um select.
+     * 
      * @param array $request
      * @return mixed
      */
@@ -226,12 +228,12 @@ trait PinUserTrait
     {
         $sql = "SELECT pin AS id, user AS text FROM tarifador_pinuser WHERE user LIKE :user LIMIT 10";
         $stmt = $this->db->prepare($sql);
-        $q = isset($request['q']) ? $request['q'] : '';
-        $user = '%'.Sanitize::string($q).'%';
+        $q = isset($request['term']) ? $request['term'] : '';
+        $user = '%'.Sanitize::string($q).'%';        
         $stmt->bindParam(':user', $user, PDO::PARAM_STR);
         $stmt->execute();
         $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
+        
         return $data;
     }
 
