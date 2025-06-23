@@ -99,10 +99,12 @@ trait RateTrait
 
         try {
             $stmt->execute();
-        } catch (PDOException $e) {        
+        } catch (PDOException $e) {
+            freepbx_log(FPBX_LOG_ERROR,"Tarifador => ".$e->getMessage());                        
             $_SESSION['toast_message'] = ['message' => 'Ocorreu um erro no banco de dados ao salvar a tarifa.', 'title' => 'Erro', 'level' => 'error'];
         return false;
-        }    
+        }
+
         $_SESSION['toast_message'] = ['message' => 'Tarifa adicionada com sucesso!', 'title' => 'Sucesso', 'level' => 'success'];
         return redirect('config.php?display=tarifador&page=rate');
     }

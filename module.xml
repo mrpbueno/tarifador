@@ -22,7 +22,7 @@
     <database>
     <table name="tarifador_rate">
         <field name="id" type="integer" primaryKey="true" autoincrement="true"/>
-        <field name="seq" type="integer" primarykey="true"/>
+        <field name="seq" type="integer" primarykey="true" default="0"/>
         <field name="name" type="string" length="50" notnull="true"/>
         <field name="telco" type="string" length="50" notnull="true"/>
         <field name="dial_pattern" type="string" length="50" notnull="true"/>
