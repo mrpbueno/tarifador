@@ -20,14 +20,14 @@ trait PinUserTrait
      */
     private function deletePinUser($id)
     {
-        $validated_id = filter_var($id, FILTER_VALIDATE_INT);
+        $validated_id = Sanitize::int($id);
         if ($validated_id === false || $validated_id <= 0) {
             $_SESSION['toast_message'] = ['message' => 'ID inválido ou não fornecido para exclusão.', 'title' => 'Erro de Validação', 'level' => 'error'];
         return false;
         } 
         $sql = "DELETE FROM tarifador_pinuser WHERE id = :id";
         $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':id', Sanitize::int($validated_id), PDO::PARAM_INT);
+        $stmt->bindParam(':id', $validated_id, PDO::PARAM_INT);
         try {
             $stmt->execute();            
             if ($stmt->rowCount() > 0) {            
@@ -50,14 +50,11 @@ trait PinUserTrait
      */
     private function updatePinUser($post)
     {
-        $args = [
-            'id'         => FILTER_VALIDATE_INT,
-            'user'       => FILTER_SANITIZE_STRING,
-            'department' => FILTER_SANITIZE_STRING,
-        ];
-        $safe_post = filter_var_array($post, $args);
-
-        if (empty($safe_post['id']) || empty($safe_post['user'])) {
+        $id = Sanitize::int($post['id']);
+        $user = Sanitize::string($post['user']);
+        $department = Sanitize::string($post['department']);
+        
+        if (empty($id) || empty($user)) {
             $_SESSION['toast_message'] = ['message' => 'ID ou nome de usuário inválido ou ausente.', 'title' => 'Erro de Validação', 'level' => 'error'];
             
             return false;
@@ -65,10 +62,10 @@ trait PinUserTrait
     
         try {
             $sql = "UPDATE tarifador_pinuser SET user = :user, department = :department WHERE id = :id";
-            $stmt = $this->db->prepare($sql);        
-            $stmt->bindValue(':id', $safe_post['id'], PDO::PARAM_INT);
-            $stmt->bindValue(':user', $safe_post['user'], PDO::PARAM_STR);
-            $stmt->bindValue(':department', $safe_post['department'], PDO::PARAM_STR);        
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+            $stmt->bindValue(':user', $user, PDO::PARAM_STR);
+            $stmt->bindValue(':department', $department, PDO::PARAM_STR);
             $stmt->execute();        
             $_SESSION['toast_message'] = ['message' => 'Usuário atualizado com sucesso!', 'title' => 'Sucesso', 'level' => 'success'];
 
@@ -162,9 +159,9 @@ trait PinUserTrait
         foreach ($all_freepbx_pins as $pin) {
             $insert_rows[] = '(?, ?, ?, ?)';
             $params[] = $pin;
-            $params[] = '---'; // Valor padrão para 'user'
-            $params[] = '---'; // Valor padrão para 'department'
-            $params[] = 1;     // enabled = true
+            $params[] = '---';
+            $params[] = '---';
+            $params[] = 1;
         }
         $sqlUpsert .= implode(', ', $insert_rows);
         $sqlUpsert .= " ON DUPLICATE KEY UPDATE enabled = 1, user = IF(user = '---' OR user IS NULL, VALUES(user), user), department = IF(department = '---' OR department IS NULL, VALUES(department), department)";
@@ -204,14 +201,14 @@ trait PinUserTrait
      */
     private function getOnePinUser($id)
     {
-        $validated_id = filter_var($id, FILTER_VALIDATE_INT);
+        $validated_id = Sanitize::int($id);
         if ($validated_id === false || $validated_id <= 0) {
             $_SESSION['toast_message'] = ['message' => 'ID inválido ou não fornecido.', 'title' => 'Erro de Validação', 'level' => 'error'];
             return false;
         }
         $sql = "SELECT * FROM tarifador_pinuser WHERE id = :id LIMIT 1";
         $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':id', Sanitize::int($validated_id), PDO::PARAM_INT);
+        $stmt->bindParam(':id', $validated_id, PDO::PARAM_INT);
         $stmt->execute();
         $pinuser = $stmt->fetchObject();
 
@@ -289,9 +286,9 @@ trait PinUserTrait
                 $row = array_combine($header, $row_data);
 
                 // Validação e sanitização da linha
-                $pin        = filter_var(trim(isset($row['pin']) ? $row['pin'] : ''), FILTER_SANITIZE_STRING);
-                $user       = filter_var(trim(isset($row['user']) ? $row['user'] : ''), FILTER_SANITIZE_STRING);
-                $department = filter_var(trim(isset($row['department']) ? $row['department'] : ''), FILTER_SANITIZE_STRING);
+                $pin        = Sanitize::stringInput($row['pin']);
+                $user       = Sanitize::stringInput($row['user']);
+                $department = Sanitize::stringInput($row['department']);
 
                 if (empty($pin) || empty($user) || empty($department)) {
                     // Pula linhas em branco ou malformadas

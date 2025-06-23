@@ -9,6 +9,7 @@ use PDOException;
 
 /**
  * Trait RateTrait
+ * 
  * @package FreePBX\modules\Tarifador\Traits
  * @author Mauro <https://github.com/mrpbueno>
  */
@@ -59,24 +60,21 @@ trait RateTrait
      */
     private function addRate($post)
     {
-        // 1. Validar e sanitizar todas as entradas primeiro, usando o filtro apropriado.
-        $args = [
-            'dial_pattern' => FILTER_SANITIZE_STRING,
-            'start'        => FILTER_SANITIZE_STRING,
-            'end'          => FILTER_SANITIZE_STRING,
-            'name'         => FILTER_SANITIZE_STRING,
-            'telco'        => FILTER_SANITIZE_STRING,
-            'rate'         => FILTER_VALIDATE_FLOAT,
-        ];
-        $safe_post = filter_var_array($post, $args);    
-        if (in_array(null, $safe_post, true) || $safe_post['rate'] === false) {
+        // Validar e sanitizar todas as entradas primeiro, usando o filtro apropriado.
+        $name         = Sanitize::string($post['name']);
+        $telco        = Sanitize::string($post['telco']);
+        $dial_pattern = Sanitize::string($post['dial_pattern']);
+        $rate         = Sanitize::float($post['rate']);
+        $start        = Sanitize::string($post['start']);
+        $end          = Sanitize::string($post['end']);    
+        if (in_array(null, $post, true) || $rate === false) {
             $_SESSION['toast_message'] = ['message' => 'Todos os campos são obrigatórios e a tarifa deve ser um número válido.', 'title' => 'Erro de Validação', 'level' => 'error'];
          return false;
         }
-        // 2. Verificar se já existe uma tarifa conflitante
-        $conflict_data = $this->testDate($safe_post['dial_pattern'], $safe_post['start'], $safe_post['end']);
+        // Verificar se já existe uma tarifa conflitante
+        $conflict_data = $this->testDate($dial_pattern, $start, $end);
         if (is_array($conflict_data)) {
-            // 3. Sanitizar a saída para a mensagem de erro (prevenção de XSS)
+            // Sanitizar a saída para a mensagem de erro (prevenção de XSS)
             $error_message = "Já existe um padrão de discagem na data de vigência escolhida: ";
             $error_message .= htmlspecialchars($conflict_data['dial_pattern'], ENT_QUOTES, 'UTF-8') . " - ";
             $error_message .= htmlspecialchars($conflict_data['start'], ENT_QUOTES, 'UTF-8') . " - ";
@@ -86,18 +84,18 @@ trait RateTrait
             return redirect('config.php?display=tarifador&page=rate&view=form');
         }
 
-        // 4. Inserir no banco de dados usando Prepared Statements
+        // Inserir no banco de dados usando Prepared Statements
         $sql = "INSERT INTO tarifador_rate (name, telco, dial_pattern, rate, start, end) 
                 VALUES (:name, :telco, :dial_pattern, :rate, :start, :end)";
         $stmt = $this->db->prepare($sql);
 
-        // 5. Usar bindValue para vincular os valores sanitizados de forma segura
-        $stmt->bindValue(':name', $safe_post['name'], PDO::PARAM_STR);
-        $stmt->bindValue(':telco', $safe_post['telco'], PDO::PARAM_STR);
-        $stmt->bindValue(':dial_pattern', $safe_post['dial_pattern'], PDO::PARAM_STR);
-        $stmt->bindValue(':rate', $safe_post['rate']);
-        $stmt->bindValue(':start', $safe_post['start'], PDO::PARAM_STR);
-        $stmt->bindValue(':end', $safe_post['end'], PDO::PARAM_STR);
+        // Usar bindValue para vincular os valores sanitizados de forma segura
+        $stmt->bindValue(':name', $name, PDO::PARAM_STR);
+        $stmt->bindValue(':telco', $telco, PDO::PARAM_STR);
+        $stmt->bindValue(':dial_pattern', $dial_pattern, PDO::PARAM_STR);
+        $stmt->bindValue(':rate', $rate);
+        $stmt->bindValue(':start', $start, PDO::PARAM_STR);
+        $stmt->bindValue(':end', $end, PDO::PARAM_STR);
 
         try {
             $stmt->execute();
@@ -115,40 +113,35 @@ trait RateTrait
      */
     private function updateRate($post)
     {
-        // 1. DEFINIR AS REGRAS DE VALIDAÇÃO E SANITIZAÇÃO PARA CADA CAMPO
-        $args = [
-            'id'           => FILTER_VALIDATE_INT,    // O ID DEVE ser um inteiro.
-            'name'         => FILTER_SANITIZE_STRING, // Remove tags, etc.
-            'telco'        => FILTER_SANITIZE_STRING,
-            'dial_pattern' => FILTER_SANITIZE_STRING,
-            'rate'         => FILTER_VALIDATE_FLOAT,  // A tarifa DEVE ser um número.
-            'start'        => FILTER_SANITIZE_STRING, // Validar como data seria o próximo passo.
-            'end'          => FILTER_SANITIZE_STRING,
-        ];
-
-        // 2. APLICAR OS FILTROS AO ARRAY DE ENTRADA
-        $safe_post = filter_var_array($post, $args);
-
-        // 3. VERIFICAR SE OS DADOS ESSENCIAIS SÃO VÁLIDOS        
-        if (empty($safe_post['id']) || $safe_post['rate'] === false) {
+        // DEFINIR AS REGRAS DE VALIDAÇÃO E SANITIZAÇÃO PARA CADA CAMPO
+        $id           = Sanitize::int($post['id']);
+        $name         = Sanitize::string($post['name']);
+        $telco        = Sanitize::string($post['telco']);
+        $dial_pattern = Sanitize::string($post['dial_pattern']);
+        $rate         = Sanitize::float($post['rate']);
+        $start        = Sanitize::string($post['start']);
+        $end          = Sanitize::string($post['end']);
+        
+        // VERIFICAR SE OS DADOS ESSENCIAIS SÃO VÁLIDOS        
+        if (empty($id) || $rate === false) {
             $_SESSION['toast_message'] = ['message' => 'ID inválido ou tarifa não é um número. A operação foi cancelada.', 'title' => 'Erro de Validação', 'level' => 'error'];
             return false;
         }    
 
-        // 4. PREPARAR E EXECUTAR A CONSULTA COM SEGURANÇA
+        // PREPARAR E EXECUTAR A CONSULTA COM SEGURANÇA
         $sql = 'UPDATE tarifador_rate SET name = :name, telco = :telco, dial_pattern = :dial_pattern, 
                 rate = :rate, start = :start, end = :end WHERE id = :id';
     
         $stmt = $this->db->prepare($sql);
 
         // 5. USAR bindValue PARA VINCULAR OS VALORES JÁ VALIDADOS E SANITIZADOS
-        $stmt->bindValue(':id', $safe_post['id'], PDO::PARAM_INT);
-        $stmt->bindValue(':name', $safe_post['name'], PDO::PARAM_STR);
-        $stmt->bindValue(':telco', $safe_post['telco'], PDO::PARAM_STR);
-        $stmt->bindValue(':dial_pattern', $safe_post['dial_pattern'], PDO::PARAM_STR);
-        $stmt->bindValue(':rate', $safe_post['rate']); // Deixe o PDO lidar com o tipo float
-        $stmt->bindValue(':start', $safe_post['start'], PDO::PARAM_STR);
-        $stmt->bindValue(':end', $safe_post['end'], PDO::PARAM_STR);
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt->bindValue(':name', $name, PDO::PARAM_STR);
+        $stmt->bindValue(':telco', $telco, PDO::PARAM_STR);
+        $stmt->bindValue(':dial_pattern', $dial_pattern, PDO::PARAM_STR);
+        $stmt->bindValue(':rate', $rate);
+        $stmt->bindValue(':start', $start, PDO::PARAM_STR);
+        $stmt->bindValue(':end', $end, PDO::PARAM_STR);
 
         try {
             $stmt->execute();
