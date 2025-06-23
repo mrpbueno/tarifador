@@ -1,10 +1,3 @@
-<?php
-$toast_message_json = isset($_SESSION['toast_message']) ? json_encode($_SESSION['toast_message']) : null;
-if ($toast_message_json) {
-    unset($_SESSION['toast_message']);
-}
-?>
-<div id="grid-container" <?php if ($toast_message_json): ?>data-toast='<?php echo $toast_message_json; ?>'<?php endif; ?>>
 <div id="buttons-toolbar">
     <div class="btn-group" role="group">
         <button type="button"
@@ -35,7 +28,7 @@ if ($toast_message_json) {
         </a>
     </div>
 </div>
-</div>
+
 <table id="rate"
        data-url="ajax.php?module=tarifador&command=getJSON&jdata=grid&page=rate"
        data-cache="false"

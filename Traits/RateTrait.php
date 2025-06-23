@@ -31,9 +31,14 @@ trait RateTrait
      */
     private function getOneRate($id)
     {
+        $validated_id = filter_var($id, FILTER_VALIDATE_INT);
+        if ($validated_id === false || $validated_id <= 0) {
+            $_SESSION['toast_message'] = ['message' => 'ID inválido ou não fornecido.', 'title' => 'Erro de Validação', 'level' => 'error'];
+            return false;
+        }
         $sql = "SELECT * FROM tarifador_rate WHERE id = :id LIMIT 1";
         $stmt = $this->Database->prepare($sql);
-        $stmt->bindParam(':id', Sanitize::int($id), PDO::PARAM_INT);
+        $stmt->bindParam(':id', Sanitize::int($validated_id), PDO::PARAM_INT);
         $stmt->execute();
         $row = $stmt->fetchObject();
 
