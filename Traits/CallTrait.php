@@ -13,6 +13,8 @@ use PDO;
 trait CallTrait
 {
     /**
+     * Lista de chamadas com o custo da ligação
+     * 
      * @param array $post
      * @return array|null
      */
@@ -20,60 +22,52 @@ trait CallTrait
     {
         $post = $this->filterDateTime($post);
         $filters = $this->filterSelect($post);
-        $limit = isset($post["limit"]) ? Sanitize::int($post["limit"]) : 100;
-        $start = isset($post["offset"]) ? Sanitize::int($post["offset"]) : 0;
-        $order = isset($post["order"]) ? $post["order"] : "asc";
-        $order = ($order == "asc") ? "asc" : "desc";
-        $orderBy = isset($post["sort"]) ? Sanitize::string($post["sort"]) : "calldate";
-        switch ($orderBy) {
-            case "calldate":
-            case "uniqueid":
-            case "src":
-            case "dst":
-                break;
-            default:
-                $orderBy = "calldate";
+        $limit = isset($post["limit"]) ? (int)$post["limit"] : 100;
+        $offset = isset($post["offset"]) ? (int)$post["offset"] : 0;
+        $order = (isset($post["order"]) && strtolower($post["order"]) === "desc") ? "desc" : "asc";
+        $allowed_sort_columns = ["calldate", "uniqueid", "src", "dst"];
+        $orderBy = isset($post["sort"]) ? $post["sort"] : "calldate";
+        if (!in_array($orderBy, $allowed_sort_columns)) {
+            $orderBy = "calldate";
         }
-        $sql = "SELECT SQL_CALC_FOUND_ROWS calldate, uniqueid, t.user, src, cnam, did, dst, ";
-        $sql .= "lastapp, disposition, billsec, (duration -  billsec) AS wait ";
-        $sql .= "FROM asteriskcdrdb.cdr ";
-        $sql .= "LEFT JOIN asterisk.tarifador_pinuser t ON accountcode = t.pin ";
-        $sql .= "WHERE calldate BETWEEN :startDateTime AND :endDateTime ";
-        if (is_array($filters))
+            
+        $sql = "SELECT SQL_CALC_FOUND_ROWS calldate, uniqueid, t.user, src, cnam, did, dst, 
+                lastapp, disposition, billsec, (duration - billsec) AS wait 
+                FROM asteriskcdrdb.cdr 
+                LEFT JOIN asterisk.tarifador_pinuser t ON accountcode = t.pin 
+                WHERE calldate BETWEEN :startDateTime AND :endDateTime ";
+
+        $params = [];
+        if (!empty($filters) && is_array($filters)) {
             foreach ($filters as $filter) {
                 $sql .= " AND " . $filter['sql'];
+                $params[$filter['placeholder']] = $filter['value'];
             }
-        $sql .= " ORDER BY $orderBy $order LIMIT $start, $limit";
+        }
+        
+        $sql .= " ORDER BY $orderBy $order LIMIT $offset, $limit";
 
         $stmt = $this->db->prepare($sql);
-        $startDateTime = $post['startDate'].' '.$post['startTime'];
-        $endDateTime = $post['endDate'].' '.$post['endTime'];
-        $stmt->bindParam(':startDateTime', $startDateTime, PDO::PARAM_STR);
-        $stmt->bindParam(':endDateTime', $endDateTime, PDO::PARAM_STR);
-
-        if (is_array($filters))
-            foreach ($filters as $filter) {
-                $stmt->bindParam($filter['placeholder'], $filter['value'], $filter['param_type']);
-            }
-
+        $stmt->bindValue(':startDateTime', $post['startDate'].' '.$post['startTime']);
+        $stmt->bindValue(':endDateTime', $post['endDate'].' '.$post['endTime']);
+        foreach ($params as $placeholder => $value) {
+            $stmt->bindValue($placeholder, $value);
+        }
         $stmt->execute();
         $cdrs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        $sql = "SELECT FOUND_ROWS() as count";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute();
-        $total = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        $cdrs = is_array($cdrs) ? $cdrs : null;
-
-        foreach ($cdrs as $key => $value) {
-            if (strlen($cdrs[$key]['src']) == 4 && strlen($cdrs[$key]['dst']) != 4) {
-                $cost = $this->cost($cdrs[$key]['dst'],$cdrs[$key]['calldate'],$cdrs[$key]['billsec']);
-                $cdrs[$key]['cost'] = $cost['cost'];
-                $cdrs[$key]['rate'] = $cost['rate'];
-            } else {
-                $cdrs[$key]['cost'] = 0;
-                $cdrs[$key]['rate'] = "";
+        
+        $total = $this->db->query("SELECT FOUND_ROWS() as count")->fetch(PDO::FETCH_ASSOC);        
+        $active_rates = $this->getRate($post['startDate']);
+    
+        foreach ($cdrs as $key => $value) {            
+            $cdrs[$key]['cost'] = '0.00';
+            $cdrs[$key]['rate'] = 'Não Tarifado';            
+            if (strlen($value['src']) == 4 && strlen($value['dst']) != 4) {                
+                $cost_details = $this->cost($value['dst'], $value['billsec'], $active_rates);
+                if ($cost_details !== null) {
+                    $cdrs[$key]['cost'] = $cost_details['cost'];
+                    $cdrs[$key]['rate'] = $cost_details['rate'];
+                }
             }
         }
 
@@ -81,6 +75,8 @@ trait CallTrait
     }
 
     /**
+     * Quantidade por estado das chamadas 
+     * 
      * @param array $post
      * @return array
      */
@@ -88,13 +84,15 @@ trait CallTrait
     {
         $post = $this->filterDateTime($post);
         $filters = $this->filterSelect($post);
-        $sql = 'SELECT disposition, COUNT(disposition) AS value ';
-        $sql .= 'FROM asteriskcdrdb.cdr ';
-        $sql .= 'WHERE calldate BETWEEN :startDateTime AND :endDateTime ';
-        if (is_array($filters))
+
+        $sql = 'SELECT disposition, COUNT(*) AS value FROM asteriskcdrdb.cdr WHERE calldate BETWEEN :startDateTime AND :endDateTime';
+    
+        if (is_array($filters)) {
             foreach ($filters as $filter) {
                 $sql .= " AND " . $filter['sql'];
             }
+        }
+
         $sql .= " GROUP BY disposition";
 
         $stmt = $this->db->prepare($sql);
@@ -103,45 +101,45 @@ trait CallTrait
         $stmt->bindParam(':startDateTime', $startDateTime, PDO::PARAM_STR);
         $stmt->bindParam(':endDateTime', $endDateTime, PDO::PARAM_STR);
 
-        if (is_array($filters))
+        if (is_array($filters)) {
             foreach ($filters as $filter) {
                 $stmt->bindParam($filter['placeholder'], $filter['value'], $filter['param_type']);
             }
+        }
+
         $stmt->execute();
         $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $disposition = [_("ANSWERED"),_("NO ANSWER"),_("BUSY"),_("FAILED")];
-        $value = [0,0,0,0];
-        $data = is_array($data) ? $data : null;
-        foreach ($data as $key => $v) {
-            switch ($data[$key]['disposition']) {
-                case "ANSWERED":
-                    $value[0] = $data[$key]['value'];
-                    break;
-                case "NO ANSWER":
-                    $value[1] = $data[$key]['value'];
-                    break;
-                case "BUSY":
-                    $value[2] = $data[$key]['value'];
-                    break;
-                case "FAILED":
-                    $value[3] = $data[$key]['value'];
-                    break;
+        $data = is_array($data) ? $data : [];
+
+        $disposition = [_("ANSWERED"), _("NO ANSWER"), _("BUSY"), _("FAILED")];
+        $value = [0, 0, 0, 0];
+        $map = [
+            'ANSWERED'   => 0,
+            'NO ANSWER'  => 1,
+            'BUSY'       => 2,
+            'FAILED'     => 3
+        ];
+
+        foreach ($data as $row) {
+            if (isset($map[$row['disposition']])) {
+                $value[$map[$row['disposition']]] = (int) $row['value'];
             }
         }
 
-        return ["disposition"=>$disposition,"value"=>$value];
-
+        return ['disposition' => $disposition, 'value' => $value];
     }
 
     /**
+     * Filtro para SELECT
+     * 
      * @param array $post
      * @return array|string
      */
     private function filterSelect($post)
     {
-        $filters = '';
+        $filters = [];
 
-        if (!empty($post['src']) && isset($post['src'])) {
+        if (!empty($post['src'])) {
             $sql = 'src = :src';
             $value = Sanitize::string($post['src']);
             if ('_' == substr($post['src'],0,1 )) {
@@ -156,7 +154,7 @@ trait CallTrait
             ];
         }
 
-        if (!empty($post['dst']) && isset($post['dst'])) {
+        if (!empty($post['dst'])) {
             $sql = 'dst = :dst';
             $value = Sanitize::string($post['dst']);
             if ('_' == substr($post['dst'],0,1 )) {
@@ -171,7 +169,7 @@ trait CallTrait
             ];
         }
 
-        if (!empty($post['accountcode']) && isset($post['accountcode'])) {
+        if (!empty($post['accountcode'])) {
             $filters[] = [
                 'placeholder' => ':accountcode',
                 'sql' => 'accountcode = :accountcode',
@@ -180,7 +178,7 @@ trait CallTrait
             ];
         }
 
-        if (!empty($post['disposition']) && isset($post['disposition'])) {
+        if (!empty($post['disposition'])) {
             $filters[] = [
                 'placeholder' => ':disposition',
                 'sql' => 'disposition = :disposition',
@@ -192,65 +190,67 @@ trait CallTrait
         return $filters;
     }
 
-    /**
-     * @param string $number
-     * @param string $callDate
-     * @param int $billSec
-     * @return mixed
-     */
-    private function cost($number, $callDate, $billSec)
+    /** 
+    *
+    * @param string $number
+    * @param int $billSec
+    * @param array $rates Array de tarifas ativas para o período.
+    * @return array|null Retorna um array com 'cost' e 'rate' ou null se nenhuma tarifa corresponder.
+    */
+    private function cost($number, $billSec, array $rates)
     {
+        $chargeableSeconds = 0;
         if ($billSec > 3) {
             if ( $billSec > 30 ) {
                 $aux = ( $billSec / 6 );
-                if ( $aux > floor($aux) )
-                    $billSec = ( floor($aux) + 1 ) * 6;
-                $billSec = $billSec / 60;
+                $chargeableSeconds = ( floor($aux) + 1 ) * 6;
             } else {
-                $billSec = 0.5;
+                $chargeableSeconds = 30;
             }
-        } else {
-            $billSec = 0;
         }
-        $rates = $this->getRate($callDate);
+    
+        $chargeableMinutes = $chargeableSeconds / 60;
+    
         foreach ($rates as $rate) {
             if ($this->match($rate['dial_pattern'], $number)) {
-                $cost['rate'] = is_null($rate['name']) ? '---' : $rate['name'];
-                $cost['cost'] = number_format($billSec * $rate['rate'], 2);
-
-                return $cost;
+                return [
+                    'rate' => is_null($rate['name']) ? '---' : $rate['name'], 
+                    'cost' => number_format($chargeableMinutes * $rate['rate'], 2)
+                ];
             }
         }
+    
+        return null;
     }
 
     /**
+     * Verifica se o número é compatível com dial pattern do asterisk
+     * 
      * @param string $dialPattern
      * @param string $number
      * @return boolean
      */
     private function match($dialPattern, $number)
     {
-        if (preg_match_all("#\[[^]]*\]#",$dialPattern, $out)) {
-            $out = $out[0];
-            foreach($out as $key => $value) {
-                $temp = "";
-                for ($i = 1; $i < strlen($value)-1; $i++) {
-                    if (ctype_digit($value[$i]) && $i != strlen($value)-2 && $value[$i+1] != '-' ) {
-                        $temp .= $value[$i]."|";
-                    } else {
-                        $temp .= $value[$i];
-                    }
-                }
-                $result[$key] = "[".$temp."]";
-            }
-            $dialPattern = str_replace($out, $result, $dialPattern);
+        if (substr($dialPattern, 0, 1) === '_') {
+            $dialPattern = substr($dialPattern, 1);
         }
+        
+        $asteriskToRegexMap = [
+            'X' => '[0-9]',   // Qualquer dígito de 0 a 9
+            'Z' => '[1-9]',   // Qualquer dígito de 1 a 9
+            'N' => '[2-9]',   // Qualquer dígito de 2 a 9
+            '.' => '.+',      // Um ou mais caracteres quaisquer.
+            '!' => '.*'       // Zero ou mais caracteres quaisquer.
+        ];
 
-        $search  = ["X","Z","N", ".", "!"];
-        $replace  = ["[0-9]","[1-9]","[2-9]", "[[0-9]|.*]", ".*"];
-        $pattern = "/^".str_replace($search, $replace, $dialPattern)."$/i";
-
-        return preg_match($pattern, $number);
+        $pattern = preg_quote($dialPattern, '/');
+        $search = array_map(function($key) { return preg_quote($key, '/'); }, array_keys($asteriskToRegexMap));
+        $replace = array_values($asteriskToRegexMap);    
+        $pattern = str_replace($search, $replace, $pattern);    
+        $finalRegex = "/^" . $pattern . "$/";
+    
+        return (bool) @preg_match($finalRegex, $number);
     }
 
     /**
@@ -263,6 +263,8 @@ trait CallTrait
     }
 
     /**
+     * Filtro de data e horário
+     * 
      * @param $post
      * @return mixed
      */
@@ -277,70 +279,87 @@ trait CallTrait
     }
 
     /**
+     * Origem das chamadas (top 50) 
+     * 
      * @param $post
-     * @return array|null
+     * @return array
      */
     private function getTopSrcCount($post)
     {
         $post = $this->filterDateTime($post);
         $filters = $this->filterSelect($post);
-        $sql = "SELECT src, COUNT(src) AS total ";
-        $sql .= "FROM asteriskcdrdb.cdr ";
-        $sql .= "WHERE calldate BETWEEN :startDateTime AND :endDateTime ";
-        if (is_array($filters))
-            foreach ($filters as $filter) {
+        $sql = "SELECT src, COUNT(*) AS total FROM asteriskcdrdb.cdr WHERE calldate BETWEEN :startDateTime AND :endDateTime";
+
+        if (!empty($filters) && is_array($filters)) {
+            foreach ($filters as $filter) {            
                 $sql .= " AND " . $filter['sql'];
             }
+        }
+
         $sql .= " GROUP BY src ORDER BY total DESC LIMIT 50";
 
         $stmt = $this->db->prepare($sql);
-        $startDateTime = $post['startDate'].' '.$post['startTime'];
-        $endDateTime = $post['endDate'].' '.$post['endTime'];
+
+        $startDateTime = $post['startDate'] . ' ' . $post['startTime'];
+        $endDateTime = $post['endDate'] . ' ' . $post['endTime'];
         $stmt->bindParam(':startDateTime', $startDateTime, PDO::PARAM_STR);
         $stmt->bindParam(':endDateTime', $endDateTime, PDO::PARAM_STR);
 
-        if (is_array($filters))
+        if (!empty($filters) && is_array($filters)) {
             foreach ($filters as $filter) {
                 $stmt->bindParam($filter['placeholder'], $filter['value'], $filter['param_type']);
             }
+        }
+
         $stmt->execute();
         $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        return is_array($data) ? $data : null;
+
+        return is_array($data) ? $data : [];
     }
 
     /**
+     * Destino das chamadas (top 50) 
+     * 
      * @param $post
-     * @return array|null
+     * @return array
      */
     private function getTopDstCount($post)
     {
         $post = $this->filterDateTime($post);
         $filters = $this->filterSelect($post);
-        $sql = "SELECT dst, COUNT(dst) AS total ";
-        $sql .= "FROM asteriskcdrdb.cdr ";
-        $sql .= "WHERE calldate BETWEEN :startDateTime AND :endDateTime ";
-        if (is_array($filters))
-            foreach ($filters as $filter) {
+        $sql = "SELECT dst, COUNT(*) AS total FROM asteriskcdrdb.cdr WHERE calldate BETWEEN :startDateTime AND :endDateTime";
+
+        if (!empty($filters) && is_array($filters)) {
+            foreach ($filters as $filter) {            
                 $sql .= " AND " . $filter['sql'];
             }
-        $sql .= " GROUP BY dst ORDER BY total DESC LIMIT 40";
+        }
+
+        $sql .= " GROUP BY dst ORDER BY total DESC LIMIT 50";
 
         $stmt = $this->db->prepare($sql);
-        $startDateTime = $post['startDate'].' '.$post['startTime'];
-        $endDateTime = $post['endDate'].' '.$post['endTime'];
+
+        $startDateTime = $post['startDate'] . ' ' . $post['startTime'];
+        $endDateTime   = $post['endDate'] . ' ' . $post['endTime'];
+
         $stmt->bindParam(':startDateTime', $startDateTime, PDO::PARAM_STR);
         $stmt->bindParam(':endDateTime', $endDateTime, PDO::PARAM_STR);
 
-        if (is_array($filters))
+        if (!empty($filters) && is_array($filters)) {
             foreach ($filters as $filter) {
                 $stmt->bindParam($filter['placeholder'], $filter['value'], $filter['param_type']);
             }
+        }
+
         $stmt->execute();
         $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        return is_array($data) ? $data : null;
+
+        return is_array($data) ? $data : [];
     }
 
     /**
+     * Distribuição das chamadas por hora
+     * 
      * @param $post
      * @return array|null
      */
@@ -348,31 +367,39 @@ trait CallTrait
     {
         $post = $this->filterDateTime($post);
         $filters = $this->filterSelect($post);
-        $sql = "SELECT HOUR(calldate) AS hour, COUNT(calldate) AS total ";
-        $sql .= "FROM asteriskcdrdb.cdr ";
-        $sql .= "WHERE calldate BETWEEN :startDateTime AND :endDateTime ";
-        if (is_array($filters))
-            foreach ($filters as $filter) {
+        $sql = "SELECT HOUR(calldate) AS hour, COUNT(*) AS total FROM asteriskcdrdb.cdr WHERE calldate BETWEEN :startDateTime AND :endDateTime";
+
+        if (!empty($filters) && is_array($filters)) {
+            foreach ($filters as $filter) {            
                 $sql .= " AND " . $filter['sql'];
             }
+    }
+
         $sql .= " GROUP BY hour ORDER BY hour";
 
         $stmt = $this->db->prepare($sql);
-        $startDateTime = $post['startDate'].' '.$post['startTime'];
-        $endDateTime = $post['endDate'].' '.$post['endTime'];
+
+        $startDateTime = $post['startDate'] . ' ' . $post['startTime'];
+        $endDateTime   = $post['endDate'] . ' ' . $post['endTime'];
+
         $stmt->bindParam(':startDateTime', $startDateTime, PDO::PARAM_STR);
         $stmt->bindParam(':endDateTime', $endDateTime, PDO::PARAM_STR);
 
-        if (is_array($filters))
+        if (!empty($filters) && is_array($filters)) {
             foreach ($filters as $filter) {
                 $stmt->bindParam($filter['placeholder'], $filter['value'], $filter['param_type']);
             }
+        }
+
         $stmt->execute();
         $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        return is_array($data) ? $data : null;
+
+        return is_array($data) ? $data : [];
     }
 
     /**
+     * Quantidade de chamadas, minutos e média
+     * 
      * @param $post
      * @return array|null
      */
@@ -380,27 +407,39 @@ trait CallTrait
     {
         $post = $this->filterDateTime($post);
         $filters = $this->filterSelect($post);
-        $sql = "SELECT COUNT(billsec) AS total, ROUND((SUM(billsec))/60,1) AS minutes, ROUND((SUM(billsec)/COUNT(billsec))/60,1) AS avg ";
-        $sql .= "FROM asteriskcdrdb.cdr ";
-        $sql .= "WHERE calldate BETWEEN :startDateTime AND :endDateTime ";
-        if (is_array($filters))
+        $sql = "
+            SELECT 
+                COUNT(billsec) AS total, 
+                ROUND(SUM(billsec) / 60, 1) AS minutes, 
+                ROUND(SUM(billsec) / COUNT(billsec) / 60, 1) AS avg 
+            FROM asteriskcdrdb.cdr 
+            WHERE calldate BETWEEN :startDateTime AND :endDateTime
+        ";
+
+        if (!empty($filters) && is_array($filters)) {
             foreach ($filters as $filter) {
                 $sql .= " AND " . $filter['sql'];
             }
+        }
 
         $stmt = $this->db->prepare($sql);
-        $startDateTime = $post['startDate'].' '.$post['startTime'];
-        $endDateTime = $post['endDate'].' '.$post['endTime'];
+
+        $startDateTime = $post['startDate'] . ' ' . $post['startTime'];
+        $endDateTime   = $post['endDate'] . ' ' . $post['endTime'];
+
         $stmt->bindParam(':startDateTime', $startDateTime, PDO::PARAM_STR);
         $stmt->bindParam(':endDateTime', $endDateTime, PDO::PARAM_STR);
 
-        if (is_array($filters))
+        if (!empty($filters) && is_array($filters)) {
             foreach ($filters as $filter) {
                 $stmt->bindParam($filter['placeholder'], $filter['value'], $filter['param_type']);
             }
+        }
+
         $stmt->execute();
         $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        return is_array($data) ? $data : null;
+
+        return is_array($data) ? $data : [];
     }
 
     /**

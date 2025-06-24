@@ -283,8 +283,7 @@ trait RateTrait
         $stmt->bindParam(':calldate', $date, PDO::PARAM_STR);
         $stmt->execute();
         $rates = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $rates = is_array($rates) ? $rates : null;
-
-        return $rates;
+        
+        return is_array($rates) ? $rates : [];
     }
 }
