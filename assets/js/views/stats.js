@@ -207,3 +207,30 @@ $(function () {
         }
     });
 });
+
+$(function () {
+    $('#accountcode').select2({
+        language: {
+            noResults: function () { return "Nenhum resultado encontrado"; },
+            searching: function () { return "Buscando..."; },
+            inputTooShort: function (args) {
+                var remainingChars = args.minimum - args.input.length;
+                return "Digite " + remainingChars + " ou mais caracteres";
+            }
+        },
+        placeholder: 'Digite para buscar um usuário',
+        allowClear: true,
+        minimumInputLength: 3,
+        ajax: {
+            url: 'ajax.php?module=tarifador&command=getUser',
+            dataType: 'json',
+            delay: 250,
+            processResults: function (data) {
+                return {
+                    results: data
+                };
+            },
+            cache: true
+        }
+    });
+});

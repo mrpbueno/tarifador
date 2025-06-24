@@ -3,24 +3,13 @@
 // DEFINIÇÃO SEGURA DE VARIÁVEIS
 // ======================================================================
 $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-
-if ($id !== false && $id !== null) {
-    $itemid        = htmlspecialchars($itemid, ENT_QUOTES, 'UTF-8');
-    $name          = htmlspecialchars($name, ENT_QUOTES, 'UTF-8');
-    $telco         = htmlspecialchars($telco, ENT_QUOTES, 'UTF-8');
-    $dial_pattern  = htmlspecialchars($dial_pattern, ENT_QUOTES, 'UTF-8');
-    $rate          = htmlspecialchars($rate, ENT_QUOTES, 'UTF-8');
-    $start         = htmlspecialchars($start, ENT_QUOTES, 'UTF-8');
-    $end           = htmlspecialchars($end, ENT_QUOTES, 'UTF-8');
-} else {
-    $itemid        = '';
-    $name          = '';
-    $telco         = '';
-    $dial_pattern  = '';
-    $rate          = '';
-    $start         = '';
-    $end           = '';
-}
+$itemid        = isset($itemid) ? htmlspecialchars($itemid, ENT_QUOTES, 'UTF-8') : '';
+$name          = isset($name) ? htmlspecialchars($name, ENT_QUOTES, 'UTF-8') : '';
+$telco         = isset($telco) ? htmlspecialchars($telco, ENT_QUOTES, 'UTF-8') : '';
+$dial_pattern  = isset($dial_pattern) ? htmlspecialchars($dial_pattern, ENT_QUOTES, 'UTF-8') : '';
+$rate          = isset($rate) ? htmlspecialchars($rate, ENT_QUOTES, 'UTF-8') : '';
+$start         = isset($start) ? htmlspecialchars($start, ENT_QUOTES, 'UTF-8') : '';
+$end           = isset($end) ? htmlspecialchars($end, ENT_QUOTES, 'UTF-8') : '';
 ?>
 
 <h3><?php echo ($itemid ? _("Editar tarifa") : _("Nova tarifa")) ?></h3>

@@ -3,19 +3,11 @@
 // DEFINIÇÃO SEGURA DE VARIÁVEIS
 // ======================================================================
 $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-
-if ($id !== false && $id !== null) {
-    $pin        = htmlspecialchars($pin, ENT_QUOTES, 'UTF-8');
-    $user       = htmlspecialchars($user, ENT_QUOTES, 'UTF-8');
-    $department = htmlspecialchars($department, ENT_QUOTES, 'UTF-8');
-    $enabled    = htmlspecialchars($enabled, ENT_QUOTES, 'UTF-8');
-} else {
-    $pin        = _("Será gerado automaticamente");
-    $user       = '';
-    $department = '';
-    $enabled    = '1';
-    $pinsets    = array();
-}
+$pin        = isset($pin) ? htmlspecialchars($pin, ENT_QUOTES, 'UTF-8') : _("Será gerado automaticamente");
+$user       = isset($user) ? htmlspecialchars($user, ENT_QUOTES, 'UTF-8') : '';
+$department = isset($department) ? htmlspecialchars($department, ENT_QUOTES, 'UTF-8') : '';
+$enabled    = isset($enabled) ? htmlspecialchars($enabled, ENT_QUOTES, 'UTF-8') : '1';
+$pinsets    = isset($pinsets) ? $pinsets : [];
 ?>
 <h3><?php echo ($id ? _("Edição do PIN do Usuário") : _("Novo PIN do usuário")) ?></h3>
 <form autocomplete="off"

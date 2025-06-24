@@ -215,7 +215,7 @@ class Tarifador extends FreePBX_Helpers implements BMO
                 return $this->getCallsHour($_REQUEST);
                 break;
             default:
-                return json_encode(['status' => false, 'message' => _("Solicitação Inválida")]);
+                return false;
         }
     }
 
