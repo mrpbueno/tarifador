@@ -3,7 +3,7 @@
 
 namespace FreePBX\modules\Tarifador\Traits;
 
-use FreePBX\modules\Provisioning\Utils\Sanitize;
+use FreePBX\modules\Tarifador\Utils\Sanitize;
 use PDO;
 
 /**
