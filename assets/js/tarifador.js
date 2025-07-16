@@ -19,3 +19,17 @@ function dateFormatter(val, row){
         }
     });
 })(jQuery);
+
+$(document).ready(function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const currentPage = urlParams.get('page') || 'call';
+    const menuLinks = $('.list-group a.list-group-item');
+    menuLinks.removeClass('active');
+    menuLinks.each(function() {
+        const link = $(this);
+        const href = link.attr('href');
+        if (href && href.includes('page=' + currentPage)) {
+            link.addClass('active');
+        }
+    });
+});
