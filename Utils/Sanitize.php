@@ -25,9 +25,9 @@ class Sanitize
         return filter_var($value, FILTER_VALIDATE_FLOAT);
     }
 
-    public static function stringOutput($value)
+    public static function stringOutput($value, $default='')
     {
-        return isset($value) ? htmlspecialchars($value, ENT_QUOTES, 'UTF-8') : '';
+        return isset($value) ? htmlspecialchars($value, ENT_QUOTES, 'UTF-8') : $default;
     }
 
     public static function stringInput($value)

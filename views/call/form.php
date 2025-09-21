@@ -3,16 +3,16 @@
 // DEFINIÇÃO SEGURA DE VARIÁVEIS
 // ======================================================================
 // A função load_view() do FreePBX extrai as chaves do array de dados em variáveis.
-
-$src_value         = isset($_POST['src']) ? htmlspecialchars($_POST['src'], ENT_QUOTES, 'UTF-8') : '';
-$dst               = isset($_POST['dst']) ? htmlspecialchars($_POST['dst'], ENT_QUOTES, 'UTF-8') : '';
-$disposition_value = isset($_POST['disposition']) ? htmlspecialchars($_POST['disposition'], ENT_QUOTES, 'UTF-8') : '';
-$accountcode_value = isset($_POST['accountcode']) ? htmlspecialchars($_POST['accountcode'], ENT_QUOTES, 'UTF-8') : '';
-$userName_value    = isset($_POST['userName']) ? htmlspecialchars($_POST['userName'], ENT_QUOTES, 'UTF-8') : '';
-$startDate_value   = empty($_POST['startDate']) ? date('Y-m-d') : htmlspecialchars($_POST['startDate'], ENT_QUOTES, 'UTF-8');
-$startTime_value   = empty($_POST['startTime']) ? '00:00' : htmlspecialchars($_POST['startTime'], ENT_QUOTES, 'UTF-8');
-$endDate_value     = empty($_POST['endDate']) ? date('Y-m-d') : htmlspecialchars($_POST['endDate'], ENT_QUOTES, 'UTF-8');
-$endTime_value     = empty($_POST['endTime']) ? '23:59' : htmlspecialchars($_POST['endTime'], ENT_QUOTES, 'UTF-8');
+use FreePBX\modules\Tarifador\Utils\Sanitize;
+$src_value         = Sanitize::stringOutput($_POST['src']);
+$dst               = Sanitize::stringOutput($_POST['dst']);
+$disposition_value = Sanitize::stringOutput($_POST['disposition']);
+$accountcode_value = Sanitize::stringOutput($_POST['accountcode']);
+$userName_value    = Sanitize::stringOutput($_POST['userName']);
+$startDate_value   = empty($_POST['startDate']) ? date('Y-m-d') : Sanitize::stringOutput($_POST['startDate']);
+$startTime_value   = empty($_POST['startTime']) ? '00:00' : Sanitize::stringOutput($_POST['startTime']);
+$endDate_value     = empty($_POST['endDate']) ? date('Y-m-d') : Sanitize::stringOutput($_POST['endDate']);
+$endTime_value     = empty($_POST['endTime']) ? '23:59' : Sanitize::stringOutput($_POST['endTime']);
 ?>
 <form autocomplete="off" action="" method="post" class="fpbx-submit" id="call-form" name="call-form">
     <input type="hidden" name="action" id="action" value="search">

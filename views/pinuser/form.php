@@ -2,11 +2,12 @@
 // ======================================================================
 // DEFINIÇÃO SEGURA DE VARIÁVEIS
 // ======================================================================
-$id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-$pin        = isset($pin) ? htmlspecialchars($pin, ENT_QUOTES, 'UTF-8') : _("Será gerado automaticamente");
-$user       = isset($user) ? htmlspecialchars($user, ENT_QUOTES, 'UTF-8') : '';
-$department = isset($department) ? htmlspecialchars($department, ENT_QUOTES, 'UTF-8') : '';
-$enabled    = isset($enabled) ? htmlspecialchars($enabled, ENT_QUOTES, 'UTF-8') : '1';
+use FreePBX\modules\Tarifador\Utils\Sanitize;
+$id         = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+$pin        = Sanitize::stringOutput($pin, _("Será gerado automaticamente"));
+$user       = Sanitize::stringOutput($user);
+$department = Sanitize::stringOutput($department);
+$enabled    = Sanitize::stringOutput($enabled, '1');
 $pinsets    = isset($pinsets) ? $pinsets : [];
 ?>
 <h3><?php echo ($id ? _("Edição do PIN do Usuário") : _("Novo PIN do usuário")) ?></h3>

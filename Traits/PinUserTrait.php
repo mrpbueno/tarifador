@@ -29,13 +29,13 @@ trait PinUserTrait
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':id', $validated_id, PDO::PARAM_INT);
         try {
-            $stmt->execute();            
-            if ($stmt->rowCount() > 0) {            
+            $stmt->execute();
+            if ($stmt->rowCount() > 0) {
                 $_SESSION['toast_message'] = ['message' => 'Usuário excluído com sucesso!', 'title' => 'Sucesso', 'level' => 'success'];
-            } else {            
+            } else {
                 $_SESSION['toast_message'] = ['message' => 'O usuário não foi encontrado ou já havia sido excluído.', 'title' => 'Aviso', 'level' => 'warning'];
             }
-        } catch (PDOException $e) {        
+        } catch (PDOException $e) {
             $_SESSION['toast_message'] = ['message' => 'Ocorreu um erro no banco de dados. O usuário não pôde ser excluído.', 'title' => 'Erro', 'level' => 'error'];          
         }
 
@@ -69,8 +69,8 @@ trait PinUserTrait
             $stmt->execute();        
             $_SESSION['toast_message'] = ['message' => 'Usuário atualizado com sucesso!', 'title' => 'Sucesso', 'level' => 'success'];
 
-        } catch (PDOException $e) {                   
-            if ($e->errorInfo[1] == 1062) {            
+        } catch (PDOException $e) {
+            if ($e->errorInfo[1] == 1062) {
                 $_SESSION['toast_message'] = ['message' => 'O nome de usuário informado já está em uso por outro PIN.', 'title' => 'Erro', 'level' => 'error'];
             } else {
             

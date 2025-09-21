@@ -2,14 +2,15 @@
 // ======================================================================
 // DEFINIÇÃO SEGURA DE VARIÁVEIS
 // ======================================================================
-$id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-$itemid        = isset($itemid) ? htmlspecialchars($itemid, ENT_QUOTES, 'UTF-8') : '';
-$name          = isset($name) ? htmlspecialchars($name, ENT_QUOTES, 'UTF-8') : '';
-$telco         = isset($telco) ? htmlspecialchars($telco, ENT_QUOTES, 'UTF-8') : '';
-$dial_pattern  = isset($dial_pattern) ? htmlspecialchars($dial_pattern, ENT_QUOTES, 'UTF-8') : '';
-$rate          = isset($rate) ? htmlspecialchars($rate, ENT_QUOTES, 'UTF-8') : '';
-$start         = isset($start) ? htmlspecialchars($start, ENT_QUOTES, 'UTF-8') : '';
-$end           = isset($end) ? htmlspecialchars($end, ENT_QUOTES, 'UTF-8') : '';
+use FreePBX\modules\Tarifador\Utils\Sanitize;
+$id            = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+$itemid        = Sanitize::stringOutput($itemid);
+$name          = Sanitize::stringOutput($name);
+$telco         = Sanitize::stringOutput($telco);
+$dial_pattern  = Sanitize::stringOutput($dial_pattern);
+$rate          = Sanitize::stringOutput($rate);
+$start         = Sanitize::stringOutput($start);
+$end           = Sanitize::stringOutput($end);
 ?>
 
 <h3><?php echo ($itemid ? _("Editar tarifa") : _("Nova tarifa")) ?></h3>
