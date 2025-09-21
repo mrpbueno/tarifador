@@ -168,7 +168,7 @@ trait CallTrait
             ];
         }
 
-        if (!empty($post['accountcode'])) {
+        if (!empty($post['accountcode']) && ctype_digit($post['accountcode'])) {
             $filters[] = [
                 'placeholder' => ':accountcode',
                 'sql' => 'accountcode = :accountcode',

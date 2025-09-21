@@ -66,7 +66,7 @@ trait RateTrait
         $dial_pattern = Sanitize::string($post['dial_pattern']);
         $rate         = Sanitize::float($post['rate']);
         $start        = Sanitize::string($post['start']);
-        $end          = Sanitize::string($post['end']);    
+        $end          = Sanitize::string($post['end']);
         if (in_array(null, $post, true) || $rate === false) {
             $_SESSION['toast_message'] = ['message' => 'Todos os campos são obrigatórios e a tarifa deve ser um número válido.', 'title' => 'Erro de Validação', 'level' => 'error'];
          return false;
@@ -100,7 +100,7 @@ trait RateTrait
         try {
             $stmt->execute();
         } catch (PDOException $e) {
-            freepbx_log(FPBX_LOG_ERROR,"Tarifador => ".$e->getMessage());                        
+            freepbx_log(FPBX_LOG_ERROR,"Tarifador => ".$e->getMessage());
             $_SESSION['toast_message'] = ['message' => 'Ocorreu um erro no banco de dados ao salvar a tarifa.', 'title' => 'Erro', 'level' => 'error'];
         return false;
         }
@@ -124,7 +124,7 @@ trait RateTrait
         $start        = Sanitize::string($post['start']);
         $end          = Sanitize::string($post['end']);
         
-        // VERIFICAR SE OS DADOS ESSENCIAIS SÃO VÁLIDOS        
+        // VERIFICAR SE OS DADOS ESSENCIAIS SÃO VÁLIDOS
         if (empty($id) || $rate === false) {
             $_SESSION['toast_message'] = ['message' => 'ID inválido ou tarifa não é um número. A operação foi cancelada.', 'title' => 'Erro de Validação', 'level' => 'error'];
             return false;
@@ -147,7 +147,7 @@ trait RateTrait
 
         try {
             $stmt->execute();
-        } catch (PDOException $e) {            
+        } catch (PDOException $e) {
             $_SESSION['toast_message'] = ['message' => 'Ocorreu um erro no banco de dados ao salvar a tarifa.', 'title' => 'Erro', 'level' => 'error'];
             return false;
         }
@@ -170,7 +170,7 @@ trait RateTrait
 
         // 2. VALIDAÇÃO E LIMPEZA DOS DADOS    
         $validated_order = [];
-        foreach ($post['data'] as $item) {            
+        foreach ($post['data'] as $item) {
             $id = filter_var(isset($item['id']) ? $item['id'] : null, FILTER_VALIDATE_INT);
             $seq = filter_var(isset($item['seq']) ? $item['seq'] : null, FILTER_VALIDATE_INT);
             // Se a validação falhar para qualquer item, aborta a operação inteira.
@@ -199,7 +199,7 @@ trait RateTrait
 
         } catch (PDOException $e) {
             // Se QUALQUER 'execute' falhar, desfaz TODAS as alterações.
-            $this->db->rollBack();        
+            $this->db->rollBack();
             $_SESSION['toast_message'] = ['message' => 'Ocorreu um erro no banco de dados e a ordem não pôde ser salva. Nenhuma alteração foi feita.', 'title' => 'Erro', 'level' => 'error'];
             return false;
         }        
@@ -221,16 +221,16 @@ trait RateTrait
         return false;
         }        
         $sql = "DELETE FROM tarifador_rate WHERE id = :id";
-        $stmt = $this->db->prepare($sql);    
-        $stmt->bindValue(':id', $validated_id, PDO::PARAM_INT);        
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':id', $validated_id, PDO::PARAM_INT);
         try {
-            $stmt->execute();            
-            if ($stmt->rowCount() > 0) {            
+            $stmt->execute();
+            if ($stmt->rowCount() > 0) {
                 $_SESSION['toast_message'] = ['message' => 'Tarifa excluída com sucesso!', 'title' => 'Sucesso', 'level' => 'success'];
-            } else {            
+            } else {
                 $_SESSION['toast_message'] = ['message' => 'A tarifa não foi encontrada ou já havia sido excluída.', 'title' => 'Aviso', 'level' => 'warning'];
             }
-        } catch (PDOException $e) {        
+        } catch (PDOException $e) {
             $_SESSION['toast_message'] = ['message' => 'Ocorreu um erro no banco de dados. A tarifa não pôde ser excluída, possivelmente por estar em uso.', 'title' => 'Erro', 'level' => 'error'];          
         }
 
@@ -250,7 +250,7 @@ trait RateTrait
         $dialPattern = Sanitize::string($dialPattern);
         $start = Sanitize::string($start);
         $end = Sanitize::string($end);
-        if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $start) || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $end)) {        
+        if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $start) || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $end)) {
             return false;
         }
         $sql = "SELECT dial_pattern, start, end FROM tarifador_rate WHERE dial_pattern = :dial_pattern ";
