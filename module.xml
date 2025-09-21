@@ -2,7 +2,7 @@
     <rawname>tarifador</rawname>
     <repo>unsupported</repo>
     <name>Tarifador</name>
-    <version>14.0.10</version>
+    <version>14.0.11</version>
     <category>Reports</category>
     <Publisher>mrpbueno</Publisher>
     <info>https://github.com/mrpbueno/tarifador</info>
@@ -44,6 +44,7 @@
     <updateurl>https://raw.githubusercontent.com/mrpbueno/tarifador/master/tarifador.json</updateurl>
     <description>Tarifador para FreePBX</description>
     <changelog>
+        *14.0.11* Code improvements
         *14.0.10* Code improvements
         *14.0.9* Code improvements
         *14.0.5.8* Added Asterisk regular expressions to the search field

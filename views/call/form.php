@@ -186,9 +186,9 @@ $endTime_value     = empty($_POST['endTime']) ? '23:59' : htmlspecialchars($_POS
                                     <select class="form-control" name="disposition" id="disposition">
                                         <option value=""><?php echo _("Todos") ?></option>
                                         <option <?php if($disposition_value == "ANSWERED") echo"selected"; ?> value="ANSWERED"><?php echo _("ANSWERED") ?></option>
+                                        <option <?php if($disposition_value == "NO ANSWER") echo"selected"; ?> value="NO ANSWER"><?php echo _("NO ANSWER") ?></option>
                                         <option <?php if($disposition_value == "BUSY") echo"selected"; ?> value="BUSY"><?php echo _("BUSY") ?></option>
                                         <option <?php if($disposition_value == "FAILED") echo"selected"; ?> value="FAILED"><?php echo _("FAILED") ?></option>
-                                        <option <?php if($disposition_value == "NO ANSWER") echo"selected"; ?> value="NO ANSWER"><?php echo _("NO ANSWER") ?></option>
                                     </select>
                                 </div>
                             </div>

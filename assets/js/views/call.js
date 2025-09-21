@@ -166,7 +166,7 @@ $(function () {
                         ],
                         borderWidth: 1
                     }]
-                },                
+                },
                 options: {
                     maintainAspectRatio: false,
                     scales: {

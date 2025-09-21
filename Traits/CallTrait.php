@@ -56,13 +56,13 @@ trait CallTrait
         $stmt->execute();
         $cdrs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
-        $total = $this->db->query("SELECT FOUND_ROWS() as count")->fetch(PDO::FETCH_ASSOC);        
+        $total = $this->db->query("SELECT FOUND_ROWS() as count")->fetch(PDO::FETCH_ASSOC);
         $active_rates = $this->getRate($post['startDate']);
     
-        foreach ($cdrs as $key => $value) {            
+        foreach ($cdrs as $key => $value) {
             $cdrs[$key]['cost'] = '0.00';
-            $cdrs[$key]['rate'] = 'Não Tarifado';            
-            if (strlen($value['src']) == 4 && strlen($value['dst']) != 4) {                
+            $cdrs[$key]['rate'] = 'Não Tarifado';
+            if ($value['billsec'] > 0 && strlen($value['src']) == 4 && strlen($value['dst']) != 4) {
                 $cost_details = $this->cost($value['dst'], $value['billsec'], $active_rates);
                 if ($cost_details !== null) {
                     $cdrs[$key]['cost'] = $cost_details['cost'];
@@ -94,7 +94,6 @@ trait CallTrait
         }
 
         $sql .= " GROUP BY disposition";
-
         $stmt = $this->db->prepare($sql);
         $startDateTime = $post['startDate'].' '.$post['startTime'];
         $endDateTime = $post['endDate'].' '.$post['endTime'];
@@ -179,12 +178,16 @@ trait CallTrait
         }
 
         if (!empty($post['disposition'])) {
-            $filters[] = [
-                'placeholder' => ':disposition',
-                'sql' => 'disposition = :disposition',
-                'value' => Sanitize::string($post['disposition']),
-                'param_type' => PDO::PARAM_STR,
-            ];
+            $allowed_dispositions = ['ANSWERED', 'NO ANSWER', 'BUSY', 'FAILED'];
+            $disposition_value = urldecode($post['disposition']);
+            if (in_array($disposition_value, $allowed_dispositions)) {
+                $filters[] = [
+                    'placeholder' => ':disposition',
+                    'sql' => 'disposition = :disposition',
+                    'value' => $disposition_value,
+                    'param_type' => PDO::PARAM_STR,
+                ];
+            }
         }
 
         return $filters;
