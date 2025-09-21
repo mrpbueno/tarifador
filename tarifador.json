@@ -2,11 +2,11 @@
   "rawname": "tarifador",
   "repo": "unsupported",
   "name": "Tarifador",
-  "version": "14.0.5.8",
+  "version": "14.0.11",
   "publisher": "mrpbueno",
   "license": "GPLv3+",
   "licenselink": "http://www.gnu.org/licenses/gpl-3.0.txt",
-  "changelog": "*14.0.5.8*",
+  "changelog": "*14.0.11*",
   "category": "Reports",
   "description": "Tarifador para FreePBX.",
   "depends": {
@@ -16,7 +16,7 @@
   "supported": {
     "version": "14.0"
   },
-  "location": "https://github.com/mrpbueno/tarifador/archive/refs/tags/14.0.5.8.zip",
+  "location": "https://github.com/mrpbueno/tarifador/archive/refs/tags/14.0.11.zip",
   "md5sum": "eb9a85f49d85d1a2024659aa76b421c6",
   "packaged": "1669578955"
 }
