@@ -4,11 +4,11 @@
 // ======================================================================
 // A função load_view() do FreePBX extrai as chaves do array de dados em variáveis.
 use FreePBX\modules\Tarifador\Utils\Sanitize;
-$src_value         = Sanitize::stringOutput($_POST['src']);
-$dst               = Sanitize::stringOutput($_POST['dst']);
-$disposition_value = Sanitize::stringOutput($_POST['disposition']);
-$accountcode_value = Sanitize::stringOutput($_POST['accountcode']);
-$userName_value    = Sanitize::stringOutput($_POST['userName']);
+$src_value         = Sanitize::stringOutput(isset($_POST['src']) ? $_POST['src'] : '');
+$dst_value         = Sanitize::stringOutput(isset($_POST['dst']) ? $_POST['dst'] : '');
+$disposition_value = Sanitize::stringOutput(isset($_POST['disposition']) ? $_POST['disposition'] : '');
+$accountcode_value = Sanitize::stringOutput(isset($_POST['accountcode']) ? $_POST['accountcode'] : '');
+$userName_value    = Sanitize::stringOutput(isset($_POST['userName']) ? $_POST['userName'] : '');
 $startDate_value   = empty($_POST['startDate']) ? date('Y-m-d') : Sanitize::stringOutput($_POST['startDate']);
 $startTime_value   = empty($_POST['startTime']) ? '00:00' : Sanitize::stringOutput($_POST['startTime']);
 $endDate_value     = empty($_POST['endDate']) ? date('Y-m-d') : Sanitize::stringOutput($_POST['endDate']);
@@ -149,7 +149,7 @@ $endTime_value     = empty($_POST['endTime']) ? '23:59' : Sanitize::stringOutput
                                     <i class="fa fa-question-circle fpbx-help-icon" data-for="dst"></i>
                                 </div>
                                 <div class="col-md-7">
-                                    <input type="text" class="form-control" id="dst" name="dst" value="<?php echo $dst; ?>">
+                                    <input type="text" class="form-control" id="dst" name="dst" value="<?php echo $dst_value; ?>">
                                 </div>
                             </div>
                         </div>

@@ -4,13 +4,13 @@
 // ======================================================================
 use FreePBX\modules\Tarifador\Utils\Sanitize;
 $id            = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-$itemid        = Sanitize::stringOutput($itemid);
-$name          = Sanitize::stringOutput($name);
-$telco         = Sanitize::stringOutput($telco);
-$dial_pattern  = Sanitize::stringOutput($dial_pattern);
-$rate          = Sanitize::stringOutput($rate);
-$start         = Sanitize::stringOutput($start);
-$end           = Sanitize::stringOutput($end);
+$itemid        = Sanitize::stringOutput(isset($itemid) ? $itemid : '');
+$name          = Sanitize::stringOutput(isset($name) ? $name : '');
+$telco         = Sanitize::stringOutput(isset($telco) ? $telco : '');
+$dial_pattern  = Sanitize::stringOutput(isset($dial_pattern) ? $dial_pattern : '');
+$rate          = Sanitize::stringOutput(isset($rate) ? $rate : '');
+$start         = Sanitize::stringOutput(isset($start) ? $start : '');
+$end           = Sanitize::stringOutput(isset($end) ? $end : '');
 ?>
 
 <h3><?php echo ($itemid ? _("Editar tarifa") : _("Nova tarifa")) ?></h3>

@@ -317,7 +317,7 @@ trait PinUserTrait
 
         } catch (Exception $e) {
             // 4. Se qualquer erro ocorrer, desfaz TODAS as alterações
-            $this->db->rollBack();        
+            $this->db->rollBack();
             $_SESSION['toast_message'] = ['message' => "Ocorreu um erro na importação na linha {$line_number}. Nenhuma alteração foi salva.", 'title' => 'Erro Crítico', 'level' => 'error'];
         } finally {
         
@@ -354,7 +354,7 @@ trait PinUserTrait
         $sql = "SELECT pin AS id, user AS text FROM tarifador_pinuser WHERE user LIKE :user LIMIT 10";
         $stmt = $this->db->prepare($sql);
         $q = isset($request['term']) ? $request['term'] : '';
-        $user = '%'.Sanitize::string($q).'%';        
+        $user = '%'.Sanitize::string($q).'%';
         $stmt->bindParam(':user', $user, PDO::PARAM_STR);
         $stmt->execute();
         $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
