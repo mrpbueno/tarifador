@@ -68,6 +68,9 @@ class Tarifador extends FreePBX_Helpers implements BMO
         // TODO: Implement uninstall() method.
     }
 
+    public function backup() {}
+    public function restore($backup) {}
+
     /**
      * Processes form submission and pre-page actions.
      *
