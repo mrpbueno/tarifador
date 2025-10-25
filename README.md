@@ -28,5 +28,6 @@ O **Tarifador** é um módulo de relatórios para FreePBX focado em fornecer an�
 
 ## Licença
 
-Este módulo é distribuído sob a licença AGPLv3.
-[FreePBX](http://www.freepbx.org/) is a registered trademark of [Sangoma Technologies Inc.](http://www.freepbx.org/copyright.html)
+Este módulo é distribuído sob a licença AGPLv3.  
+
+[FreePBX](http://www.freepbx.org/) is a registered trademark of [Sangoma Technologies Inc.](http://www.freepbx.org/copyright.html)  
