@@ -2,7 +2,7 @@
     <rawname>tarifador</rawname>
     <repo>unsupported</repo>
     <name>Tarifador</name>
-    <version>14.0.12</version>
+    <version>17.0.0</version>
     <category>Reports</category>
     <Publisher>mrpbueno</Publisher>
     <info>https://github.com/mrpbueno/tarifador</info>
@@ -12,13 +12,13 @@
         <tarifador>Tarifador</tarifador>
     </menuitems>
     <depends>
-        <version>14.0.0</version>
+        <version>17.0.0</version>
     </depends>
     <requirements>
         <module>pinsets</module>
 		<module>cel</module>
     </requirements>
-    <supported>14.0.0</supported>
+    <supported>17.0.0</supported>
     <database>
     <table name="tarifador_rate">
         <field name="id" type="integer" primaryKey="true" autoincrement="true"/>
@@ -44,22 +44,6 @@
     <updateurl>https://raw.githubusercontent.com/mrpbueno/tarifador/master/tarifador.json</updateurl>
     <description>Tarifador para FreePBX</description>
     <changelog>
-        *14.0.12* Added backup and restore methods
-        *14.0.11* Code improvements
-        *14.0.10* Code improvements
-        *14.0.9* Code improvements
-        *14.0.5.8* Added Asterisk regular expressions to the search field
-        *14.0.5.7* Added call statistics
-        *14.0.5.6* Code improvements
-        *14.0.5.5* Code improvements
-        *14.0.5.4* Added call detailing (CEL module is now required)
-        *14.0.5.3* Form improvements
-        *14.0.5.2* Code improvements
-        *14.0.5.1* Update PDF CSV XLS export
-        *14.0.5* Code improvements *beta
-        *14.0.4* Code improvements *beta
-        *14.0.3* Code improvements *beta
-        *14.0.2* Code improvements *beta
-        *14.0.1* Initial Dev Release *beta
+        *17.0.0* - Migrated to FreePBX 17. Implemented new Backup/Restore classes with V14 legacy restore support.
     </changelog>
 </module>
