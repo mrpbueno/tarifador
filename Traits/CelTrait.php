@@ -17,16 +17,19 @@ trait CelTrait
      * @param array $post
      * @return array|null
      */
-    public function getCel($post)
+    public function getCel(array $post): ?array
     {
-        if (!isset($post['uniqueid'])) { return null; }
+        if (!isset($post['uniqueid'])) {
+            return null;
+        }
         $uniqueid = Sanitize::string($post['uniqueid']);
-        $sql = "SELECT id, eventtime, eventtype, cid_num, cid_name, exten, cid_dnid, context, channame, uniqueid, linkedid ";
-        $sql .= "FROM asteriskcdrdb.cel WHERE linkedid = :uniqueid OR uniqueid = :uniqueid ORDER BY id";
+        $sql = "SELECT id, eventtime, eventtype, cid_num, cid_name, exten, cid_dnid, context, channame, uniqueid, linkedid
+                FROM asteriskcdrdb.cel
+                WHERE linkedid = :uniqueid OR uniqueid = :uniqueid
+                ORDER BY id";
         $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':uniqueid', $uniqueid, PDO::PARAM_STR);
-        $stmt->execute();
+        $stmt->execute(['uniqueid' => $uniqueid]);
         $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        return is_array($data) ? $data : null;
+        return $data === false ? null : $data;
     }
 }

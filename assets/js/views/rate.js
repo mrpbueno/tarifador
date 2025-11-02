@@ -1,7 +1,9 @@
 $('#rate').on('reorder-row.bs.table', function (e, data){
     var order = [];
     $.each(data, function (i, value) {
-        order[i] = {id : value.id, seq : i};
+        if (value && typeof value.id !== 'undefined') {
+            order.push({id : value.id, seq : i});
+        }
     });
     $.ajax({
         type: 'POST',
@@ -13,6 +15,10 @@ $('#rate').on('reorder-row.bs.table', function (e, data){
         }
     });
 });
+
+function dragHandleFormatter(value, row, index) {
+    return '<i class="fa fa-arrows-v drag-handle" style="cursor: move;"></i>';
+}
 
 function exportToPDF(name){
     let jsPDF = window.jspdf.jsPDF;

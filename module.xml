@@ -2,7 +2,7 @@
     <rawname>tarifador</rawname>
     <repo>unsupported</repo>
     <name>Tarifador</name>
-    <version>17.0.0</version>
+    <version>17.0.1</version>
     <category>Reports</category>
     <Publisher>mrpbueno</Publisher>
     <info>https://github.com/mrpbueno/tarifador</info>
@@ -44,6 +44,7 @@
     <updateurl>https://raw.githubusercontent.com/mrpbueno/tarifador/master/tarifador.json</updateurl>
     <description>Tarifador para FreePBX</description>
     <changelog>
+        *17.0.1* - Code improvements
         *17.0.0* - Migrated to FreePBX 17. Implemented new Backup/Restore classes with V14 legacy restore support.
     </changelog>
 </module>

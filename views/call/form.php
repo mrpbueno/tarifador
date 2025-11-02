@@ -4,15 +4,16 @@
 // ======================================================================
 // A função load_view() do FreePBX extrai as chaves do array de dados em variáveis.
 use FreePBX\modules\Tarifador\Utils\Sanitize;
-$src_value         = Sanitize::stringOutput(isset($_POST['src']) ? $_POST['src'] : '');
-$dst_value         = Sanitize::stringOutput(isset($_POST['dst']) ? $_POST['dst'] : '');
-$disposition_value = Sanitize::stringOutput(isset($_POST['disposition']) ? $_POST['disposition'] : '');
-$accountcode_value = Sanitize::stringOutput(isset($_POST['accountcode']) ? $_POST['accountcode'] : '');
-$userName_value    = Sanitize::stringOutput(isset($_POST['userName']) ? $_POST['userName'] : '');
-$startDate_value   = empty($_POST['startDate']) ? date('Y-m-d') : Sanitize::stringOutput($_POST['startDate']);
-$startTime_value   = empty($_POST['startTime']) ? '00:00' : Sanitize::stringOutput($_POST['startTime']);
-$endDate_value     = empty($_POST['endDate']) ? date('Y-m-d') : Sanitize::stringOutput($_POST['endDate']);
-$endTime_value     = empty($_POST['endTime']) ? '23:59' : Sanitize::stringOutput($_POST['endTime']);
+
+$src_value         = Sanitize::stringOutput($_POST['src'] ?? '');
+$dst_value         = Sanitize::stringOutput($_POST['dst'] ?? '');
+$disposition_value = Sanitize::stringOutput($_POST['disposition'] ?? '');
+$accountcode_value = Sanitize::stringOutput($_POST['accountcode'] ?? '');
+$userName_value    = Sanitize::stringOutput($_POST['userName'] ?? '');
+$startDate_value   = Sanitize::stringOutput($_POST['startDate'] ?? date('Y-m-d'));
+$startTime_value   = Sanitize::stringOutput($_POST['startTime'] ?? '00:00');
+$endDate_value     = Sanitize::stringOutput($_POST['endDate'] ?? date('Y-m-d'));
+$endTime_value     = Sanitize::stringOutput($_POST['endTime'] ?? '23:59');
 ?>
 <form autocomplete="off" action="" method="post" class="fpbx-submit" id="call-form" name="call-form">
     <input type="hidden" name="action" id="action" value="search">
@@ -91,7 +92,7 @@ $endTime_value     = empty($_POST['endTime']) ? '23:59' : Sanitize::stringOutput
                                 </div>
                                 <div class="col-md-7">
                                     <select class="form-control" name="accountcode" id="accountcode">
-                                        <option <?php if(isset($accountcode_value)) echo"selected"; ?>
+                                        <option <?php if(!empty($accountcode_value)) echo"selected"; ?>
                                                 value="<?php echo $accountcode_value?>">
                                             <?php echo $userName_value; ?>
                                         </option>

@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 
 namespace FreePBX\modules\Tarifador\Utils;
 
@@ -8,30 +9,41 @@ namespace FreePBX\modules\Tarifador\Utils;
  * @package FreePBX\modules\Tarifador\Utils
  * @author Mauro <https://github.com/mrpbueno>
  */
-class Sanitize
+final class Sanitize
 {
-    public static function string($value)
+    private function __construct()
     {
-        return trim(strip_tags($value));
+        // Utility class
     }
 
-    public static function int($value)
+    public static function string(?string $value): string
+    {
+        return trim(strip_tags($value ?? ''));
+    }
+
+    public static function int(mixed $value): int|false
     {
         return filter_var($value, FILTER_VALIDATE_INT);
     }
 
-    public static function float($value)
+    public static function float(mixed $value): float|false
     {
         return filter_var($value, FILTER_VALIDATE_FLOAT);
     }
 
-    public static function stringOutput($value, $default='')
+    public static function stringOutput(mixed $value, string $default = ''): string
     {
-        return isset($value) ? htmlspecialchars($value, ENT_QUOTES, 'UTF-8') : $default;
+        if (!isset($value) || !is_scalar($value)) {
+            return $default;
+        }
+        return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
     }
 
-    public static function stringInput($value)
+    public static function stringInput(mixed $value): string
     {
-        return isset($value) ? strip_tags(trim($value)) : '';
+        if (!isset($value) || !is_scalar($value)) {
+            return '';
+        }
+        return strip_tags(trim((string) $value));
     }
 }

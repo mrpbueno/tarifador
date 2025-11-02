@@ -41,12 +41,14 @@
        data-reorderable-rows="true"
        data-use-row-attr-func="true"
        data-toggle="table"
+       data-drag-handle=".drag-handle"
        data-pagination="true"
        data-search="true"
        data-page-list="[10, 25, 50, 100, 200, 400, 800, 1600]"
        class="table table-sm">
 	<thead>
 		<tr>
+            <th data-field="handle" data-formatter="dragHandleFormatter" class="text-center" style="width: 20px;"></th>
             <th data-field="name"><?php echo _("Nome")?></th>
             <th data-field="telco"><?php echo _("Operadora")?></th>
             <th data-field="dial_pattern"><?php echo _("Padrão de discagem")?></th>
