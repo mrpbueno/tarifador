@@ -25,11 +25,12 @@ class Tarifador extends FreePBX_Helpers implements BMO
     private readonly string $command;
     private readonly string $jdata;
 
-    public function __construct(private readonly ?BMO $freepbx = null)
+    public function __construct($freepbx = null)
     {
-        if ($this->freepbx === null) {
+        if ($freepbx === null) {
             throw new Exception("Not given a FreePBX Object");
         }
+        $this->freepbx = $freepbx;
         $this->db = $this->freepbx->Database;
         $this->id = (int)$this->getReq('id', 0);
         $this->page = $this->getReq('page', '');
