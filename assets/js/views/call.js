@@ -32,21 +32,6 @@ function dispositionFormatter(value) {
     return disposition[value];
 }
 
-function callTypeFormatter(value, row, index) {
-    let src = row['src'].length;
-    let dst = row['dst'].length;
-    if (src === 4 && dst === 4) {
-        return "Interna";
-    }
-    if (src === 4 && dst >= 8) {
-        return "Saída";
-    }
-    if (src !== 4 && dst === 4) {
-        return "Entrada";
-    }
-    return '';
-}
-
 function linkFormatUniqueId(value, row, index){
     return '<a href="#" data-toggle="modal" data-target="#cel-modal" data-id="' + value + '">' + value + '</a>';
 }

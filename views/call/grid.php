@@ -53,7 +53,7 @@
             <th data-field="disposition" data-formatter="dispositionFormatter"><?php echo _("Estado")?></th>
             <th data-field="wait" data-formatter="secFormatter"><?php echo _("Espera")?></th>
             <th data-field="billsec" data-formatter="secFormatter"><?php echo _("Duração")?></th>
-            <th data-field="calltype" data-formatter="callTypeFormatter"><?php echo _("Tipo")?></th>
+            <th data-field="call_type"><?php echo _("Tipo")?></th>
             <th data-field="rate"><?php echo _("Tarifa")?></th>
             <th data-field="cost" data-formatter="costFormatter"><?php echo _("Custo")?></th>
 		</tr>

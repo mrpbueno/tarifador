@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace FreePBX\modules\Tarifador\Traits;
 
@@ -13,10 +14,68 @@ use PDO;
 trait CallTrait
 {
     /**
-     * Lists calls with their associated cost.
-     * 
-     * @param array $post The post data containing filter parameters.
-     * @return array An array of call detail records, including cost and rate for each.
+     * @var array|null Cache estático para a lista de ramais.
+     */
+    private static ?array $extensionListCache = null;
+
+    /**
+     * Busca uma lista de todos os ramais (devices) do banco de dados.
+     * Armazena o resultado em cache estaticamente para a duração da requisição.
+     *
+     * @return array Um array plano com os números dos ramais (ex: ['1000', '1001', '2000']).
+     */
+    private function getExtensionList(): array
+    {
+        if (self::$extensionListCache === null) {
+            $sql = "SELECT id FROM devices";
+            $stmt = $this->db->query($sql);
+            self::$extensionListCache = $stmt->fetchAll(PDO::FETCH_COLUMN) ?: [];
+        }
+        return self::$extensionListCache;
+    }
+
+    /**
+     * Classifica uma chamada como INTERNA, RECEBIDA, ORIGINADA ou DESCONHECIDA.
+     * Utiliza 'did' e 'dcontext' como indicadores primários.
+     *
+     * @param array $cdr A linha de dados do CDR.
+     * @param array $extensionList Uma lista de todos os ramais conhecidos.
+     * @return string O tipo da chamada ('INBOUND', 'INTERNAL', 'OUTBOUND', 'UNKNOWN').
+     */
+    private function getCallType(array $cdr, array $extensionList): string
+    {
+        $dcontext = $cdr['dcontext'] ?? '';
+        $did = $cdr['did'] ?? '';
+        $src = $cdr['src'] ?? '';
+        $dst = $cdr['dst'] ?? '';
+
+        if (!empty($did) || 
+            str_starts_with($dcontext, 'from-trunk') ||
+            str_starts_with($dcontext, 'ext-did') ||
+            str_starts_with($dcontext, 'from-pstn')
+        ) {
+            return 'INBOUND';
+        }
+
+        if (str_starts_with($dcontext, 'macro-dialout-trunk')) {
+            return 'OUTBOUND';
+        }
+
+        $isSourceExtension = in_array($src, $extensionList, true);
+        $isDestExtension = in_array($dst, $extensionList, true);
+
+        if ($isSourceExtension && $isDestExtension) {
+            return 'INTERNAL';
+        }
+
+
+        return 'UNKNOWN';
+    }
+
+    /**
+     * Lista de chamadas com o custo da ligação
+     * * @param array $post
+     * @return array|null
      */
     private function getListCdr(array $post): array
     {
@@ -32,7 +91,7 @@ trait CallTrait
             $orderBy = 'calldate';
         }
 
-        $sql_parts = ["SELECT SQL_CALC_FOUND_ROWS calldate, uniqueid, t.user, src, cnam, did, dst, lastapp, disposition, billsec, (duration - billsec) AS wait",
+        $sql_parts = ["SELECT SQL_CALC_FOUND_ROWS calldate, uniqueid, t.user, src, cnam, did, dst, dcontext, lastapp, disposition, billsec, (duration - billsec) AS wait",
             "FROM asteriskcdrdb.cdr",
             "LEFT JOIN asterisk.tarifador_pinuser t ON accountcode = t.pin",
             "WHERE calldate BETWEEN :startDateTime AND :endDateTime"];
@@ -48,27 +107,34 @@ trait CallTrait
                 $params[$filter['placeholder']] = $filter['value'];
             }
         }
-
+        
         $sql_parts[] = "ORDER BY $orderBy $order LIMIT $offset, $limit";
         $sql = implode(' ', $sql_parts);
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);
         $cdrs = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
-
+        
         $total = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
         $active_rates = $this->getRate($post['startDate']);
 
-        $cdrs = array_map(function ($cdr) use ($active_rates) {
+        $extensionList = $this->getExtensionList();
+    
+        $cdrs = array_map(function ($cdr) use ($active_rates, $extensionList) {
+
+            $cdr['call_type'] = $this->getCallType($cdr, $extensionList);
+
             $cdr['cost'] = '0.00';
             $cdr['rate'] = 'Não Tarifado';
-            if ((int)$cdr['billsec'] > 0 && strlen($cdr['src']) === 4 && strlen($cdr['dst']) !== 4) {
+
+            if ($cdr['call_type'] === 'OUTBOUND' && (int)$cdr['billsec'] > 0) {
                 $cost_details = $this->cost($cdr['dst'], (int)$cdr['billsec'], $active_rates);
                 if ($cost_details !== null) {
                     $cdr['cost'] = $cost_details['cost'];
                     $cdr['rate'] = $cost_details['rate'];
                 }
             }
+
             return $cdr;
         }, $cdrs);
 
@@ -76,10 +142,9 @@ trait CallTrait
     }
 
     /**
-     * Counts calls by disposition status.
-     * 
-     * @param array $post The post data containing filter parameters.
-     * @return array An array containing disposition labels and their corresponding counts.
+     * Quantidade por estado das chamadas 
+     * * @param array $post
+     * @return array
      */
     private function getDisposition(array $post): array
     {
@@ -126,10 +191,9 @@ trait CallTrait
     }
 
     /**
-     * Generates SQL filters for SELECT queries.
-     * 
-     * @param array $post The post data containing filter parameters.
-     * @return array An array of filter conditions, each containing SQL snippet, placeholder, and value.
+     * Filtro para SELECT
+     * * @param array $post
+     * @return array|string
      */
     private function filterSelect(array $post): array
     {
@@ -163,11 +227,11 @@ trait CallTrait
     }
 
     /**
-     * Adds a text-based filter (src or dst) to the filters array.
+     * Adiciona um filtro de texto (src ou dst) ao array de filtros.
      *
-     * @param array $filters The filters array to modify by reference.
-     * @param array $post The post data containing filter parameters.
-     * @param string $field The field name to filter (e.g., 'src', 'dst').
+     * @param array $filters O array de filtros (passado por referência).
+     * @param array $post Os dados do POST.
+     * @param string $field O campo ('src' ou 'dst').
      * @return void
      */
     private function addTextFilter(array &$filters, array $post, string $field): void
@@ -192,84 +256,84 @@ trait CallTrait
         ];
     }
 
-    /**
-     * Calculates the cost of a call based on number and billing seconds.
-     *
-     * @param string|null $number The destination number of the call.
-     * @param int $billSec The billed seconds for the call.
-     * @param array $rates An array of active rates for the period.
-     * @return array|null An array with 'cost' and 'rate' or null if no rate matches.
-     */
+    /** *
+    * @param string $number
+    * @param int $billSec
+    * @param array $rates Array de tarifas ativas para o período.
+    * @return array|null Retorna um array com 'cost' e 'rate' ou null se nenhuma tarifa corresponder.
+    */
     private function cost(?string $number, int $billSec, array $rates): ?array
     {
         if ($number === null || $billSec <= 3) {
             return null;
         }
-
+    
         $chargeableSeconds = 0;
-        if ($billSec > 30) {
-            // Bill in 6-second increments, rounding up
+        if ( $billSec > 30 ) {
             $chargeableSeconds = (int)(ceil($billSec / 6) * 6);
         } else {
-            // Bill a minimum of 30 seconds
             $chargeableSeconds = 30;
         }
 
         if ($chargeableSeconds === 0) {
             return null;
         }
-
+    
         $chargeableMinutes = $chargeableSeconds / 60;
-
+    
         foreach ($rates as $rate) {
             if ($this->match($rate['dial_pattern'], $number)) {
                 return [
-                    'rate' => $rate['name'] ?? '---',
+                    'rate' => $rate['name'] ?? '---', 
                     'cost' => number_format($chargeableMinutes * (float)$rate['rate'], 2, '.', '')
                 ];
             }
         }
-
+    
         return null;
     }
 
     /**
-     * Checks if a number matches an Asterisk dial pattern.
-     * 
-     * @param string $dialPattern The Asterisk dial pattern to match against.
-     * @param string $number The number to check.
-     * @return bool True if the number matches the pattern, false otherwise.
+     * Verifica se o número é compatível com dial pattern do asterisk
+     * * @param string $dialPattern
+     * @param string $number
+     * @return boolean
      */
     private function match(string $dialPattern, string $number): bool
     {
-        if (str_starts_with($dialPattern, '_')) {
-            $dialPattern = substr($dialPattern, 1);
+        static $regexCache = [];
+
+        if (isset($regexCache[$dialPattern])) {
+            $finalRegex = $regexCache[$dialPattern];
+        } else {
+            $pattern = $dialPattern;
+            if (str_starts_with($pattern, '_')) {
+                $pattern = substr($pattern, 1);
+            }
+
+            $asteriskToRegexMap = [
+                'X' => '[0-9]',
+                'Z' => '[1-9]',
+                'N' => '[2-9]',
+                '.' => '.+',
+                '!' => '.*'
+            ];
+            
+            $pattern = preg_quote($pattern, '/');
+            foreach ($asteriskToRegexMap as $asteriskChar => $regexEquiv) {
+                $pattern = str_replace(preg_quote($asteriskChar, '/'), $regexEquiv, $pattern);
+            }
+            
+            $finalRegex = "/^" . $pattern . "$/";
+            $regexCache[$dialPattern] = $finalRegex;
         }
-
-        $asteriskToRegexMap = [
-            'X' => '[0-9]',   // Qualquer dígito de 0 a 9
-            'Z' => '[1-9]',   // Qualquer dígito de 1 a 9
-            'N' => '[2-9]',   // Qualquer dígito de 2 a 9
-            '.' => '.+',      // Um ou mais caracteres quaisquer.
-            '!' => '.*'       // Zero ou mais caracteres quaisquer.
-        ];
-
-        $pattern = preg_quote($dialPattern, '/');
-
-        foreach ($asteriskToRegexMap as $asteriskChar => $regexEquiv) {
-            $pattern = str_replace(preg_quote($asteriskChar, '/'), $regexEquiv, $pattern);
-        }
-
-        $finalRegex = "/^" . $pattern . "$/";
-
+    
         return preg_match($finalRegex, $number) === 1;
     }
 
     /**
-     * Retrieves a single call by its ID.
-     *
-     * @param int $id The ID of the call to retrieve.
-     * @return int The ID of the call (placeholder, as it currently just returns the ID).
+     * @param int $id
+     * @return mixed
      */
     private function getOneCall(int $id): int
     {
@@ -277,10 +341,9 @@ trait CallTrait
     }
 
     /**
-     * Filters and sanitizes date and time parameters from the post data.
-     * 
-     * @param array $post The post data.
-     * @return array The post data with sanitized date and time parameters.
+     * Filtro de data e horário
+     * * @param $post
+     * @return mixed
      */
     private function filterDateTime(array $post): array
     {
@@ -293,70 +356,12 @@ trait CallTrait
     }
 
     /**
-     * Retrieves the top 50 call sources by count.
-     * 
-     * @param array $post The post data containing filter parameters.
-     * @return array An array of top source numbers and their call counts.
-     */
-    private function getTopSrcCount(array $post): array
-    {
-        $sql = "SELECT src, COUNT(*) AS total FROM asteriskcdrdb.cdr WHERE calldate BETWEEN :startDateTime AND :endDateTime";
-        $groupBy = "GROUP BY src ORDER BY total DESC LIMIT 50";
-        return $this->runFilteredQuery($post, $sql, $groupBy);
-    }
-
-    /**
-     * Retrieves the top 50 call destinations by count.
-     * 
-     * @param array $post The post data containing filter parameters.
-     * @return array An array of top destination numbers and their call counts.
-     */
-    private function getTopDstCount(array $post): array
-    {
-        $sql = "SELECT dst, COUNT(*) AS total FROM asteriskcdrdb.cdr WHERE calldate BETWEEN :startDateTime AND :endDateTime";
-        $groupBy = "GROUP BY dst ORDER BY total DESC LIMIT 50";
-        return $this->runFilteredQuery($post, $sql, $groupBy);
-    }
-
-    /**
-     * Retrieves call distribution by hour.
-     * 
-     * @param array $post The post data containing filter parameters.
-     * @return array An array of hourly call counts.
-     */
-    public function getCallsHour(array $post): array
-    {
-        $sql = "SELECT HOUR(calldate) AS hour, COUNT(*) AS total FROM asteriskcdrdb.cdr WHERE calldate BETWEEN :startDateTime AND :endDateTime";
-        $groupBy = "GROUP BY hour ORDER BY hour";
-        return $this->runFilteredQuery($post, $sql, $groupBy);
-    }
-
-    /**
-     * Retrieves total call count, minutes, and average duration.
-     * 
-     * @param array $post The post data containing filter parameters.
-     * @return array An array containing total calls, total minutes, and average duration.
-     */
-    public function getTotalCalls(array $post): array
-    {
-        $sql = "
-            SELECT 
-                COUNT(billsec) AS total, 
-                ROUND(SUM(billsec) / 60, 1) AS minutes, 
-                ROUND(SUM(billsec) / COUNT(billsec) / 60, 1) AS avg 
-            FROM asteriskcdrdb.cdr 
-            WHERE calldate BETWEEN :startDateTime AND :endDateTime
-        ";
-        return $this->runFilteredQuery($post, $sql);
-    }
-
-    /**
-     * Executes a filtered SQL query and returns the results.
+     * Executa uma query SQL filtrada e retorna os resultados.
      *
-     * @param array $post The post data containing filter parameters.
-     * @param string $baseSql The base SQL query string.
-     * @param string $suffix Optional SQL suffix (e.g., GROUP BY, ORDER BY, LIMIT).
-     * @return array The fetched results as an associative array, or an empty array if no results.
+     * @param array $post Dados do POST com filtros.
+     * @param string $baseSql A query SQL base (sem filtros 'AND').
+     * @param string $suffix O sufixo da query (GROUP BY, ORDER BY, LIMIT).
+     * @return array
      */
     private function runFilteredQuery(array $post, string $baseSql, string $suffix = ''): array
     {
@@ -386,11 +391,64 @@ trait CallTrait
         return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
     }
 
+
     /**
-     * Converts an Asterisk dial pattern to a regular expression string for RLIKE queries.
-     *
-     * @param string $number The Asterisk dial pattern.
-     * @return string The converted regular expression string.
+     * Origem das chamadas (top 50) 
+     * * @param $post
+     * @return array
+     */
+    private function getTopSrcCount(array $post): array
+    {
+        $sql = "SELECT src, COUNT(*) AS total FROM asteriskcdrdb.cdr WHERE calldate BETWEEN :startDateTime AND :endDateTime";
+        $groupBy = "GROUP BY src ORDER BY total DESC LIMIT 50";
+        return $this->runFilteredQuery($post, $sql, $groupBy);
+    }
+
+    /**
+     * Destino das chamadas (top 50) 
+     * * @param $post
+     * @return array
+     */
+    private function getTopDstCount(array $post): array
+    {
+        $sql = "SELECT dst, COUNT(*) AS total FROM asteriskcdrdb.cdr WHERE calldate BETWEEN :startDateTime AND :endDateTime";
+        $groupBy = "GROUP BY dst ORDER BY total DESC LIMIT 50";
+        return $this->runFilteredQuery($post, $sql, $groupBy);
+    }
+
+    /**
+     * Distribuição das chamadas por hora
+     * * @param $post
+     * @return array|null
+     */
+    public function getCallsHour(array $post): array
+    {
+        $sql = "SELECT HOUR(calldate) AS hour, COUNT(*) AS total FROM asteriskcdrdb.cdr WHERE calldate BETWEEN :startDateTime AND :endDateTime";
+        $groupBy = "GROUP BY hour ORDER BY hour";
+        return $this->runFilteredQuery($post, $sql, $groupBy);
+    }
+
+    /**
+     * Quantidade de chamadas, minutos e média
+     * * @param $post
+     * @return array|null
+     */
+    public function getTotalCalls(array $post): array
+    {
+        $sql = "
+            SELECT 
+                COUNT(billsec) AS total, 
+                ROUND(SUM(billsec) / 60, 1) AS minutes, 
+                ROUND(SUM(billsec) / COUNT(billsec) / 60, 1) AS avg 
+            FROM asteriskcdrdb.cdr 
+            WHERE calldate BETWEEN :startDateTime AND :endDateTime
+        ";
+        return $this->runFilteredQuery($post, $sql);
+    }
+
+    /**
+     * @param $number
+     * @return string
      */
     private function asteriskRegExp(string $number): string
     {
