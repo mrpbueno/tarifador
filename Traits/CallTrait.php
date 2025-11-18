@@ -130,12 +130,6 @@ trait CallTrait
                 }
             }
 
-            if ($cdr['call_type'] === 'INTERNAL') {
-                $cdr['rate'] = 'Interna';
-            } elseif ($cdr['call_type'] === 'INBOUND') {
-                $cdr['rate'] = 'Recebida';
-            }
-
             return $cdr;
         }, $cdrs);
 
