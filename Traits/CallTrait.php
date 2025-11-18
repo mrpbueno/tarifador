@@ -14,62 +14,58 @@ use PDO;
 trait CallTrait
 {
     /**
-     * @var array|null Cache estático para a lista de ramais.
+     * @var array|null Cache estático para a lista de prefixos de troncos.
      */
-    private static ?array $extensionListCache = null;
+    private static ?array $trunkListCache = null;
 
     /**
-     * Busca uma lista de todos os ramais (devices) do banco de dados.
-     * Armazena o resultado em cache estaticamente para a duração da requisição.
+     * Busca a lista de troncos e cria os prefixos de canal para comparação.
+     * Ex: Se tech='PJSIP' e channelid='OPERADORA', armazena 'pjsip/operadora'.
      *
-     * @return array Um array plano com os números dos ramais (ex: ['1000', '1001', '2000']).
+     * @return array Array de strings com os prefixos dos troncos (em minúsculo).
      */
-    private function getExtensionList(): array
+    private function getTrunkList(): array
     {
-        if (self::$extensionListCache === null) {
-            $sql = "SELECT id FROM devices";
+        if (self::$trunkListCache === null) {
+            $sql = "SELECT tech, channelid FROM trunks";
             $stmt = $this->db->query($sql);
-            self::$extensionListCache = $stmt->fetchAll(PDO::FETCH_COLUMN) ?: [];
+            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+            
+            $prefixes = [];
+            foreach ($rows as $row) {
+                if (!empty($row['tech']) && !empty($row['channelid'])) {
+                    $prefixes[] = strtolower($row['tech'] . '/' . $row['channelid']);
+                }
+            }
+            self::$trunkListCache = $prefixes;
         }
-        return self::$extensionListCache;
+        return self::$trunkListCache;
     }
 
     /**
-     * Classifica uma chamada como INTERNA, RECEBIDA, ORIGINADA ou DESCONHECIDA.
-     * Utiliza 'did' e 'dcontext' como indicadores primários.
-     *
-     * @param array $cdr A linha de dados do CDR.
-     * @param array $extensionList Uma lista de todos os ramais conhecidos.
-     * @return string O tipo da chamada ('INBOUND', 'INTERNAL', 'OUTBOUND', 'UNKNOWN').
+     * Classifica a chamada baseada no uso de canais de tronco.
+     * * @param array $cdr A linha de dados do CDR.
+     * @param array $trunkList Lista de prefixos de troncos.
+     * @return string 'INBOUND', 'OUTBOUND' ou 'INTERNAL'.
      */
-    private function getCallType(array $cdr, array $extensionList): string
+    private function getCallType(array $cdr, array $trunkList): string
     {
-        $dcontext = $cdr['dcontext'] ?? '';
-        $did = $cdr['did'] ?? '';
-        $src = $cdr['src'] ?? '';
-        $dst = $cdr['dst'] ?? '';
+        $channel = strtolower($cdr['channel'] ?? '');
+        $dstChannel = strtolower($cdr['dstchannel'] ?? '');
 
-        if (!empty($did) || 
-            str_starts_with($dcontext, 'from-trunk') ||
-            str_starts_with($dcontext, 'ext-did') ||
-            str_starts_with($dcontext, 'from-pstn')
-        ) {
-            return 'INBOUND';
+        foreach ($trunkList as $trunkPrefix) {
+            if (str_starts_with($channel, $trunkPrefix)) {
+                return 'INBOUND';
+            }
         }
 
-        if (str_starts_with($dcontext, 'macro-dialout-trunk')) {
-            return 'OUTBOUND';
+        foreach ($trunkList as $trunkPrefix) {
+            if (str_starts_with($dstChannel, $trunkPrefix)) {
+                return 'OUTBOUND';
+            }
         }
 
-        $isSourceExtension = in_array($src, $extensionList, true);
-        $isDestExtension = in_array($dst, $extensionList, true);
-
-        if ($isSourceExtension && $isDestExtension) {
-            return 'INTERNAL';
-        }
-
-
-        return 'UNKNOWN';
+        return 'INTERNAL';
     }
 
     /**
@@ -91,7 +87,7 @@ trait CallTrait
             $orderBy = 'calldate';
         }
 
-        $sql_parts = ["SELECT SQL_CALC_FOUND_ROWS calldate, uniqueid, t.user, src, cnam, did, dst, dcontext, lastapp, disposition, billsec, (duration - billsec) AS wait",
+        $sql_parts = ["SELECT SQL_CALC_FOUND_ROWS calldate, uniqueid, t.user, src, cnam, did, dst, channel, dstchannel, lastapp, disposition, billsec, (duration - billsec) AS wait",
             "FROM asteriskcdrdb.cdr",
             "LEFT JOIN asterisk.tarifador_pinuser t ON accountcode = t.pin",
             "WHERE calldate BETWEEN :startDateTime AND :endDateTime"];
@@ -118,12 +114,11 @@ trait CallTrait
         $total = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
         $active_rates = $this->getRate($post['startDate']);
 
-        $extensionList = $this->getExtensionList();
+        $trunkList = $this->getTrunkList();
     
-        $cdrs = array_map(function ($cdr) use ($active_rates, $extensionList) {
+        $cdrs = array_map(function ($cdr) use ($active_rates, $trunkList) {
 
-            $cdr['call_type'] = $this->getCallType($cdr, $extensionList);
-
+            $cdr['call_type'] = $this->getCallType($cdr, $trunkList);
             $cdr['cost'] = '0.00';
             $cdr['rate'] = 'Não Tarifado';
 
@@ -133,6 +128,12 @@ trait CallTrait
                     $cdr['cost'] = $cost_details['cost'];
                     $cdr['rate'] = $cost_details['rate'];
                 }
+            }
+
+            if ($cdr['call_type'] === 'INTERNAL') {
+                $cdr['rate'] = 'Interna';
+            } elseif ($cdr['call_type'] === 'INBOUND') {
+                $cdr['rate'] = 'Recebida';
             }
 
             return $cdr;
