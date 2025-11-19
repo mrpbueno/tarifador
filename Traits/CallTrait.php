@@ -20,7 +20,6 @@ trait CallTrait
 
     /**
      * Busca a lista de troncos e cria os prefixos de canal para comparação.
-     * Ex: Se tech='PJSIP' e channelid='OPERADORA', armazena 'pjsip/operadora'.
      *
      * @return array Array de strings com os prefixos dos troncos (em minúsculo).
      */
@@ -33,8 +32,22 @@ trait CallTrait
             
             $prefixes = [];
             foreach ($rows as $row) {
-                if (!empty($row['tech']) && !empty($row['channelid'])) {
-                    $prefixes[] = strtolower($row['tech'] . '/' . $row['channelid']);
+                $tech = strtolower($row['tech'] ?? '');
+                $channelid = strtolower($row['channelid'] ?? '');
+
+                if (empty($channelid)) {
+                    continue;
+                }
+
+                if (str_contains($channelid, '/')) {
+                    $parts = explode('/', $channelid);
+                    if (!empty($parts[0])) {
+                        $prefixes[] = $parts[0] . '/';
+                    }
+                } else {
+                    if (!empty($tech)) {
+                        $prefixes[] = $tech . '/' . $channelid;
+                    }
                 }
             }
             self::$trunkListCache = $prefixes;
