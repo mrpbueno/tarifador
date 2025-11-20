@@ -133,7 +133,7 @@ trait CallTrait
 
             $cdr['call_type'] = $this->getCallType($cdr, $trunkList);
             $cdr['cost'] = '0.00';
-            $cdr['rate'] = 'Não Tarifado';
+            $cdr['rate'] = _('ND');
 
             if ($cdr['call_type'] === 'OUTBOUND' && (int)$cdr['billsec'] > 0) {
                 $cost_details = $this->cost($cdr['dst'], (int)$cdr['billsec'], $active_rates);
@@ -310,7 +310,6 @@ trait CallTrait
     private function match(string $dialPattern, string $number): bool
     {
         static $regexCache = [];
-
         if (isset($regexCache[$dialPattern])) {
             $finalRegex = $regexCache[$dialPattern];
         } else {
@@ -319,6 +318,9 @@ trait CallTrait
                 $pattern = substr($pattern, 1);
             }
 
+            $pattern = preg_quote($pattern, '/');
+            $pattern = str_replace(['\[', '\]', '\-'], ['[', ']', '-'], $pattern);
+
             $asteriskToRegexMap = [
                 'X' => '[0-9]',
                 'Z' => '[1-9]',
@@ -326,12 +328,11 @@ trait CallTrait
                 '.' => '.+',
                 '!' => '.*'
             ];
-            
-            $pattern = preg_quote($pattern, '/');
+
             foreach ($asteriskToRegexMap as $asteriskChar => $regexEquiv) {
-                $pattern = str_replace(preg_quote($asteriskChar, '/'), $regexEquiv, $pattern);
+                $pattern = str_replace($asteriskChar, $regexEquiv, $pattern);
             }
-            
+
             $finalRegex = "/^" . $pattern . "$/";
             $regexCache[$dialPattern] = $finalRegex;
         }

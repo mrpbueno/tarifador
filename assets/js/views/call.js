@@ -32,6 +32,38 @@ function dispositionFormatter(value) {
     return disposition[value];
 }
 
+function callTypeFormatter(value, row, index) {
+    const types = {
+        'INBOUND': {
+            class: 'label-success', 
+            icon: 'fa-arrow-down',
+            label: 'Entrada'
+        },
+        'OUTBOUND': {
+            class: 'label-primary', 
+            icon: 'fa-arrow-up',
+            label: 'Saída'
+        },
+        'INTERNAL': {
+            class: 'label-default', 
+            icon: 'fa-arrows-h',
+            label: 'Interna'
+        },
+        'UNKNOWN': {
+            class: 'label-warning', 
+            icon: 'fa-question',
+            label: 'Desconhecido'
+        }
+    };
+
+    let type = types[value] || types['UNKNOWN'];
+
+    return '<span class="label ' + type.class + '">' + 
+           '<i class="fa ' + type.icon + '"></i> ' + 
+           type.label + 
+           '</span>';
+}
+
 function linkFormatUniqueId(value, row, index){
     return '<a href="#" data-toggle="modal" data-target="#cel-modal" data-id="' + value + '">' + value + '</a>';
 }
