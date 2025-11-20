@@ -35,22 +35,18 @@ function dispositionFormatter(value) {
 function callTypeFormatter(value, row, index) {
     const types = {
         'INBOUND': {
-            class: 'label-success', 
             icon: 'fa-arrow-down',
             label: 'Entrada'
         },
-        'OUTBOUND': {
-            class: 'label-primary', 
+        'OUTBOUND': { 
             icon: 'fa-arrow-up',
             label: 'Saída'
         },
         'INTERNAL': {
-            class: 'label-default', 
             icon: 'fa-arrows-h',
             label: 'Interna'
         },
-        'UNKNOWN': {
-            class: 'label-warning', 
+        'UNKNOWN': { 
             icon: 'fa-question',
             label: 'Desconhecido'
         }
@@ -58,7 +54,7 @@ function callTypeFormatter(value, row, index) {
 
     let type = types[value] || types['UNKNOWN'];
 
-    return '<span class="label ' + type.class + '">' + 
+    return '<span>' + 
            '<i class="fa ' + type.icon + '"></i> ' + 
            type.label + 
            '</span>';

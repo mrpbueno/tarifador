@@ -35,6 +35,8 @@
        data-show-columns="true"
        data-toggle="table"
        data-pagination="true"
+       data-mobile-responsive="true"
+       data-check-on-init="true"
        data-side-pagination="server"
        data-show-refresh="true"
        data-toolbar="#buttons-toolbar"
