@@ -6,7 +6,7 @@
  * It handles the restoration of the module's data as part of the
  * FreePBX Backup & Restore module integration.
  *
- * @package     FreePBX\modules\Bosssec
+ * @package     FreePBX\modules\Tarifador
  * @license     GPLv3
  */
 namespace FreePBX\modules\Tarifador;
