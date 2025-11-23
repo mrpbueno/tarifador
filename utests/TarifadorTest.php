@@ -1,5 +1,8 @@
 <?php
-
+// ------------------------------------------------------------------
+// 1. SIMULAÇÃO DO AMBIENTE FREEPBX (MOCKS DE CLASSES PAI E DEPENDÊNCIAS)
+// ./vendor/bin/phpunit utests/TarifadorTest.php
+// ------------------------------------------------------------------
 namespace FreePBX {
     if (!class_exists('FreePBX_Helpers')) {
         class FreePBX_Helpers {
@@ -9,7 +12,7 @@ namespace FreePBX {
     if (!interface_exists('BMO')) {
         interface BMO {}
     }
-
+    // Mock tipado para Database
     if (!class_exists('Database')) {
         class Database {
             public function query($sql) {}
@@ -18,6 +21,9 @@ namespace FreePBX {
     }
 }
 
+// ------------------------------------------------------------------
+// 2. VOLTA AO NAMESPACE GLOBAL E CARREGA O MÓDULO
+// ------------------------------------------------------------------
 namespace {
 
     use PHPUnit\Framework\TestCase;
@@ -43,7 +49,6 @@ namespace {
         }
 
         public function setUp(): void {
-
             $mockDatabase = $this->getMockBuilder(Database::class)
                                  ->disableOriginalConstructor()
                                  ->getMock();
@@ -51,7 +56,7 @@ namespace {
             $mockBMO = $this->getMockBuilder(\stdClass::class)
                             ->addMethods(['Database']) 
                             ->getMock();
-
+            
             $mockBMO->Database = $mockDatabase;
 
             $this->tarifador = new Tarifador($mockBMO);
@@ -84,19 +89,44 @@ namespace {
             $this->assertEquals('INTERNAL', $type, 'Erro INTERNA');
         }
 
+        /**
+         * Testa o cálculo de custo
+         */
         public function testCostCalculation() {
-            $rates = [['name' => 'Local', 'dial_pattern' => '9XXXXXXXX', 'rate' => '1.00']];
+            // Definir uma data de teste
+            $callDate = '2025-05-10 10:00:00';
 
+            // Definir tarifas com vigência que cobre a data da chamada
+            $rates = [
+                [
+                    'name' => 'Celular Local',
+                    'dial_pattern' => '9XXXXXXXX',
+                    'rate' => '1.00',
+                    'start' => '2025-01-01',
+                    'end' => '2025-12-31'
+                ]
+            ];
+
+            // < 3s -> Custo Zero
             $this->assertNull(
-                $this->invokeMethod($this->tarifador, 'cost', ['999998888', 3, $rates]),
+                $this->invokeMethod($this->tarifador, 'cost', ['999998888', 3, $callDate, $rates]),
                 'Erro < 3s'
             );
 
-            $res = $this->invokeMethod($this->tarifador, 'cost', ['999998888', 20, $rates]);
+            // 20s (Mínimo 30s = 0.5 min) -> 0.50
+            $res = $this->invokeMethod($this->tarifador, 'cost', ['999998888', 20, $callDate, $rates]);
             $this->assertEquals('0.50', $res['cost'], 'Erro Mínimo 30s');
 
-            $res = $this->invokeMethod($this->tarifador, 'cost', ['999998888', 45, $rates]);
+            // 45s (Arredonda para 48s = 0.8 min) -> 0.80
+            $res = $this->invokeMethod($this->tarifador, 'cost', ['999998888', 45, $callDate, $rates]);
             $this->assertEquals('0.80', $res['cost'], 'Erro Fração 6s');
+            
+            // Teste de Falha de Vigência (Data fora do intervalo)
+            $oldDate = '2024-01-01 10:00:00';
+            $this->assertNull(
+                $this->invokeMethod($this->tarifador, 'cost', ['999998888', 60, $oldDate, $rates]),
+                'Erro: Tarifou chamada fora da vigência'
+            );
         }
 
         public function testAsteriskMatch() {

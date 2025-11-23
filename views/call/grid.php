@@ -62,25 +62,131 @@
 	</thead>
 </table>
 <br>
-<div class = "display full-border">
-<div class="row">
-    <div class="col-md-12">
+<div class="row" id="call-stats-dashboard">
+    <div class="col-md-3 col-sm-6">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <a href="#dispositionChart"
-                   title="<?php echo _("Download PDF")?>"
-                   class="fa fa-bar-chart"
-                   onclick="exportChartToPDF('<?php echo \FreePBX::Config()->get('FREEPBX_SYSTEM_IDENT'); ?>')"
-                   aria-hidden="true"></a> <?php echo _("Estado das chamadas")?>
+                <div class="row">
+                    <div class="col-xs-3">
+                        <i class="fa fa-phone fa-3x"></i>
+                    </div>
+                    <div class="col-xs-9 text-right">
+                        <div class="huge" id="stat_total_calls"><i class="fa fa-spinner fa-spin"></i></div>
+                        <div><?php echo _("Total de Chamadas") ?></div>
+                    </div>
+                </div>
             </div>
-            <div class="panel-body">
-                <div>
-                    <canvas id="dispositionChart" style="position: relative; height:30vh; width:80vw"></canvas>
+        </div>
+    </div>
+
+    <div class="col-md-3 col-sm-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <i class="fa fa-clock-o fa-3x"></i>
+                    </div>
+                    <div class="col-xs-9 text-right">
+                        <div class="huge" id="stat_total_duration"><i class="fa fa-spinner fa-spin"></i></div>
+                        <div><?php echo _("Duração") ?></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 col-sm-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <i class="fa fa-bar-chart fa-3x"></i>
+                    </div>
+                    <div class="col-xs-9 text-right">
+                        <div class="huge" id="stat_avg_duration"><i class="fa fa-spinner fa-spin"></i></div>
+                        <div><?php echo _("Média") ?></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 col-sm-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <i class="fa fa-money fa-3x"></i>
+                    </div>
+                    <div class="col-xs-9 text-right">
+                        <div class="huge" id="stat_total_cost"><i class="fa fa-spinner fa-spin"></i></div>
+                        <div><?php echo _("Custo Total") ?></div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<div class="row" id="call-stats-disposition">
+    <div class="col-md-3 col-sm-6">
+        <div class="panel panel-default"> <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <i class="fa fa-check-circle fa-3x"></i>
+                    </div>
+                    <div class="col-xs-9 text-right">
+                        <div class="huge" id="stat_answered"><i class="fa fa-spinner fa-spin"></i></div>
+                        <div><?php echo _("Atendidas") ?></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 col-sm-6">
+        <div class="panel panel-default"> <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <i class="fa fa-bell-slash fa-3x"></i>
+                    </div>
+                    <div class="col-xs-9 text-right">
+                        <div class="huge" id="stat_no_answer"><i class="fa fa-spinner fa-spin"></i></div>
+                        <div><?php echo _("Não Atendidas") ?></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 col-sm-6">
+        <div class="panel panel-default"> <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <i class="fa fa-ban fa-3x"></i>
+                    </div>
+                    <div class="col-xs-9 text-right">
+                        <div class="huge" id="stat_busy"><i class="fa fa-spinner fa-spin"></i></div>
+                        <div><?php echo _("Ocupadas") ?></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 col-sm-6">
+        <div class="panel panel-default"> <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <i class="fa fa-exclamation-triangle fa-3x"></i>
+                    </div>
+                    <div class="col-xs-9 text-right">
+                        <div class="huge" id="stat_failed"><i class="fa fa-spinner fa-spin"></i></div>
+                        <div><?php echo _("Falhas") ?></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 

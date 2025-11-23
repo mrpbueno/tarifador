@@ -1,25 +1,4 @@
 <?php include __DIR__."../../call/form.php"; ?>
-
-<br/>
-<table id="stats"
-       data-url="ajax.php?module=tarifador&command=getJSON&jdata=grid&page=stats"
-       data-cache="false"
-       data-query-params="queryParams"
-       data-state-save="true"
-       data-state-save-id-table="stats_grid"
-       data-toolbar="#buttons-toolbar"
-       data-maintain-selected="true"
-       data-toggle="table"
-       data-pagination="true"
-       class="table table-sm">
-    <thead>
-    <tr>
-        <th data-field="total"><?php echo _("Quantidade")?></th>
-        <th data-field="minutes"><?php echo _("Minutos")?></th>
-        <th data-field="avg"><?php echo _("Média")?></th>
-    </tr>
-    </thead>
-</table>
 <br>
 <div class = "display full-border">
     <div class="row">

@@ -125,7 +125,7 @@ trait CallTrait
         $cdrs = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
         
         $total = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
-        $active_rates = $this->getRate($post['startDate']);
+        $active_rates = $this->getRate($post['startDate'], $post['endDate']);
 
         $trunkList = $this->getTrunkList();
     
@@ -136,7 +136,7 @@ trait CallTrait
             $cdr['rate'] = _('ND');
 
             if ($cdr['call_type'] === 'OUTBOUND' && (int)$cdr['billsec'] > 0) {
-                $cost_details = $this->cost($cdr['dst'], (int)$cdr['billsec'], $active_rates);
+                $cost_details = $this->cost($cdr['dst'], (int)$cdr['billsec'], $cdr['calldate'], $active_rates);
                 if ($cost_details !== null) {
                     $cdr['cost'] = $cost_details['cost'];
                     $cdr['rate'] = $cost_details['rate'];
@@ -270,34 +270,23 @@ trait CallTrait
     * @param array $rates Array de tarifas ativas para o período.
     * @return array|null Retorna um array com 'cost' e 'rate' ou null se nenhuma tarifa corresponder.
     */
-    private function cost(?string $number, int $billSec, array $rates): ?array
+    private function cost(?string $number, int $billSec, string $callDate, array $rates): ?array
     {
-        if ($number === null || $billSec <= 3) {
-            return null;
-        }
-    
-        $chargeableSeconds = 0;
-        if ( $billSec > 30 ) {
-            $chargeableSeconds = (int)(ceil($billSec / 6) * 6);
-        } else {
-            $chargeableSeconds = 30;
-        }
-
-        if ($chargeableSeconds === 0) {
-            return null;
-        }
-    
+        if ($number === null || $billSec <= 3) return null;
+        $chargeableSeconds = ($billSec > 30) ? (int)(ceil($billSec / 6) * 6) : 30;
         $chargeableMinutes = $chargeableSeconds / 60;
+        $callDateYMD = substr($callDate, 0, 10); 
     
         foreach ($rates as $rate) {
-            if ($this->match($rate['dial_pattern'], $number)) {
-                return [
-                    'rate' => $rate['name'] ?? '---', 
-                    'cost' => number_format($chargeableMinutes * (float)$rate['rate'], 2, '.', '')
-                ];
+            if ($callDateYMD >= $rate['start'] && $callDateYMD <= $rate['end']) {
+                if ($this->match($rate['dial_pattern'], $number)) {
+                    return [
+                        'rate' => $rate['name'] ?? '---', 
+                        'cost' => number_format($chargeableMinutes * (float)$rate['rate'], 2, '.', '')
+                    ];
+                }
             }
         }
-    
         return null;
     }
 
@@ -438,21 +427,64 @@ trait CallTrait
     }
 
     /**
-     * Quantidade de chamadas, minutos e média
-     * * @param $post
-     * @return array|null
+     * Quantidade de chamadas, minutos, média, custo e contagem por estado.
+     * @param array $post
+     * @return array
      */
     public function getTotalCalls(array $post): array
     {
-        $sql = "
-            SELECT 
-                COUNT(billsec) AS total, 
-                ROUND(SUM(billsec) / 60, 1) AS minutes, 
-                ROUND(SUM(billsec) / COUNT(billsec) / 60, 1) AS avg 
-            FROM asteriskcdrdb.cdr 
-            WHERE calldate BETWEEN :startDateTime AND :endDateTime
-        ";
-        return $this->runFilteredQuery($post, $sql);
+        $sql = "SELECT dst, billsec, channel, dstchannel, src, disposition, calldate FROM asteriskcdrdb.cdr WHERE calldate BETWEEN :startDateTime AND :endDateTime";
+        $rows = $this->runFilteredQuery($post, $sql); 
+        $totalCalls = 0;
+        $totalBillsec = 0;
+        $totalCost = 0.0;
+        $stats = [
+            'ANSWERED'  => 0,
+            'NO ANSWER' => 0,
+            'BUSY'      => 0,
+            'FAILED'    => 0
+        ];
+        $active_rates = $this->getRate($post['startDate'], $post['endDate']);
+        $trunkList = $this->getTrunkList();
+
+        foreach ($rows as $row) {
+            $totalCalls++;
+            $totalBillsec += $row['billsec'];
+            $disp = strtoupper($row['disposition']);
+            if (isset($stats[$disp])) {
+                $stats[$disp]++;
+            } else {
+                $stats['FAILED']++;
+            }
+            $type = $this->getCallType($row, $trunkList);
+            if ($type === 'OUTBOUND' && $row['billsec'] > 0) {
+                $costDetails = $this->cost($row['dst'], (int)$row['billsec'], $row['calldate'], $active_rates);
+                if ($costDetails) {
+                    $totalCost += (float)$costDetails['cost'];
+                }
+            }
+        }
+        $minutes = floor($totalBillsec / 60);
+$seconds = $totalBillsec % 60;
+$totalMinutes = sprintf('%d:%02d', $minutes, $seconds);
+
+$avgSeconds = $totalCalls > 0 ? floor($totalBillsec / $totalCalls) : 0;
+
+$avgMinutes = floor($avgSeconds / 60);
+$avgSec = $avgSeconds % 60;
+
+$avg = sprintf('%d:%02d', $avgMinutes, $avgSec);
+
+        return [
+            'total'      => $totalCalls,
+            'minutes'    => $totalMinutes,
+            'avg'        => $avg,
+            'total_cost' => number_format($totalCost, 2, '.', ''),
+            'answered'   => $stats['ANSWERED'],
+            'no_answer'  => $stats['NO ANSWER'],
+            'busy'       => $stats['BUSY'],
+            'failed'     => $stats['FAILED']
+        ];
     }
 
     /**

@@ -224,23 +224,22 @@ trait RateTrait
         return $data ?: null;
     }
 
-    private function getRate(string $callDate): array
+    private function getRate(string $startDate, string $endDate): array
     {
         try {
-            $date = new DateTime($callDate);
-            $formattedDate = $date->format('Y-m-d');
-        } catch (Exception $e) {
+            $dtStart = new \DateTime($startDate);
+            $dtEnd = new \DateTime($endDate);
+        } catch (\Exception $e) {
             return [];
         }
-
-        $sql = 'SELECT name, dial_pattern, rate FROM tarifador_rate 
-                WHERE start <= :calldate AND end >= :calldate 
+        $sql = 'SELECT name, dial_pattern, rate, start, end FROM tarifador_rate 
+                WHERE start <= :endDate AND end >= :startDate 
                 ORDER BY seq ASC';
-
         $stmt = $this->db->prepare($sql);
-        $stmt->bindValue(':calldate', $formattedDate, PDO::PARAM_STR);
+        $stmt->bindValue(':startDate', $dtStart->format('Y-m-d'), PDO::PARAM_STR);
+        $stmt->bindValue(':endDate', $dtEnd->format('Y-m-d'), PDO::PARAM_STR);
         $stmt->execute();
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
     }
 }

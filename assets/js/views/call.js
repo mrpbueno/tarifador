@@ -205,3 +205,48 @@ $(function () {
     }
     });
 });
+
+/**
+ * Atualiza o painel de estatísticas
+ * Disparado toda vez que a tabela carrega novos dados (filtro, paginação, refresh)
+ */
+$('#tarifador').on('load-success.bs.table', function (e, data) {
+    updateStats();
+});
+
+function updateStats() {
+    var params = {
+        startDate: $('#startDate').val(),
+        startTime: $('#starTime').val(),
+        endDate: $('#endDate').val(),
+        endTime: $('#endTime').val(),
+        src: $('#src').val(),
+        dst: $('#dst').val(),
+        accountcode: $('#accountcode').val(),
+        disposition: $('#disposition').val(),
+    };
+
+    $('#stat_total_calls, #stat_total_duration, #stat_avg_duration, #stat_total_cost').html('<i class="fa fa-spinner fa-spin" style="font-size: 0.5em;"></i>');
+
+    $.ajax({
+        type: 'POST',
+        url: 'ajax.php?module=tarifador&command=getJSON&jdata=grid&page=stats',
+        data: params,
+        dataType: 'json',
+        success: function(res) {
+            $('#stat_total_calls').text(res.total || 0);
+            $('#stat_total_duration').text(res.minutes || '0.0');
+            $('#stat_avg_duration').text(res.avg || '0.0');
+            var custo = res.total_cost ? parseFloat(res.total_cost).toFixed(2) : '0.00';
+            $('#stat_total_cost').text(custo);
+            $('#stat_answered').text(res.answered || 0);
+            $('#stat_no_answer').text(res.no_answer || 0);
+            $('#stat_busy').text(res.busy || 0);
+            $('#stat_failed').text(res.failed || 0);
+        },
+        error: function() {
+            console.error("Erro ao carregar estatísticas");
+            $('#stat_total_calls').text("-");
+        }
+    });
+}
