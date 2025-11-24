@@ -464,26 +464,19 @@ trait CallTrait
                 }
             }
         }
-        $minutes = floor($totalBillsec / 60);
-$seconds = $totalBillsec % 60;
-$totalMinutes = sprintf('%d:%02d', $minutes, $seconds);
-
-$avgSeconds = $totalCalls > 0 ? floor($totalBillsec / $totalCalls) : 0;
-
-$avgMinutes = floor($avgSeconds / 60);
-$avgSec = $avgSeconds % 60;
-
-$avg = sprintf('%d:%02d', $avgMinutes, $avgSec);
+        $totalTime = $this->formatSecondsToHMS($totalBillsec);
+        $avgSeconds = $totalCalls > 0 ? floor($totalBillsec / $totalCalls) : 0;
+        $avg = $this->formatSecondsToHMS((int) $avgSeconds);
 
         return [
-            'total'      => $totalCalls,
-            'minutes'    => $totalMinutes,
-            'avg'        => $avg,
-            'total_cost' => number_format($totalCost, 2, '.', ''),
-            'answered'   => $stats['ANSWERED'],
-            'no_answer'  => $stats['NO ANSWER'],
-            'busy'       => $stats['BUSY'],
-            'failed'     => $stats['FAILED']
+            'total_calls' => $totalCalls,
+            'total_time'  => $totalTime,
+            'avg'         => $avg,
+            'total_cost'  => number_format($totalCost, 2, '.', ''),
+            'answered'    => $stats['ANSWERED'],
+            'no_answer'   => $stats['NO ANSWER'],
+            'busy'        => $stats['BUSY'],
+            'failed'      => $stats['FAILED']
         ];
     }
 
@@ -508,5 +501,14 @@ $avg = sprintf('%d:%02d', $avgMinutes, $avgSec);
         }
 
         return "^" . $number . "$";
+    }
+
+    private function formatSecondsToHMS(int $seconds): string
+    {
+        $hours = floor($seconds / 3600);
+        $minutes = floor(($seconds % 3600) / 60);
+        $secs = $seconds % 60;
+
+        return sprintf('%d:%02d:%02d', $hours, $minutes, $secs);
     }
 }

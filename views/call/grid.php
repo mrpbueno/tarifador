@@ -88,7 +88,7 @@
                     </div>
                     <div class="col-xs-9 text-right">
                         <div class="huge" id="stat_total_duration"><i class="fa fa-spinner fa-spin"></i></div>
-                        <div><?php echo _("Duração") ?></div>
+                        <div><?php echo _("Duração Total") ?></div>
                     </div>
                 </div>
             </div>
@@ -100,11 +100,11 @@
             <div class="panel-heading">
                 <div class="row">
                     <div class="col-xs-3">
-                        <i class="fa fa-bar-chart fa-3x"></i>
+                        <i class="fa fa fa-history fa-3x"></i>
                     </div>
                     <div class="col-xs-9 text-right">
                         <div class="huge" id="stat_avg_duration"><i class="fa fa-spinner fa-spin"></i></div>
-                        <div><?php echo _("Média") ?></div>
+                        <div><?php echo _("Tempo Médio") ?></div>
                     </div>
                 </div>
             </div>

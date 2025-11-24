@@ -234,9 +234,9 @@ function updateStats() {
         data: params,
         dataType: 'json',
         success: function(res) {
-            $('#stat_total_calls').text(res.total || 0);
-            $('#stat_total_duration').text(res.minutes || '0.0');
-            $('#stat_avg_duration').text(res.avg || '0.0');
+            $('#stat_total_calls').text(res.total_calls || 0);
+            $('#stat_total_duration').text(res.total_time || '00:00');
+            $('#stat_avg_duration').text(res.avg || '00:00');
             var custo = res.total_cost ? parseFloat(res.total_cost).toFixed(2) : '0.00';
             $('#stat_total_cost').text(custo);
             $('#stat_answered').text(res.answered || 0);
