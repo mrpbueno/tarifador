@@ -2,11 +2,11 @@
   "rawname": "tarifador",
   "repo": "unsupported",
   "name": "Tarifador",
-  "version": "17.0.0",
+  "version": "17.0.2",
   "publisher": "mrpbueno",
   "license": "GPLv3+",
   "licenselink": "http://www.gnu.org/licenses/gpl-3.0.txt",
-  "changelog": "*17.0.0*",
+  "changelog": "*17.0.2*",
   "category": "Reports",
   "description": "Tarifador para FreePBX.",
   "depends": {
