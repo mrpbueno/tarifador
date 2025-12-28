@@ -431,8 +431,8 @@ trait CallTrait
      */
     private function getTopSrcCount(array $post): array
     {
-        $sql = "SELECT src, COUNT(*) AS total FROM asteriskcdrdb.cdr WHERE calldate BETWEEN :startDateTime AND :endDateTime";
-        $groupBy = "GROUP BY src ORDER BY total DESC LIMIT 50";
+        $sql = "SELECT cnum, COUNT(*) AS total FROM asteriskcdrdb.cdr WHERE calldate BETWEEN :startDateTime AND :endDateTime";
+        $groupBy = "GROUP BY cnum ORDER BY total DESC LIMIT 50";
         return $this->runFilteredQuery($post, $sql, $groupBy);
     }
 

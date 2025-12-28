@@ -55,7 +55,7 @@ $(function () {
             let src = [];
             let total = [];
             for (let i in data) {
-                src.push(data[i].src);
+                src.push(data[i].cnum);
                 total.push(data[i].total);
             }
             const myChart = new Chart(ctx, {
@@ -73,7 +73,7 @@ $(function () {
                         ],
                         borderWidth: 1
                     }]
-                },                
+                },
                 options: {
                     maintainAspectRatio: false,
                     scales: {
