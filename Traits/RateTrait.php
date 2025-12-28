@@ -18,16 +18,25 @@ use PDOException;
  */
 trait RateTrait
 {
+    /**
+     * Gets the list of rates.
+     * @return array The list of rates.
+     */
     private function getListRate(): array
     {
         $sql = 'SELECT * FROM tarifador_rate ORDER BY seq ASC';
         return $this->db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    /**
+     * Gets a single rate by ID.
+     * @param int $id The rate ID.
+     * @return array|null The rate data or null if not found.
+     */
     private function getOneRate(int $id): ?array
     {
         if ($id <= 0) {
-            $_SESSION['toast_message'] = ['message' => _('ID inválido ou não fornecido.'), 'title' => _('Erro de Validação'), 'level' => 'error'];
+            $_SESSION['toast_message'] = ['message' => _('Invalid or missing ID.'), 'title' => _('Validation Error'), 'level' => 'error'];
             return null;
         }
 
@@ -41,6 +50,10 @@ trait RateTrait
         return $data ?: null;
     }
 
+    /**
+     * Adds a new rate.
+     * @param array $post The post data.
+     */
     private function addRate(array $post): void
     {
         $name = Sanitize::string($post['name'] ?? '');
@@ -51,20 +64,20 @@ trait RateTrait
         $end = Sanitize::string($post['end'] ?? '');
 
         if (empty($name) || empty($telco) || empty($dial_pattern) || $rate === false || empty($start) || empty($end)) {
-            $_SESSION['toast_message'] = ['message' => _('Todos os campos são obrigatórios e a tarifa deve ser um número válido.'), 'title' => _('Erro de Validação'), 'level' => 'error'];
+            $_SESSION['toast_message'] = ['message' => _('All fields are required and the rate must be a valid number.'), 'title' => _('Validation Error'), 'level' => 'error'];
             redirect('config.php?display=tarifador&page=rate&view=form');
             return;
         }
 
         if ($conflict_data = $this->testDate($dial_pattern, $start, $end)) {
             $error_message = sprintf(
-                _('Já existe um padrão de discagem na data de vigência escolhida: %s - %s - %s'),
+                _('A dial pattern already exists in the chosen effective date: %s - %s - %s'),
                 htmlspecialchars($conflict_data['dial_pattern'], ENT_QUOTES, 'UTF-8'),
                 htmlspecialchars($conflict_data['start'], ENT_QUOTES, 'UTF-8'),
                 htmlspecialchars($conflict_data['end'], ENT_QUOTES, 'UTF-8')
             );
 
-            $_SESSION['toast_message'] = ['message' => $error_message, 'title' => _('Conflito de Tarifas'), 'level' => 'error'];
+            $_SESSION['toast_message'] = ['message' => $error_message, 'title' => _('Rate Conflict'), 'level' => 'error'];
             redirect('config.php?display=tarifador&page=rate&view=form');
             return;
         }
@@ -83,15 +96,19 @@ trait RateTrait
             $stmt->execute();
         } catch (PDOException $e) {
             freepbx_log(FPBX_LOG_ERROR, "Tarifador => " . $e->getMessage());
-            $_SESSION['toast_message'] = ['message' => _('Ocorreu um erro no banco de dados ao salvar a tarifa.'), 'title' => _('Erro'), 'level' => 'error'];
+            $_SESSION['toast_message'] = ['message' => _('A database error occurred while saving the rate.'), 'title' => _('Error'), 'level' => 'error'];
             redirect('config.php?display=tarifador&page=rate&view=form');
             return;
         }
 
-        $_SESSION['toast_message'] = ['message' => _('Tarifa adicionada com sucesso!'), 'title' => _('Sucesso'), 'level' => 'success'];
+        $_SESSION['toast_message'] = ['message' => _('Rate added successfully!'), 'title' => _('Success'), 'level' => 'success'];
         redirect('config.php?display=tarifador&page=rate');
     }
 
+    /**
+     * Updates a rate.
+     * @param array $post The post data.
+     */
     private function updateRate(array $post): void
     {
         $id = Sanitize::int($post['id'] ?? 0);
@@ -103,7 +120,7 @@ trait RateTrait
         $end = Sanitize::string($post['end'] ?? '');
 
         if ($id <= 0 || $rate === false || empty($name) || empty($telco) || empty($dial_pattern) || empty($start) || empty($end)) {
-            $_SESSION['toast_message'] = ['message' => _('Todos os campos são obrigatórios, o ID deve ser válido e a tarifa um número.'), 'title' => _('Erro de Validação'), 'level' => 'error'];
+            $_SESSION['toast_message'] = ['message' => _('All fields are required, the ID must be valid and the rate a number.'), 'title' => _('Validation Error'), 'level' => 'error'];
             redirect('config.php?display=tarifador&page=rate&view=form&id=' . $id);
             return;
         }
@@ -123,19 +140,24 @@ trait RateTrait
             $stmt->execute();
         } catch (PDOException $e) {
             freepbx_log(FPBX_LOG_ERROR, "Tarifador => " . $e->getMessage());
-            $_SESSION['toast_message'] = ['message' => _('Ocorreu um erro no banco de dados ao salvar a tarifa.'), 'title' => _('Erro'), 'level' => 'error'];
+            $_SESSION['toast_message'] = ['message' => _('A database error occurred while saving the rate.'), 'title' => _('Error'), 'level' => 'error'];
             redirect('config.php?display=tarifador&page=rate&view=form&id=' . $id);
             return;
         }
 
-        $_SESSION['toast_message'] = ['message' => _('Tarifa atualizada com sucesso!'), 'title' => _('Sucesso'), 'level' => 'success'];
+        $_SESSION['toast_message'] = ['message' => _('Rate updated successfully!'), 'title' => _('Success'), 'level' => 'success'];
         redirect('config.php?display=tarifador&page=rate');
     }
 
+    /**
+     * Updates the order of the rates.
+     * @param array $post The post data.
+     * @return bool True on success, false on failure.
+     */
     private function updateOrderRate(array $post): bool
     {
         if (!isset($post['data']) || !is_array($post['data'])) {
-            $_SESSION['toast_message'] = ['message' => _('Dados de ordenação inválidos ou ausentes.'), 'title' => _('Erro'), 'level' => 'error'];
+            $_SESSION['toast_message'] = ['message' => _('Invalid or missing sort data.'), 'title' => _('Error'), 'level' => 'error'];
             return false;
         }
 
@@ -145,7 +167,7 @@ trait RateTrait
             $seq = filter_var($item['seq'] ?? null, FILTER_VALIDATE_INT);
 
             if ($id === false || $seq === false) {
-                $_SESSION['toast_message'] = ['message' => _('Um dos itens na ordenação continha dados inválidos.'), 'title' => _('Erro'), 'level' => 'error'];
+                $_SESSION['toast_message'] = ['message' => _('One of the items in the sort contained invalid data.'), 'title' => _('Error'), 'level' => 'error'];
                 return false;
             }
             $validated_order[] = ['id' => $id, 'seq' => $seq];
@@ -167,17 +189,21 @@ trait RateTrait
         } catch (PDOException $e) {
             $this->db->rollBack();
             freepbx_log(FPBX_LOG_ERROR, "Tarifador => " . $e->getMessage());
-            $_SESSION['toast_message'] = ['message' => _('Ocorreu um erro no banco de dados e a ordem não pôde ser salva. Nenhuma alteração foi feita.'), 'title' => _('Erro'), 'level' => 'error'];
+            $_SESSION['toast_message'] = ['message' => _('A database error occurred and the order could not be saved. No changes were made.'), 'title' => _('Error'), 'level' => 'error'];
             return false;
         }
 
         return true;
     }
 
+    /**
+     * Deletes a rate.
+     * @param int $id The rate ID.
+     */
     private function deleteRate(int $id): void
     {
         if ($id <= 0) {
-            $_SESSION['toast_message'] = ['message' => _('ID inválido ou não fornecido para exclusão.'), 'title' => _('Erro de Validação'), 'level' => 'error'];
+            $_SESSION['toast_message'] = ['message' => _('Invalid or missing ID for deletion.'), 'title' => _('Validation Error'), 'level' => 'error'];
             redirect('config.php?display=tarifador&page=rate');
             return;
         }
@@ -190,18 +216,25 @@ trait RateTrait
             $stmt->execute();
 
             if ($stmt->rowCount() > 0) {
-                $_SESSION['toast_message'] = ['message' => _('Tarifa excluída com sucesso!'), 'title' => _('Sucesso'), 'level' => 'success'];
+                $_SESSION['toast_message'] = ['message' => _('Rate deleted successfully!'), 'title' => _('Success'), 'level' => 'success'];
             } else {
-                $_SESSION['toast_message'] = ['message' => _('A tarifa não foi encontrada ou já havia sido excluída.'), 'title' => _('Aviso'), 'level' => 'warning'];
+                $_SESSION['toast_message'] = ['message' => _('The rate was not found or has already been deleted.'), 'title' => _('Warning'), 'level' => 'warning'];
             }
         } catch (PDOException $e) {
             freepbx_log(FPBX_LOG_ERROR, "Tarifador => " . $e->getMessage());
-            $_SESSION['toast_message'] = ['message' => _('Ocorreu um erro no banco de dados. A tarifa não pôde ser excluída, possivelmente por estar em uso.'), 'title' => _('Erro'), 'level' => 'error'];
+            $_SESSION['toast_message'] = ['message' => _('A database error occurred. The rate could not be deleted, possibly because it is in use.'), 'title' => _('Error'), 'level' => 'error'];
         }
 
         redirect('config.php?display=tarifador&page=rate');
     }
 
+    /**
+     * Tests for date conflicts with a dial pattern.
+     * @param string $dialPattern The dial pattern.
+     * @param string $start The start date.
+     * @param string $end The end date.
+     * @return array|null The conflicting data or null.
+     */
     private function testDate(string $dialPattern, string $start, string $end): ?array
     {
         if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $start) || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $end)) {
@@ -224,6 +257,12 @@ trait RateTrait
         return $data ?: null;
     }
 
+    /**
+     * Gets the active rates for a given date range.
+     * @param string $startDate The start date.
+     * @param string $endDate The end date.
+     * @return array The list of active rates.
+     */
     private function getRate(string $startDate, string $endDate): array
     {
         try {

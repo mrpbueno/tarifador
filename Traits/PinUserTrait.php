@@ -15,14 +15,16 @@ use Exception;
 trait PinUserTrait
 {
     /**
-     * @param int $id
-     * @return bool|void
+     * Deletes a PIN user from the database.
+     *
+     * @param mixed $id The ID of the user to be deleted.
+     * @return void
      */
     private function deletePinUser(mixed $id): void
     {
         $validated_id = Sanitize::int($id);
         if ($validated_id === false || $validated_id <= 0) {
-            $_SESSION['toast_message'] = ['message' => 'ID inválido ou não fornecido para exclusão.', 'title' => 'Erro de Validação', 'level' => 'error'];
+            $_SESSION['toast_message'] = ['message' => 'Invalid or missing ID for deletion.', 'title' => 'Validation Error', 'level' => 'error'];
             return;
         }
 
@@ -32,59 +34,59 @@ trait PinUserTrait
         try {
             $stmt->execute(['id' => $validated_id]);
             if ($stmt->rowCount() > 0) {
-                $_SESSION['toast_message'] = ['message' => 'Usuário excluído com sucesso!', 'title' => 'Sucesso', 'level' => 'success'];
+                $_SESSION['toast_message'] = ['message' => 'User deleted successfully!', 'title' => 'Success', 'level' => 'success'];
             } else {
-                $_SESSION['toast_message'] = ['message' => 'O usuário não foi encontrado ou já havia sido excluído.', 'title' => 'Aviso', 'level' => 'warning'];
+                $_SESSION['toast_message'] = ['message' => 'User not found or already deleted.', 'title' => 'Warning', 'level' => 'warning'];
             }
         } catch (PDOException $e) {
-            $_SESSION['toast_message'] = ['message' => 'Ocorreu um erro no banco de dados. O usuário não pôde ser excluído.', 'title' => 'Erro', 'level' => 'error'];
+            $_SESSION['toast_message'] = ['message' => 'A database error occurred. The user could not be deleted.', 'title' => 'Error', 'level' => 'error'];
         }
 
         redirect('config.php?display=tarifador&page=pinuser');
     }
 
     /**
-     * Atualiza os dados de um usuário/PIN existente.
-     * 
-     * @param array $post O array $_POST com os dados do formulário.
-     * @return bool|void Retorna `false` em caso de falha de validação ou redireciona.
+     * Updates an existing user/PIN data.
+     *
+     * @param array $post The $_POST array with the form data.
+     * @return void
      */
-        private function updatePinUser(array $post): void
-        {
-            $id = Sanitize::int($post['id'] ?? null);
-            $user = Sanitize::string($post['user'] ?? '');
-            $department = Sanitize::string($post['department'] ?? '');
-    
-            if ($id === false || $id <= 0 || empty($user)) {
-                $_SESSION['toast_message'] = ['message' => 'ID ou nome de usuário inválido ou ausente.', 'title' => 'Erro de Validação', 'level' => 'error'];
-                return;
-            }
-    
-            try {
-                $sql = "UPDATE tarifador_pinuser SET user = :user, department = :department WHERE id = :id";
-                $stmt = $this->db->prepare($sql);
-                $stmt->execute([
-                    ':id' => $id,
-                    ':user' => $user,
-                    ':department' => $department
-                ]);
-                $_SESSION['toast_message'] = ['message' => 'Usuário atualizado com sucesso!', 'title' => 'Sucesso', 'level' => 'success'];
-    
-            } catch (PDOException $e) {
-                if ($e->errorInfo[1] == 1062) {
-                    $_SESSION['toast_message'] = ['message' => 'O nome de usuário informado já está em uso por outro PIN.', 'title' => 'Erro', 'level' => 'error'];
-                } else {
-                    $_SESSION['toast_message'] = ['message' => 'Ocorreu um erro inesperado no banco de dados ao salvar as alterações.', 'title' => 'Erro', 'level' => 'error'];
-                }
-                return;
-            }
-    
-            redirect('config.php?display=tarifador&page=pinuser');
+    private function updatePinUser(array $post): void
+    {
+        $id = Sanitize::int($post['id'] ?? null);
+        $user = Sanitize::string($post['user'] ?? '');
+        $department = Sanitize::string($post['department'] ?? '');
+
+        if ($id === false || $id <= 0 || empty($user)) {
+            $_SESSION['toast_message'] = ['message' => 'Invalid or missing ID or username.', 'title' => 'Validation Error', 'level' => 'error'];
+            return;
         }
+
+        try {
+            $sql = "UPDATE tarifador_pinuser SET user = :user, department = :department WHERE id = :id";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([
+                ':id' => $id,
+                ':user' => $user,
+                ':department' => $department
+            ]);
+            $_SESSION['toast_message'] = ['message' => 'User updated successfully!', 'title' => 'Success', 'level' => 'success'];
+
+        } catch (PDOException $e) {
+            if ($e->errorInfo[1] == 1062) {
+                $_SESSION['toast_message'] = ['message' => 'The provided username is already in use by another PIN.', 'title' => 'Error', 'level' => 'error'];
+            } else {
+                $_SESSION['toast_message'] = ['message' => 'An unexpected database error occurred while saving the changes.', 'title' => 'Error', 'level' => 'error'];
+            }
+            return;
+        }
+
+        redirect('config.php?display=tarifador&page=pinuser');
+    }
     /**
-     * Adiciona um usuário/PIN
-     * 
-     * @param array $post O array $_POST com os dados do formulário.
+     * Adds a user/PIN.
+     *
+     * @param array $data The data for the new user/PIN.
      * @return void
      */
     private function addPinUser(array $data): void
@@ -110,74 +112,76 @@ trait PinUserTrait
     }
 
     /**
-     * Sincroniza os PINs do FreePBX com o módulo Tarifador/Usuário
-     * Após sincronização é possível associar o PIN com o nome do usuário via formulário ou CSV
-     * 
+     * Synchronizes PINs from FreePBX with the Tarifador/User module.
+     * After synchronization, it is possible to associate the PIN with the user name via form or CSV.
+     *
      * @return void
      */
-        private function syncPinUser(): void
-        {
-            try {
-                // 1. GET ALL VALID PINS FROM FreePBX
-                $sqlFetchPins = "SELECT passwords FROM pinsets WHERE passwords != ''";
-                $stmtFetchPins = $this->db->query($sqlFetchPins);
-    
-                $all_freepbx_pins = [];
-                foreach ($stmtFetchPins->fetchAll(PDO::FETCH_COLUMN) as $passwords_blob) {
-                    $pins_from_row = array_filter(array_map('trim', explode("\n", $passwords_blob)));
-                    if (!empty($pins_from_row)) {
-                        $all_freepbx_pins = array_merge($all_freepbx_pins, $pins_from_row);
-                    }
+    private function syncPinUser(): void
+    {
+        try {
+            // 1. GET ALL VALID PINS FROM FreePBX
+            $sqlFetchPins = "SELECT passwords FROM pinsets WHERE passwords != ''";
+            $stmtFetchPins = $this->db->query($sqlFetchPins);
+
+            $all_freepbx_pins = [];
+            foreach ($stmtFetchPins->fetchAll(PDO::FETCH_COLUMN) as $passwords_blob) {
+                $pins_from_row = array_filter(array_map('trim', explode("\n", $passwords_blob)));
+                if (!empty($pins_from_row)) {
+                    $all_freepbx_pins = array_merge($all_freepbx_pins, $pins_from_row);
                 }
-                $all_freepbx_pins = array_unique($all_freepbx_pins);
-    
-                if (empty($all_freepbx_pins)) {
-                    // Se não há PINs no FreePBX, desabilita todos e encerra.
-                    $this->db->exec("UPDATE tarifador_pinuser SET enabled = 0");
-                    $_SESSION['toast_message'] = ['message' => 'Nenhum PIN encontrado no FreePBX. Todos os usuários foram desabilitados.', 'title' => 'Aviso', 'level' => 'warning'];
-                    redirect('config.php?display=tarifador&page=pinuser');
-                    return;
-                }
-    
-                // 2. INICIAR A TRANSAÇÃO (GARANTIR INTEGRIDADE)
-                $this->db->beginTransaction();
-    
-                // 3. DESABILITAR USUÁRIOS QUE NÃO EXISTEM MAIS
-                $placeholders_not_in = implode(',', array_fill(0, count($all_freepbx_pins), '?'));
-                $sqlDisable = "UPDATE tarifador_pinuser SET enabled = 0 WHERE pin NOT IN ($placeholders_not_in)";
-                $stmtDisable = $this->db->prepare($sqlDisable);
-                $stmtDisable->execute(array_values($all_freepbx_pins));
-    
-                // 4. INSERIR NOVOS PINS E ATIVAR/ATUALIZAR EXISTENTES EM UMA ÚNICA QUERY
-                $sqlUpsert_parts = ["INSERT INTO tarifador_pinuser (pin, user, department, enabled) VALUES"];
-                $insert_rows = [];
-                $params = [];
-                foreach ($all_freepbx_pins as $pin) {
-                    $insert_rows[] = '(?, ?, ?, ?)';
-                    array_push($params, $pin, '---', '---', 1);
-                }
-                $sqlUpsert_parts[] = implode(', ', $insert_rows);
-                $sqlUpsert_parts[] = "ON DUPLICATE KEY UPDATE enabled = 1, user = IF(user = '---' OR user IS NULL, VALUES(user), user), department = IF(department = '---' OR department IS NULL, VALUES(department), department)";
-    
-                $stmtUpsert = $this->db->prepare(implode(' ', $sqlUpsert_parts));
-                $stmtUpsert->execute($params);
-    
-                // 5. SE TUDO DEU CERTO, CONFIRMA A TRANSAÇÃO
-                $this->db->commit();
-                $_SESSION['toast_message'] = ['message' => 'Sincronização de PINs concluída com sucesso!', 'title' => 'Sucesso', 'level' => 'success'];
-    
-            } catch (PDOException $e) {
-                // 6. SE QUALQUER ERRO OCORREU, DESFAZ TUDO
-                if ($this->db->inTransaction()) {
-                    $this->db->rollBack();
-                }
-                $_SESSION['toast_message'] = ['message' => 'Ocorreu um erro crítico durante a sincronização. Nenhuma alteração foi salva.', 'title' => 'Erro', 'level' => 'error'];
             }
-    
-            redirect('config.php?display=tarifador&page=pinuser');
+            $all_freepbx_pins = array_unique($all_freepbx_pins);
+
+            if (empty($all_freepbx_pins)) {
+                // If there are no PINs in FreePBX, disable all and exit.
+                $this->db->exec("UPDATE tarifador_pinuser SET enabled = 0");
+                $_SESSION['toast_message'] = ['message' => 'No PINs found in FreePBX. All users have been disabled.', 'title' => 'Warning', 'level' => 'warning'];
+                redirect('config.php?display=tarifador&page=pinuser');
+                return;
+            }
+
+            // 2. START TRANSACTION (ENSURE INTEGRITY)
+            $this->db->beginTransaction();
+
+            // 3. DISABLE USERS THAT NO LONGER EXIST
+            $placeholders_not_in = implode(',', array_fill(0, count($all_freepbx_pins), '?'));
+            $sqlDisable = "UPDATE tarifador_pinuser SET enabled = 0 WHERE pin NOT IN ($placeholders_not_in)";
+            $stmtDisable = $this->db->prepare($sqlDisable);
+            $stmtDisable->execute(array_values($all_freepbx_pins));
+
+            // 4. INSERT NEW PINS AND ACTIVATE/UPDATE EXISTING ONES IN A SINGLE QUERY
+            $sqlUpsert_parts = ["INSERT INTO tarifador_pinuser (pin, user, department, enabled) VALUES"];
+            $insert_rows = [];
+            $params = [];
+            foreach ($all_freepbx_pins as $pin) {
+                $insert_rows[] = '(?, ?, ?, ?)';
+                array_push($params, $pin, '---', '---', 1);
+            }
+            $sqlUpsert_parts[] = implode(', ', $insert_rows);
+            $sqlUpsert_parts[] = "ON DUPLICATE KEY UPDATE enabled = 1, user = IF(user = '---' OR user IS NULL, VALUES(user), user), department = IF(department = '---' OR department IS NULL, VALUES(department), department)";
+
+            $stmtUpsert = $this->db->prepare(implode(' ', $sqlUpsert_parts));
+            $stmtUpsert->execute($params);
+
+            // 5. IF EVERYTHING WENT WELL, COMMIT THE TRANSACTION
+            $this->db->commit();
+            $_SESSION['toast_message'] = ['message' => 'PIN synchronization completed successfully!', 'title' => 'Success', 'level' => 'success'];
+
+        } catch (PDOException $e) {
+            // 6. IF ANY ERROR OCCURRED, ROLLBACK EVERYTHING
+            if ($this->db->inTransaction()) {
+                $this->db->rollBack();
+            }
+            $_SESSION['toast_message'] = ['message' => 'A critical error occurred during synchronization. No changes were saved.', 'title' => 'Error', 'level' => 'error'];
         }
+
+        redirect('config.php?display=tarifador&page=pinuser');
+    }
     /**
-     * @return array|null
+     * Gets the list of all PIN users.
+     *
+     * @return array|null A list of all PIN users or null on failure.
      */
     private function getListPinUser(): ?array
     {
@@ -188,81 +192,83 @@ trait PinUserTrait
     }
 
     /**
-     * @param int $id
-     * @return array
+     * Gets a single PIN user by their ID.
+     *
+     * @param mixed $id The ID of the user.
+     * @return array|false An array with the user data or false if not found.
      */
-        private function getOnePinUser(mixed $id): array|false
-        {
-            $validated_id = Sanitize::int($id);
-            if ($validated_id === false || $validated_id <= 0) {
-                $_SESSION['toast_message'] = ['message' => 'ID inválido ou não fornecido.', 'title' => 'Erro de Validação', 'level' => 'error'];
-                return false;
-            }
-            $sql = "SELECT * FROM tarifador_pinuser WHERE id = :id LIMIT 1";
-            $stmt = $this->db->prepare($sql);
-            $stmt->execute(['id' => $validated_id]);
-            $pinuser = $stmt->fetchObject();
-    
-            if ($pinuser === false) {
-                return false; // User not found
-            }
-    
-            $sql = "SELECT pinsets_id, description FROM pinsets WHERE passwords LIKE :passwords";
-            $stmt = $this->db->prepare($sql);
-            $stmt->execute(['passwords' => "%{$pinuser->pin}%"]);
-            $pinsets = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
-            return [
-                'id' => $pinuser->id,
-                'pin' => $pinuser->pin,
-                'user' => $pinuser->user,
-                'department' => $pinuser->department,
-                'enabled' => $pinuser->enabled,
-                'pinsets' => $pinsets,
-            ];
+    private function getOnePinUser(mixed $id): array|false
+    {
+        $validated_id = Sanitize::int($id);
+        if ($validated_id === false || $validated_id <= 0) {
+            $_SESSION['toast_message'] = ['message' => 'Invalid or missing ID.', 'title' => 'Validation Error', 'level' => 'error'];
+            return false;
+        }
+        $sql = "SELECT * FROM tarifador_pinuser WHERE id = :id LIMIT 1";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(['id' => $validated_id]);
+        $pinuser = $stmt->fetchObject();
+
+        if ($pinuser === false) {
+            return false; // User not found
         }
 
+        $sql = "SELECT pinsets_id, description FROM pinsets WHERE passwords LIKE :passwords";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(['passwords' => "%{$pinuser->pin}%"]);
+        $pinsets = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return [
+            'id' => $pinuser->id,
+            'pin' => $pinuser->pin,
+            'user' => $pinuser->user,
+            'department' => $pinuser->department,
+            'enabled' => $pinuser->enabled,
+            'pinsets' => $pinsets,
+        ];
+    }
+
     /**
-     * Importa um arquivo CSV com uma lista de pin, user e department.
+     * Imports a CSV file with a list of pin, user, and department.
      *
-     * @param array $post O array $_POST contendo os dados do formulário.
-     * @return void Redireciona o usuário após a operação.
+     * @param array $post The $_POST array containing the uploaded file data.
+     * @return void Redirects the user after the operation.
      */
     private function importPinUser(array $post): void
     {
-        // 1. VALIDAÇÃO ROBUSTA DO UPLOAD
+        // 1. ROBUST UPLOAD VALIDATION
         if (!isset($_FILES['user_file']) || $_FILES['user_file']['error'] !== UPLOAD_ERR_OK) {
-            $_SESSION['toast_message'] = ['message' => 'Erro no upload do arquivo ou nenhum arquivo enviado.', 'title' => 'Erro', 'level' => 'error'];
+            $_SESSION['toast_message'] = ['message' => 'Error uploading the file or no file sent.', 'title' => 'Error', 'level' => 'error'];
             redirect('config.php?display=tarifador&page=pinuser');
             return;
         }
 
         $file_path = $_FILES['user_file']['tmp_name'];
 
-        // Valida o tipo MIME para garantir que é um arquivo de texto/csv
+        // Validate MIME type to ensure it is a text/csv file
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $mime_type = finfo_file($finfo, $file_path);
         finfo_close($finfo);
 
         if (!in_array($mime_type, ['text/csv', 'text/plain'], true)) {
-            $_SESSION['toast_message'] = ['message' => 'Formato de arquivo inválido. Por favor, envie um arquivo .csv.', 'title' => 'Erro', 'level' => 'error'];
+            $_SESSION['toast_message'] = ['message' => 'Invalid file format. Please upload a .csv file.', 'title' => 'Error', 'level' => 'error'];
             redirect('config.php?display=tarifador&page=pinuser');
             return;
         }
 
         $file = fopen($file_path, 'r');
         if ($file === false) {
-            $_SESSION['toast_message'] = ['message' => 'Não foi possível abrir o arquivo enviado.', 'title' => 'Erro', 'level' => 'error'];
+            $_SESSION['toast_message'] = ['message' => 'Could not open the uploaded file.', 'title' => 'Error', 'level' => 'error'];
             redirect('config.php?display=tarifador&page=pinuser');
             return;
         }
 
-        // 2. PREPARAÇÃO FORA DO LOOP E INÍCIO DA TRANSAÇÃO
+        // 2. PREPARATION OUTSIDE THE LOOP AND START OF THE TRANSACTION
         try {
             $header = fgetcsv($file, 5000, ",");
             $expected_header = ['pin', 'user', 'department'];
             if (empty($header) || count(array_diff($expected_header, array_map('strtolower', $header))) > 0) {
-                $_SESSION['toast_message'] = ['message' => 'Cabeçalho do CSV inválido. As colunas esperadas são: pin, user, department.', 'title' => 'Erro de Formato', 'level' => 'error'];
+                $_SESSION['toast_message'] = ['message' => 'Invalid CSV header. The expected columns are: pin, user, department.', 'title' => 'Format Error', 'level' => 'error'];
                 redirect('config.php?display=tarifador&page=pinuser');
                 return;
             }
@@ -275,42 +281,42 @@ trait PinUserTrait
             $stmtInsert = $this->db->prepare($sqlInsert);
 
             $line_number = 1;
-            // 3. PROCESSAMENTO LINHA A LINHA (BAIXO USO DE MEMÓRIA)
+            // 3. LINE-BY-LINE PROCESSING (LOW MEMORY USAGE)
             while (($row_data = fgetcsv($file, 5000, ",")) !== false) {
                 $line_number++;
                 if (count($header) !== count($row_data)) {
-                    continue; // Pula linhas malformadas
+                    continue; // Skip malformed lines
                 }
                 $row = array_combine($header, $row_data);
 
-                // Validação e sanitização da linha
+                // Line validation and sanitization
                 $pin = Sanitize::stringInput($row['pin'] ?? null);
                 $user = Sanitize::stringInput($row['user'] ?? null);
                 $department = Sanitize::stringInput($row['department'] ?? null);
 
                 if (empty($pin) || empty($user)) {
-                    continue; // Pula linhas sem pin ou user
+                    continue; // Skip lines without pin or user
                 }
 
-                // Tenta o UPDATE
+                // Try UPDATE
                 $stmtUpdate->execute([':user' => $user, ':department' => $department, ':pin' => $pin]);
 
-                // Se nenhuma linha foi afetada, faz o INSERT
+                // If no rows were affected, do INSERT
                 if ($stmtUpdate->rowCount() === 0) {
                     $stmtInsert->execute([':pin' => $pin, ':user' => $user, ':department' => $department]);
                 }
             }
 
-            // Se tudo correu bem, confirma as alterações
+            // If everything went well, commit the changes
             $this->db->commit();
-            $_SESSION['toast_message'] = ['message' => 'Importação concluída com sucesso!', 'title' => 'Sucesso', 'level' => 'success'];
+            $_SESSION['toast_message'] = ['message' => 'Import completed successfully!', 'title' => 'Success', 'level' => 'success'];
 
         } catch (Exception $e) {
-            // 4. Se qualquer erro ocorrer, desfaz TODAS as alterações
+            // 4. If any error occurs, undo ALL changes
             if ($this->db->inTransaction()) {
                 $this->db->rollBack();
             }
-            $_SESSION['toast_message'] = ['message' => "Ocorreu um erro na importação na linha {$line_number}. Nenhuma alteração foi salva.", 'title' => 'Erro Crítico', 'level' => 'error'];
+            $_SESSION['toast_message'] = ['message' => "An error occurred on line {$line_number} during import. No changes were saved.", 'title' => 'Critical Error', 'level' => 'error'];
         } finally {
             fclose($file);
         }
@@ -319,8 +325,10 @@ trait PinUserTrait
     }
 
     /**
-     * @param array $request
-     * @return mixed
+     * Searches for departments to populate a select input.
+     *
+     * @param array $request The request data, usually containing a 'term' for searching.
+     * @return array A list of matching departments.
      */
     private function getDepartment(array $request): array
     {
@@ -334,10 +342,10 @@ trait PinUserTrait
     }
 
     /**
-     * Busca usuários para popular um select.
-     * 
-     * @param array $request
-     * @return mixed
+     * Searches for users to populate a select input.
+     *
+     * @param array $request The request data, usually containing a 'term' for searching.
+     * @return array A list of matching users, formatted for a select input.
      */
     private function getUser(array $request): array
     {
@@ -351,8 +359,10 @@ trait PinUserTrait
     }
 
     /**
-     * @param string $pin
-     * @return string
+     * Gets the user's name associated with a given PIN.
+     *
+     * @param string $pin The PIN to search for.
+     * @return string The user's name or a default string "Not Registered" if not found.
      */
     private function getPinUser(string $pin): string
     {
@@ -365,6 +375,6 @@ trait PinUserTrait
         $stmt->execute(['pin' => $pin]);
         $pinuser = $stmt->fetchObject();
 
-        return $pinuser->user ?? _("Sem Cadastro");
+        return $pinuser->user ?? _("Not Registered");
     }
 }
