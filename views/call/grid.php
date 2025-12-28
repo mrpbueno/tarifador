@@ -38,6 +38,7 @@
        data-mobile-responsive="true"
        data-check-on-init="true"
        data-side-pagination="server"
+       data-search="true"
        data-show-refresh="true"
        data-toolbar="#buttons-toolbar"
        data-page-list="[10, 50, 100, 500, 1000, 5000, 10000]"
