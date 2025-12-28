@@ -94,13 +94,13 @@ trait CallTrait
         $offset = (int)($post['offset'] ?? 0);
         $order = strtolower($post['order'] ?? 'asc') === 'desc' ? 'desc' : 'asc';
 
-        $allowed_sort_columns = ['calldate', 'uniqueid', 'src', 'dst'];
+        $allowed_sort_columns = ['calldate', 'uniqueid', 'src', 'cnum', 'dst'];
         $orderBy = $post['sort'] ?? 'calldate';
         if (!in_array($orderBy, $allowed_sort_columns, true)) {
             $orderBy = 'calldate';
         }
 
-        $sql_parts = ["SELECT SQL_CALC_FOUND_ROWS calldate, uniqueid, t.user, src, cnam, did, dst, channel, dstchannel, lastapp, disposition, billsec, (duration - billsec) AS wait",
+        $sql_parts = ["SELECT SQL_CALC_FOUND_ROWS calldate, uniqueid, t.user, src, cnum, cnam, did, dst, channel, dstchannel, lastapp, disposition, billsec, (duration - billsec) AS wait",
             "FROM asteriskcdrdb.cdr",
             "LEFT JOIN asterisk.tarifador_pinuser t ON accountcode = t.pin",
             "WHERE calldate BETWEEN :startDateTime AND :endDateTime"];
@@ -206,7 +206,22 @@ trait CallTrait
     private function filterSelect(array $post): array
     {
         $filters = [];
-        $this->addTextFilter($filters, $post, 'src');
+        if (!empty($post['src'])) {
+            $value = Sanitize::string($post['src']);
+            $sqlOperator = '=';
+            
+            if (str_starts_with($value, '_')) {
+                $sqlOperator = 'RLIKE';
+                $value = $this->asteriskRegExp($value);
+            }
+
+            $filters[] = [
+                'placeholder' => ':src',
+                'sql' => "(src $sqlOperator :src OR cnum $sqlOperator :src)",
+                'value' => $value,
+                'param_type' => PDO::PARAM_STR,
+            ];
+        }
         $this->addTextFilter($filters, $post, 'dst');
 
         if (!empty($post['accountcode']) && ctype_digit((string)$post['accountcode'])) {
@@ -231,15 +246,34 @@ trait CallTrait
             }
         }
 
+        if (!empty($post['search'])) {
+            $search = Sanitize::string($post['search']);
+            if (is_numeric($search)) {
+                $filters[] = [
+                    'sql' => '(src LIKE :search OR cnum LIKE :search OR dst LIKE :search OR did LIKE :search)',
+                    'placeholder' => ':search',
+                    'value' => "%{$search}%",
+                    'param_type' => PDO::PARAM_STR
+                ];
+            } else {
+                $filters[] = [
+                    'sql' => '(cnam LIKE :search OR t.user LIKE :search OR uniqueid LIKE :search)',
+                    'placeholder' => ':search',
+                    'value' => "%{$search}%",
+                    'param_type' => PDO::PARAM_STR
+                ];
+            }
+        }
+
         return $filters;
     }
 
     /**
-     * Adiciona um filtro de texto (src ou dst) ao array de filtros.
+     * Adiciona um filtro de texto 'dst' ao array de filtros.
      *
      * @param array $filters O array de filtros (passado por referência).
      * @param array $post Os dados do POST.
-     * @param string $field O campo ('src' ou 'dst').
+     * @param string $field O campo 'dst'.
      * @return void
      */
     private function addTextFilter(array &$filters, array $post, string $field): void

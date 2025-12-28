@@ -47,7 +47,7 @@
             <th data-field="calldate" data-sortable="true" data-formatter="callDateFormatter"><?php echo _("Data / Hora")?></th>
             <th data-field="uniqueid" data-sortable="true" data-formatter="linkFormatUniqueId"><?php echo _("UniqueID")?></th>
             <th data-field="user"><?php echo _("Usuário")?></th>
-            <th data-field="src" data-sortable="true"><?php echo _("Origem")?></th>
+            <th data-field="cnum" data-sortable="true"><?php echo _("Origem")?></th>
             <th data-field="cnam"><?php echo _("Nome")?></th>
             <th data-field="did"><?php echo _("DDR")?></th>
             <th data-field="dst" data-sortable="true"><?php echo _("Destino")?></th>
