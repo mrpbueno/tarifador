@@ -180,44 +180,72 @@ trait CallTrait
      */
     private function collapseCdrGroup(array $legs, array $rates, array $trunkList): array
     {
-        $mainLeg = $legs[0];
+        $firstLeg = $legs[0];
         $lastLeg = end($legs);
+        $startTime = strtotime($firstLeg['calldate']);
+        $endTime = strtotime($lastLeg['calldate']) + (int)$lastLeg['duration'];
+        $totalDuration = max(0, $endTime - $startTime);
+        $finalDisposition = 'NO ANSWER'; 
         $totalBillsec = 0;
-        $totalCost = 0.00;
-        $disposition = 'NO ANSWER'; 
+        $totalCost = 0.00;        
         $chargeableRateName = _('ND');
         $hasOutboundCost = false;
-
+        $ignoreBillsecApps = ['Queue', 'Busy', 'Congestion', 'Playback', 'VMail'];
+        $isAnswered = false;
         foreach ($legs as $leg) {
             if ($leg['disposition'] === 'ANSWERED') {
-                $disposition = 'ANSWERED';
-            }
-            $totalBillsec = max($totalBillsec, (int)$leg['billsec']);
-            $legType = $this->getCallType($leg, $trunkList);
-            if ($legType === 'OUTBOUND' && (int)$leg['billsec'] > 0) {
-                $costDetails = $this->cost($leg['dst'], (int)$leg['billsec'], $leg['calldate'], $rates);
-                if ($costDetails) {
-                    $totalCost += (float)$costDetails['cost'];
-                    $chargeableRateName = $costDetails['rate'];
-                    $hasOutboundCost = true;
+                if (!in_array($leg['lastapp'], ['Busy', 'Congestion'])) {
+                    $isAnswered = true;
                 }
             }
         }
 
-        if ($disposition === 'NO ANSWER' && $lastLeg['disposition'] !== 'NO ANSWER') {
-            $disposition = $lastLeg['disposition'];
+        if ($isAnswered) {
+            $finalDisposition = 'ANSWERED';
+            
+            foreach ($legs as $leg) {
+                if ($leg['disposition'] === 'ANSWERED') {
+                    if (!in_array($leg['lastapp'], $ignoreBillsecApps)) {
+                        $totalBillsec += (int)$leg['billsec'];
+                    }
+                }
+
+                $legType = $this->getCallType($leg, $trunkList);
+                if ($legType === 'OUTBOUND' && (int)$leg['billsec'] > 0) {
+                    $costDetails = $this->cost($leg['dst'], (int)$leg['billsec'], $leg['calldate'], $rates);
+                    if ($costDetails) {
+                        $totalCost += (float)$costDetails['cost'];
+                        $chargeableRateName = $costDetails['rate'];
+                        $hasOutboundCost = true;
+                    }
+                }
+            }
+
+            if ($totalBillsec === 0 && $finalDisposition === 'ANSWERED') {
+                $finalDisposition = 'NO ANSWER';
+            }
+
+        } else {
+            $finalDisposition = $lastLeg['disposition'];
+            if ($finalDisposition === 'ANSWERED') {
+                $finalDisposition = 'BUSY';
+            }
+            $totalBillsec = 0;
         }
-        $consolidated = $mainLeg;
+
+        $waitSec = max(0, $totalDuration - $totalBillsec);
+        $consolidated = $firstLeg;        
         $consolidated['dst'] = $lastLeg['dst'];
-        $consolidated['disposition'] = $disposition;
+        $consolidated['disposition'] = $finalDisposition;
         $consolidated['billsec'] = $totalBillsec;
-        $consolidated['duration'] = $lastLeg['duration'];
-        $consolidated['wait'] = $consolidated['duration'] - $totalBillsec;
-        $consolidated['call_type'] = $this->getCallType($mainLeg, $trunkList);
+        $consolidated['duration'] = $totalDuration;
+        $consolidated['wait'] = $waitSec;
+        $consolidated['call_type'] = $this->getCallType($firstLeg, $trunkList);
         $consolidated['cost'] = number_format($totalCost, 2, '.', '');
         $consolidated['rate'] = $hasOutboundCost ? $chargeableRateName : _('ND');
+
         if (count($legs) > 1) {
-            $consolidated['lastapp'] .= ' <i class="fa fa-code-fork" title="Transferred/Multiple Events"></i>';
+            $consolidated['lastapp'] .= ' <i class="fa fa-code-fork" title="Transferida/Múltiplos Eventos"></i>';
         }
 
         return $consolidated;

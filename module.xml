@@ -2,7 +2,7 @@
     <rawname>tarifador</rawname>
     <repo>unsupported</repo>
     <name>Tarifador</name>
-    <version>17.0.3</version>
+    <version>17.0.4</version>
     <category>Reports</category>
     <Publisher>mrpbueno</Publisher>
     <info>https://github.com/mrpbueno/tarifador</info>
@@ -44,6 +44,7 @@
     <updateurl>https://raw.githubusercontent.com/mrpbueno/tarifador/master/tarifador.json</updateurl>
     <description>Tarifador para FreePBX</description>
     <changelog>
+        *17.0.4* - Bug fixes
         *17.0.3* - Code improvements
         *17.0.2* - Code improvements
         *17.0.1* - Code improvements
