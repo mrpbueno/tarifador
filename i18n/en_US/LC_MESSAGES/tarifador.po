@@ -429,3 +429,27 @@ msgstr "PIN users"
 
 #~ msgid "Entrada"
 #~ msgstr "Entry"
+
+msgid "Total de Chamadas"
+msgstr "Total Calls"
+
+msgid "Duração Total"
+msgstr "Total Duration"
+
+msgid "Tempo Médio"
+msgstr "Average Time"
+
+msgid "Custo Total"
+msgstr "Total Cost"
+
+msgid "Atendidas"
+msgstr "Answered"
+
+msgid "Não Atendidas"
+msgstr "No Answer"
+
+msgid "Ocupadas"
+msgstr "Busy"
+
+msgid "Falhas"
+msgstr "Failed"
