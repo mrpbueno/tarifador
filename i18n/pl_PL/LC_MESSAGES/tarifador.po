@@ -53,7 +53,7 @@ msgstr "ZAJĘTE"
 
 #: Traits/CallTrait.php:111 views/call/form.php:154
 msgid "FAILED"
-msgstr "BŁĄD"
+msgstr "BŁĘDNE"
 
 #: Traits/PinUserTrait.php:28 Traits/PinUserTrait.php:53
 #: Traits/RateTrait.php:76 Traits/RateTrait.php:102 Traits/RateTrait.php:124
@@ -205,7 +205,7 @@ msgstr "Numer"
 
 #: views/call/grid.php:110
 msgid "Exten"
-msgstr "Wewnętrzny"
+msgstr "Numer wewnętrzny"
 
 #: views/call/grid.php:111
 msgid "DNID"
@@ -229,7 +229,7 @@ msgstr "Zamknij"
 
 #: views/default.php:2 views/rnav.php:3
 msgid "Tarifador"
-msgstr "Raport billingowy"
+msgstr "Tarifador"
 
 #: views/pinuser/form.php:1
 msgid "Edição do PIN do Usuário"
@@ -305,7 +305,7 @@ msgstr "Czekaj!"
 
 #: views/pinuser/grid.php:74
 msgid "Sincronizando ..."
-msgstr "Synchronizowanie..."
+msgstr "Synchronizacja..."
 
 #: views/pinuser/grid.php:94
 msgid "Arquivo CSV"
@@ -357,27 +357,27 @@ msgstr "<b>Zasady:</b><br>"
 
 #: views/rate/form.php:81
 msgid "<b>X</b> = corresponde a qualquer dígito entre 0-9<br>"
-msgstr "<b>X</b> = odpowiada dowolnej cyfrze 0-9<br>"
+msgstr "<b>X</b> = dowolna cyfra 0-9<br>"
 
 #: views/rate/form.php:82
 msgid "<b>Z</b> = corresponde a qualquer dígito entre 1-9<br>"
-msgstr "<b>Z</b> = odpowiada dowolnej cyfrze 1-9<br>"
+msgstr "<b>Z</b> = dowolna cyfra 1-9<br>"
 
 #: views/rate/form.php:83
 msgid "<b>N</b> = corresponde a qualquer dígito entre 2-9<br>"
-msgstr "<b>N</b> = odpowiada dowolnej cyfrze 2-9<br>"
+msgstr "<b>N</b> = dowolna cyfra 2-9<br>"
 
 #: views/rate/form.php:84
 msgid ""
 "<b>[1237-9]</b> = corresponde a qualquer dígito ou letra entre colchetes "
 "(neste exemplo: 1,2,3,7,8,9)<br>"
 msgstr ""
-"<b>[1237-9]</b> = odpowiada dowolnej cyfrze lub literze w nawiasach "
+"<b>[1237-9]</b> = dowolna cyfra lub litera w nawiasach kwadratowych "
 "(w tym przykładzie: 1,2,3,7,8,9)<br>"
 
 #: views/rate/form.php:85
 msgid "<b>.</b> = curinga, corresponde a um ou mais dígitos<br>"
-msgstr "<b>.</b> = wildcard, odpowiada jednej lub wielu cyfrom<br>"
+msgstr "<b>.</b> = wildcard, jedna lub więcej cyfr<br>"
 
 #: views/rate/form.php:110
 msgid "Digite a tarifa por minuto"
@@ -415,26 +415,27 @@ msgstr "Taryfy"
 msgid "Usuários"
 msgstr "Użytkownicy"
 
+# Added missing call summary statistics labels (from views)
 msgid "Total de Chamadas"
-msgstr "Total Calls"
+msgstr "Łącznie połączeń"
 
 msgid "Duração Total"
-msgstr "Total Duration"
+msgstr "Łączny czas rozmów"
 
 msgid "Tempo Médio"
-msgstr "Average Time"
+msgstr "Średni czas"
 
 msgid "Custo Total"
-msgstr "Total Cost"
+msgstr "Łączny koszt"
 
 msgid "Atendidas"
-msgstr "Answered"
+msgstr "Odebrane"
 
 msgid "Não Atendidas"
-msgstr "No Answer"
+msgstr "Nieodebrane"
 
 msgid "Ocupadas"
-msgstr "Busy"
+msgstr "Zajęte"
 
 msgid "Falhas"
-msgstr "Failed"
+msgstr "Błędy"
