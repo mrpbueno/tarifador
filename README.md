@@ -1,33 +1,36 @@
-```
- ______             _____  ______   __
-|  ____|           |  __ \|  _ \ \ / /
-| |__ _ __ ___  ___| |__) | |_) \ V /
-|  __| '__/ _ \/ _ \  ___/|  _ < > <
-| |  | | |  __/  __/ |    | |_) / . \
-|_|  |_|  \___|\___|_|    |____/_/ \_\
-Your Open Source Asterisk PBX GUI Solution
-```
+# Tarifador - Call Accounting for FreePBX
 
-# Tarifador para FreePBX
+## Description
 
-## Descrição
+**Tarifador** is an advanced **Call Accounting and Billing** module for FreePBX. It is designed to provide administrators and managers with detailed analysis and cost tracking of phone calls.
 
-O **Tarifador** é um módulo de relatórios para FreePBX focado em fornecer análise e custeio de chamadas. Ele permite que administradores e gerentes visualizem os custos associados às ligações telefônicas com base em tarifas pré-definidas, além de fornecer estatísticas visuais sobre o tráfego de chamadas.
+The module allows for precise cost calculation based on customizable rate decks and offers a comprehensive visual dashboard to monitor call traffic and expenses effectively.
 
-## Principais Funcionalidades
+## Key Features
 
-* **Relatório de Chamadas:** Lista detalhada de chamadas (CDR) com filtros por data, origem, destino, estado (Atendida, Ocupada, Falha, Não Atendida) e usuário.
-* **Cálculo de Custo:** Calcula o custo de cada chamada atendida com base em tarifas personalizáveis.
-* **Dashboard de Estatísticas:** Gráficos visuais para análise de chamadas, incluindo:
-    * Chamadas por Estado (Disposição)
-    * Top 50 Origens
-    * Top 50 Destinos
-    * Distribuição de Chamadas por Hora
-* **Gerenciamento de Tarifas:** Permite criar, editar e excluir tarifas baseadas em padrões de discagem (dial patterns) e definir um custo por minuto.
-* **Gerenciamento de PINs/Usuários:** Associa os PINs (account codes) do Asterisk a nomes de usuários, facilitando a filtragem de relatórios por usuário.
+* **Detailed Call Reports:** Access comprehensive Call Detail Records (CDR) with advanced filtering options (Date, Source, Destination, Status, and User). Supports consolidated views for transferred calls (LinkedID).
+* **Cost Calculation:** Automatically calculates the cost of every answered call based on your pre-defined rates.
+* **Statistics Dashboard:** Visual charts for real-time analysis, including:
+    * Call Disposition Stats (Answered, Busy, Failed)
+    * Top 50 Sources (Who is calling the most)
+    * Top 50 Destinations (Most dialed numbers)
+    * Hourly Call Distribution (Peak hour analysis)
+* **Rate Management:** Create, edit, and manage rates based on **Dial Patterns**. You can define specific costs per minute for local, mobile, or international calls.
+* **User & PIN Management:** Map Asterisk Account Codes (PINs) to real Usernames and Departments, making cost allocation and auditing much easier.
 
-## Licença
+## Requirements
 
-Este módulo é distribuído sob a licença AGPLv3.  
+* FreePBX 17+
+* PHP 8.2+
 
-[FreePBX](http://www.freepbx.org/) is a registered trademark of [Sangoma Technologies Inc.](http://www.freepbx.org/copyright.html)  
+## Installation
+
+1.  Download the latest version of the module from https://github.com/mrpbueno/tarifador/releases
+2.  Upload the module via the **Module Admin** in FreePBX or install it manually.
+3.  Enable the module and reload the configuration.
+
+## License
+
+This module is distributed under the **AGPLv3** license.
+
+[FreePBX](http://www.freepbx.org/) is a registered trademark of [Sangoma Technologies Inc.](http://www.freepbx.org/copyright.html)
