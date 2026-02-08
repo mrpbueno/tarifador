@@ -9,7 +9,7 @@
                        title="<?php echo _("Download PDF")?>"
                        class="fa fa-bar-chart"
                        onclick="exportTopDstCountChart('<?php echo \FreePBX::Config()->get('FREEPBX_SYSTEM_IDENT'); ?>')"
-                       aria-hidden="true"></a> <?php echo _("Destino das chamadas (top 50)")?>
+                       aria-hidden="true"></a> <?php echo _("Call Destination (top 50)")?>
                 </div>
                 <div class="panel-body">
                     <div>
@@ -29,7 +29,7 @@
                    title="<?php echo _("Download PDF")?>"
                    class="fa fa-bar-chart"
                    onclick="exportTopSrcCountChart('<?php echo \FreePBX::Config()->get('FREEPBX_SYSTEM_IDENT'); ?>')"
-                   aria-hidden="true"></a> <?php echo _("Origem das chamadas (top 50)")?>
+                   aria-hidden="true"></a> <?php echo _("Call Source (top 50)")?>
             </div>
             <div class="panel-body">
                 <div>
@@ -49,7 +49,7 @@
                        title="<?php echo _("Download PDF")?>"
                        class="fa fa-bar-chart"
                        onclick="exportCallsHourChart('<?php echo \FreePBX::Config()->get('FREEPBX_SYSTEM_IDENT'); ?>')"
-                       aria-hidden="true"></a> <?php echo _("Distribuição das chamadas por hora")?>
+                       aria-hidden="true"></a> <?php echo _("Call distribution by hour")?>
                 </div>
                 <div class="panel-body">
                     <div>

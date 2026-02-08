@@ -1,10 +1,10 @@
 <div id="buttons-toolbar">
     <div class="btn-group" role="group">
         <button type="button"
-                title="<?php echo _("Adicionar Tarifa")?>"
+                title="<?php echo _("Add Rate")?>"
                 class="btn btn-default"
                 onclick="location.href='?display=tarifador&page=rate&view=form';">
-            <i class="fa fa-plus"></i> <?php echo _("Adicionar"); ?>
+            <i class="fa fa-plus"></i> <?php echo _("Add"); ?>
         </button>
         <button type="button"
                 class="btn btn-default"
@@ -49,13 +49,13 @@
 	<thead>
 		<tr>
             <th data-field="handle" data-formatter="dragHandleFormatter" class="text-center" style="width: 20px;"></th>
-            <th data-field="name"><?php echo _("Nome")?></th>
-            <th data-field="telco"><?php echo _("Operadora")?></th>
-            <th data-field="dial_pattern"><?php echo _("Padrão de discagem")?></th>
-            <th data-field="rate" data-formatter="rateFormatter"><?php echo _("Tarifa")?></th>
-            <th data-field="start" data-formatter="dateFormatter"><?php echo _("Início da vigência")?></th>
-            <th data-field="end" data-formatter="dateFormatter"><?php echo _("Fim da vigência")?></th>
-            <th data-field="id" data-formatter="linkFormatRate" class="text-center"><?php echo _("Ações")?></th>
+            <th data-field="name"><?php echo _("Name")?></th>
+            <th data-field="telco"><?php echo _("Carrier")?></th>
+            <th data-field="dial_pattern"><?php echo _("Dial Pattern")?></th>
+            <th data-field="rate" data-formatter="rateFormatter"><?php echo _("Rate")?></th>
+            <th data-field="start" data-formatter="dateFormatter"><?php echo _("Start Date")?></th>
+            <th data-field="end" data-formatter="dateFormatter"><?php echo _("End Date")?></th>
+            <th data-field="id" data-formatter="linkFormatRate" class="text-center"><?php echo _("Actions")?></th>
 		</tr>
 	</thead>
 </table>

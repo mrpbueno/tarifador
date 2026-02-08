@@ -1,17 +1,17 @@
 <?php
 // ======================================================================
-// DEFINIÇÃO SEGURA DE VARIÁVEIS
+// SECURE VARIABLE DEFINITION
 // ======================================================================
 use FreePBX\modules\Tarifador\Utils\Sanitize;
 
 $id         = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-$pin        = Sanitize::stringOutput($pin ?? _("Será gerado automaticamente"));
+$pin        = Sanitize::stringOutput($pin ?? _("Will be generated automatically"));
 $user       = Sanitize::stringOutput($user ?? '');
 $department = Sanitize::stringOutput($department ?? '');
 $enabled    = Sanitize::stringOutput($enabled ?? '1');
 $pinsets    = $pinsets ?? [];
 ?>
-<h3><?php echo ($id ? _("Edição do PIN do Usuário") : _("Novo PIN do usuário")) ?></h3>
+<h3><?php echo ($id ? _("Edit User PIN") : _("New User PIN")) ?></h3>
 <form autocomplete="off"
       action=""
       method="post"
@@ -40,7 +40,7 @@ $pinsets    = $pinsets ?? [];
         </div>
         <div class="row">
             <div class="col-md-12">
-                <span id="pin-help" class="help-block fpbx-help-block"><?php echo _("Número PIN do usuário")?></span>
+                <span id="pin-help" class="help-block fpbx-help-block"><?php echo _("User's PIN number")?></span>
             </div>
         </div>
     </div>
@@ -52,7 +52,7 @@ $pinsets    = $pinsets ?? [];
                 <div class="row">
                     <div class="form-group">
                         <div class="col-md-3">
-                            <label class="control-label" for="body"><?php echo _("Nome") ?></label>
+                            <label class="control-label" for="body"><?php echo _("Name") ?></label>
                             <i class="fa fa-question-circle fpbx-help-icon" data-for="user"></i>
                         </div>
                         <div class="col-md-9">
@@ -64,7 +64,7 @@ $pinsets    = $pinsets ?? [];
         </div>
         <div class="row">
             <div class="col-md-12">
-                <span id="user-help" class="help-block fpbx-help-block"><?php echo _("Digite o nome do usuário do PIN")?></span>
+                <span id="user-help" class="help-block fpbx-help-block"><?php echo _("Enter the PIN user's name")?></span>
             </div>
         </div>
     </div>
@@ -76,7 +76,7 @@ $pinsets    = $pinsets ?? [];
                 <div class="row">
                     <div class="form-group">
                         <div class="col-md-3">
-                            <label class="control-label" for="body"><?php echo _("Departamento / Setor") ?></label>
+                            <label class="control-label" for="body"><?php echo _("Department / Sector") ?></label>
                             <i class="fa fa-question-circle fpbx-help-icon" data-for="department"></i>
                         </div>
                         <div class="col-md-9">
@@ -94,7 +94,7 @@ $pinsets    = $pinsets ?? [];
         </div>
         <div class="row">
             <div class="col-md-12">
-                <span id="department-help" class="help-block fpbx-help-block"><?php echo _("Digite o departamento / setor do usuário")?></span>
+                <span id="department-help" class="help-block fpbx-help-block"><?php echo _("Enter the user's department / sector")?></span>
             </div>
         </div>
     </div>
@@ -106,12 +106,12 @@ $pinsets    = $pinsets ?? [];
                 <div class="row">
                     <div class="form-group">
                         <div class="col-md-3">
-                            <label class="control-label" for="active"><?php echo _("Habilitado?") ?></label>
+                            <label class="control-label" for="active"><?php echo _("Enabled?") ?></label>
                             <i class="fa fa-question-circle fpbx-help-icon" data-for="active"></i>
                         </div>
                         <div class="col-md-9">
                             <i class="btn btn-<?php echo ($enabled == '1' ? 'success' : 'danger'); ?>">
-                                <?php echo ($enabled == '1' ? _("Sim") : _("Não")); ?>
+                                <?php echo ($enabled == '1' ? _("Yes") : _("No")); ?>
                             </i>
                         </div>
                     </div>
@@ -120,7 +120,7 @@ $pinsets    = $pinsets ?? [];
         </div>
         <div class="row">
             <div class="col-md-12">
-                <span id="active-help" class="help-block fpbx-help-block"><?php echo _("Para desabilitar o PIN, vá para o módulo <a href='config.php?display=pinsets'>Conjunto de PINs</a>")?></span>
+                <span id="active-help" class="help-block fpbx-help-block"><?php echo _("To disable the PIN, go to the <a href='config.php?display=pinsets'>PIN Sets</a> module")?></span>
             </div>
         </div>
     </div>
@@ -132,7 +132,7 @@ $pinsets    = $pinsets ?? [];
                 <div class="row">
                     <div class="form-group">
                         <div class="col-md-3">
-                            <label class="control-label" for="active"><?php echo _("Conjunto de PINs") ?></label>
+                            <label class="control-label" for="active"><?php echo _("PIN Set") ?></label>
                             <i class="fa fa-question-circle fpbx-help-icon" data-for="pinsets"></i>
                         </div>
                         <div class="col-md-9">
@@ -152,7 +152,7 @@ $pinsets    = $pinsets ?? [];
         </div>
         <div class="row">
             <div class="col-md-12">
-                <span id="pinsets-help" class="help-block fpbx-help-block"><?php echo _("Conjunto de PINs do usuário")?></span>
+                <span id="pinsets-help" class="help-block fpbx-help-block"><?php echo _("User's PIN Set")?></span>
             </div>
         </div>
     </div>

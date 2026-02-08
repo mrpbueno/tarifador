@@ -8,9 +8,7 @@ function dateFormatter(val, row){
 }
 
 (function($) {
-    // Roda quando o documento estiver pronto
     $(function() {
-        // "Toast Message"
         var gridContainer = $('#grid-container');
         var toastDataJson = gridContainer.data('toast');
         if (toastDataJson) {

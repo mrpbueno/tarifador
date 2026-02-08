@@ -28,7 +28,7 @@ function queryParams(params){
 }
 
 function dispositionFormatter(value) {
-    let disposition = {"ANSWERED":"Atendida","BUSY":"Ocupado","FAILED":"Falha","NO ANSWER":"Não Atendida"};
+    let disposition = {"ANSWERED":_("Answered"),"BUSY":_("Busy"),"FAILED":_("Failed"),"NO ANSWER":_("No Answer")};
     return disposition[value];
 }
 
@@ -36,19 +36,19 @@ function callTypeFormatter(value, row, index) {
     const types = {
         'INBOUND': {
             icon: 'fa-arrow-down',
-            label: 'Entrada'
+            label: _('Inbound')
         },
         'OUTBOUND': { 
             icon: 'fa-arrow-up',
-            label: 'Saída'
+            label: _('Outbound')
         },
         'INTERNAL': {
             icon: 'fa-arrows-h',
-            label: 'Interna'
+            label: _('Internal')
         },
         'UNKNOWN': { 
             icon: 'fa-question',
-            label: 'Desconhecido'
+            label: _('Unknown')
         }
     };
 
@@ -65,7 +65,7 @@ function linkFormatUniqueId(value, row, index){
 }
 
 function totalTextFormatter(data) {
-    return '<b>Total</b>';
+    return '<b>'+_('Total')+'</b>';
 }
 
 function callDateFormatter(val, row) {
@@ -122,14 +122,14 @@ $(function() {
 $(function () {
     $('#accountcode').select2({
         language: {
-            noResults: function () { return "Nenhum resultado encontrado"; },
-            searching: function () { return "Buscando..."; },
+            noResults: function () { return _("No results found"); },
+            searching: function () { return _("Searching..."); },
             inputTooShort: function (args) {
                 var remainingChars = args.minimum - args.input.length;
-                return "Digite " + remainingChars + " ou mais caracteres";
+                return _("Type ") + remainingChars + _(" or more characters");
             }
         },
-        placeholder: 'Digite para buscar um usuário',
+        placeholder: _('Type to search for a user'),
         allowClear: true,
         minimumInputLength: 3,
         ajax: {
@@ -169,7 +169,7 @@ $(function () {
                 data: {
                     labels: data['disposition'],
                     datasets: [{
-                        label: 'Chamadas',
+                        label: _('Calls'),
                         data: data['value'],
                         backgroundColor: [
                             'rgba(76, 148, 113, 0.4)'
@@ -207,8 +207,8 @@ $(function () {
 });
 
 /**
- * Atualiza o painel de estatísticas
- * Disparado toda vez que a tabela carrega novos dados (filtro, paginação, refresh)
+ * Updates the statistics panel
+ * Triggered every time the table loads new data (filter, pagination, refresh)
  */
 $('#tarifador').on('load-success.bs.table', function (e, data) {
     updateStats();
@@ -245,7 +245,7 @@ function updateStats() {
             $('#stat_failed').text(res.failed || 0);
         },
         error: function() {
-            console.error("Erro ao carregar estatísticas");
+            console.error(_("Error loading statistics"));
             $('#stat_total_calls').text("-");
         }
     });

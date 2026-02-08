@@ -1,8 +1,8 @@
 <?php
 // ======================================================================
-// DEFINIÇÃO SEGURA DE VARIÁVEIS
+// SECURE VARIABLE DEFINITION
 // ======================================================================
-// A função load_view() do FreePBX extrai as chaves do array de dados em variáveis.
+// FreePBX's load_view() function extracts array keys into variables.
 use FreePBX\modules\Tarifador\Utils\Sanitize;
 
 $src_value         = Sanitize::stringOutput($_POST['src'] ?? '');
@@ -26,7 +26,7 @@ $endTime_value     = Sanitize::stringOutput($_POST['endTime'] ?? '23:59');
                         <div class="row">
                             <div class="form-group">
                                 <div class="col-md-5">
-                                    <label class="control-label" for="body"><?php echo _("Data/Hora Início") ?></label>
+                                    <label class="control-label" for="body"><?php echo _("Start Date/Time") ?></label>
                                     <i class="fa fa-question-circle fpbx-help-icon" data-for="calldate"></i>
                                 </div>
                                 <div class="col-md-4">
@@ -41,7 +41,7 @@ $endTime_value     = Sanitize::stringOutput($_POST['endTime'] ?? '23:59');
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <span id="calldate-help" class="help-block fpbx-help-block"><?php echo _("Selecione a data/hora de início")?></span>
+                        <span id="calldate-help" class="help-block fpbx-help-block"><?php echo _("Select start date/time")?></span>
                     </div>
                 </div>
             </div>
@@ -53,7 +53,7 @@ $endTime_value     = Sanitize::stringOutput($_POST['endTime'] ?? '23:59');
                         <div class="row">
                             <div class="form-group">
                                 <div class="col-md-5">
-                                    <label class="control-label" for="body"><?php echo _("Origem") ?></label>
+                                    <label class="control-label" for="body"><?php echo _("Source") ?></label>
                                     <i class="fa fa-question-circle fpbx-help-icon" data-for="src"></i>
                                 </div>
                                 <div class="col-md-7">
@@ -66,15 +66,15 @@ $endTime_value     = Sanitize::stringOutput($_POST['endTime'] ?? '23:59');
                 <div class="row">
                     <div class="col-md-12">
                         <span id="src-help" class="help-block fpbx-help-block">
-                            <?php echo _("Digite o número de origem ou <BR>")?>
-                            <?php echo _("Utilize expressões regulares do Asterisk.<br>")?>
-                            <?php echo _("Exemplo: _2[ZZ9]NX.<br>")?>
-                            <?php echo _("<b>Regras:</b><br>")?>
-                            <?php echo _("<b>X</b> = corresponde a qualquer dígito entre 0-9<br>")?>
-                            <?php echo _("<b>Z</b> = corresponde a qualquer dígito entre 1-9<br>")?>
-                            <?php echo _("<b>N</b> = corresponde a qualquer dígito entre 2-9<br>")?>
-                            <?php echo _("<b>[1237-9]</b> = corresponde a qualquer dígito ou letra entre colchetes (neste exemplo: 1,2,3,7,8,9)<br>")?>
-                            <?php echo _("<b>.</b> = curinga, corresponde a um ou mais dígitos<br>")?>
+                            <?php echo _("Enter the source number or <BR>")?>
+                            <?php echo _("Use Asterisk regular expressions.<br>")?>
+                            <?php echo _("Example: _2[ZZ9]NX.<br>")?>
+                            <?php echo _("<b>Rules:</b><br>")?>
+                            <?php echo _("<b>X</b> = matches any digit between 0-9<br>")?>
+                            <?php echo _("<b>Z</b> = matches any digit between 1-9<br>")?>
+                            <?php echo _("<b>N</b> = matches any digit between 2-9<br>")?>
+                            <?php echo _("<b>[1237-9]</b> = matches any digit or letter in brackets (e.g., 1,2,3,7,8,9)<br>")?>
+                            <?php echo _("<b>.</b> = wildcard, matches one or more digits<br>")?>
                         </span>
                     </div>
                 </div>
@@ -87,7 +87,7 @@ $endTime_value     = Sanitize::stringOutput($_POST['endTime'] ?? '23:59');
                         <div class="row">
                             <div class="form-group">
                                 <div class="col-md-5">
-                                    <label class="control-label" for="body"><?php echo _("Usuário") ?></label>
+                                    <label class="control-label" for="body"><?php echo _("User") ?></label>
                                     <i class="fa fa-question-circle fpbx-help-icon" data-for="accountcode"></i>
                                 </div>
                                 <div class="col-md-7">
@@ -105,7 +105,7 @@ $endTime_value     = Sanitize::stringOutput($_POST['endTime'] ?? '23:59');
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <span id="accountcode-help" class="help-block fpbx-help-block"><?php echo _("Digite o nome do usuário")?></span>
+                        <span id="accountcode-help" class="help-block fpbx-help-block"><?php echo _("Enter the username")?></span>
                     </div>
                 </div>
             </div>
@@ -119,7 +119,7 @@ $endTime_value     = Sanitize::stringOutput($_POST['endTime'] ?? '23:59');
                         <div class="row">
                             <div class="form-group">
                                 <div class="col-md-5">
-                                    <label class="control-label" for="body"><?php echo _("Data/Hora Fim") ?></label>
+                                    <label class="control-label" for="body"><?php echo _("End Date/Time") ?></label>
                                     <i class="fa fa-question-circle fpbx-help-icon" data-for="endDate"></i>
                                 </div>
                                 <div class="col-md-4">
@@ -134,7 +134,7 @@ $endTime_value     = Sanitize::stringOutput($_POST['endTime'] ?? '23:59');
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <span id="endDate-help" class="help-block fpbx-help-block"><?php echo _("Selecione a data/hora do fim")?></span>
+                        <span id="endDate-help" class="help-block fpbx-help-block"><?php echo _("Select end date/time")?></span>
                     </div>
                 </div>
             </div>
@@ -146,7 +146,7 @@ $endTime_value     = Sanitize::stringOutput($_POST['endTime'] ?? '23:59');
                         <div class="row">
                             <div class="form-group">
                                 <div class="col-md-5">
-                                    <label class="control-label" for="body"><?php echo _("Destino") ?></label>
+                                    <label class="control-label" for="body"><?php echo _("Destination") ?></label>
                                     <i class="fa fa-question-circle fpbx-help-icon" data-for="dst"></i>
                                 </div>
                                 <div class="col-md-7">
@@ -159,15 +159,15 @@ $endTime_value     = Sanitize::stringOutput($_POST['endTime'] ?? '23:59');
                 <div class="row">
                     <div class="col-md-12">
                         <span id="dst-help" class="help-block fpbx-help-block">
-                            <?php echo _("Digite o número de destino ou <BR>")?>
-                            <?php echo _("Utilize expressões regulares do Asterisk.<br>")?>
-                            <?php echo _("Exemplo: _2[ZZ9]NX.<br>")?>
-                            <?php echo _("<b>Regras:</b><br>")?>
-                            <?php echo _("<b>X</b> = corresponde a qualquer dígito entre 0-9<br>")?>
-                            <?php echo _("<b>Z</b> = corresponde a qualquer dígito entre 1-9<br>")?>
-                            <?php echo _("<b>N</b> = corresponde a qualquer dígito entre 2-9<br>")?>
-                            <?php echo _("<b>[1237-9]</b> = corresponde a qualquer dígito ou letra entre colchetes (neste exemplo: 1,2,3,7,8,9)<br>")?>
-                            <?php echo _("<b>.</b> = curinga, corresponde a um ou mais dígitos<br>")?>
+                            <?php echo _("Enter the destination number or <BR>")?>
+                            <?php echo _("Use Asterisk regular expressions.<br>")?>
+                            <?php echo _("Example: _2[ZZ9]NX.<br>")?>
+                            <?php echo _("<b>Rules:</b><br>")?>
+                            <?php echo _("<b>X</b> = matches any digit between 0-9<br>")?>
+                            <?php echo _("<b>Z</b> = matches any digit between 1-9<br>")?>
+                            <?php echo _("<b>N</b> = matches any digit between 2-9<br>")?>
+                            <?php echo _("<b>[1237-9]</b> = matches any digit or letter in brackets (e.g., 1,2,3,7,8,9)<br>")?>
+                            <?php echo _("<b>.</b> = wildcard, matches one or more digits<br>")?>
                         </span>
                     </div>
                 </div>
@@ -180,12 +180,12 @@ $endTime_value     = Sanitize::stringOutput($_POST['endTime'] ?? '23:59');
                         <div class="row">
                             <div class="form-group">
                                 <div class="col-md-5">
-                                    <label class="control-label" for="body"><?php echo _("Estado") ?></label>
+                                    <label class="control-label" for="body"><?php echo _("Status") ?></label>
                                     <i class="fa fa-question-circle fpbx-help-icon" data-for="disposition"></i>
                                 </div>
                                 <div class="col-md-7">
                                     <select class="form-control" name="disposition" id="disposition">
-                                        <option value=""><?php echo _("Todos") ?></option>
+                                        <option value=""><?php echo _("All") ?></option>
                                         <option <?php if($disposition_value == "ANSWERED") echo"selected"; ?> value="ANSWERED"><?php echo _("ANSWERED") ?></option>
                                         <option <?php if($disposition_value == "NO ANSWER") echo"selected"; ?> value="NO ANSWER"><?php echo _("NO ANSWER") ?></option>
                                         <option <?php if($disposition_value == "BUSY") echo"selected"; ?> value="BUSY"><?php echo _("BUSY") ?></option>
@@ -198,7 +198,7 @@ $endTime_value     = Sanitize::stringOutput($_POST['endTime'] ?? '23:59');
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <span id="disposition-help" class="help-block fpbx-help-block"><?php echo _("Selecione o estado da chamada")?></span>
+                        <span id="disposition-help" class="help-block fpbx-help-block"><?php echo _("Select the call status")?></span>
                     </div>
                 </div>
             </div>
@@ -208,7 +208,7 @@ $endTime_value     = Sanitize::stringOutput($_POST['endTime'] ?? '23:59');
     <div class="element-container">
         <div class="row">
             <div class="col-md-12">
-                <button type="submit" class="btn btn-primary"><i class="fa fa-search" aria-hidden="true"></i> <?php echo _("Buscar")?></button>
+                <button type="submit" class="btn btn-primary"><i class="fa fa-search" aria-hidden="true"></i> <?php echo _("Search")?></button>
             </div>
         </div>
     </div>

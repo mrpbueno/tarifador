@@ -3,15 +3,15 @@
     <div class="btn-group" role="group">
        <button type="submit"
                class="btn btn-default"
-               title="<?php echo _("Sincronizar PINs")?>"
+               title="<?php echo _("Synchronize PINs")?>"
                data-toggle="modal"
                data-target="#sync">
-           <i class="fa fa-refresh"></i> <?php echo _("Sincronizar"); ?>
+           <i class="fa fa-refresh"></i> <?php echo _("Synchronize"); ?>
        </button>
 
         <button type="button"
                 class="btn btn-default"
-                title="<?php echo _("Upload de CSV")?>"
+                title="<?php echo _("CSV Upload")?>"
                 data-toggle="modal"
                 data-target="#import">
             <i class="fa fa-upload"></i> <?php echo _("Upload"); ?>
@@ -53,13 +53,13 @@
        data-search="true"
        data-show-refresh="true"
        data-page-list="[10, 25, 50, 100, 200, 400, 800, 1600]"
-       class="table table-sm"">
+       class="table table-sm">
 	<thead>
 		<tr>
             <th data-field="pin" class="col-md-1" data-sortable="true"><?php echo _("PIN")?></th>
-            <th data-field="user" class="col-md-5" data-sortable="true"><?php echo _("Nome")?></th>
-            <th data-field="department" class="col-md-5" data-sortable="true"><?php echo _("Departamento / Setor")?></th>
-            <th data-field="id" data-formatter="linkFormatPinUser" class="col-md-1 text-center"><?php echo _("Ações")?></th>
+            <th data-field="user" class="col-md-5" data-sortable="true"><?php echo _("Name")?></th>
+            <th data-field="department" class="col-md-5" data-sortable="true"><?php echo _("Department / Sector")?></th>
+            <th data-field="id" data-formatter="linkFormatPinUser" class="col-md-1 text-center"><?php echo _("Actions")?></th>
 		</tr>
 	</thead>
 </table>
@@ -68,10 +68,10 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h2 class="modal-title"><?php echo _("Aguarde!")?></h2>
+                <h2 class="modal-title"><?php echo _("Please wait!")?></h2>
             </div>
             <div class="modal-body">
-                <h3 class="modal-body"><i class="fa fa-spinner fa-spin"></i> <?php echo _("Sincronizando ...")?></h3>
+                <h3 class="modal-body"><i class="fa fa-spinner fa-spin"></i> <?php echo _("Synchronizing ...")?></h3>
             </div>
         </div>
     </div>
@@ -81,7 +81,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h2 class="modal-title"><?php echo _("Upload de CSV")?></h2>
+                <h2 class="modal-title"><?php echo _("CSV Upload")?></h2>
             </div>
             <div class="modal-body">
                 <form action="?display=tarifador&page=pinuser&action=import" method="post" enctype="multipart/form-data">
@@ -91,12 +91,12 @@
                                 <div class="row">
                                     <div class="form-group">
                                         <div class="col-md-3">
-                                            <label class="control-label" for="user_file"><?php echo _("Arquivo CSV") ?></label>
+                                            <label class="control-label" for="user_file"><?php echo _("CSV File") ?></label>
                                             <i class="fa fa-question-circle fpbx-help-icon" data-for="user_file"></i>
                                         </div>
                                         <div class="col-md-9">
 										<span class="btn btn-default btn-file">
-											<?php echo _("Localizar")?><input type="file" name="user_file" class="form-control" required />
+											<?php echo _("Browse")?><input type="file" name="user_file" class="form-control" required />
 										</span>
                                             <span class="filename"></span>
                                         </div>
@@ -107,18 +107,18 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <p>
-                                    <?php echo _("O cabeçalho do arquivo deve conter: pin, user, department")?>
+                                    <?php echo _("The file header must contain: pin, user, department")?>
                                 </p>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-12">
-                                <span id="user_file-help" class="help-block fpbx-help-block"><?php echo _("Arquivo para Importar")?></span>
+                                <span id="user_file-help" class="help-block fpbx-help-block"><?php echo _("File to Import")?></span>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-12">
-                                <button type="submit" class="btn btn-default"><?php echo _("Enviar")?></button>
+                                <button type="submit" class="btn btn-default"><?php echo _("Submit")?></button>
                             </div>
                         </div>
                     </div>

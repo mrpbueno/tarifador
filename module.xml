@@ -2,7 +2,7 @@
     <rawname>tarifador</rawname>
     <repo>unsupported</repo>
     <name>Tarifador</name>
-    <version>17.0.4</version>
+    <version>17.0.5</version>
     <category>Reports</category>
     <Publisher>mrpbueno</Publisher>
     <info>https://github.com/mrpbueno/tarifador</info>
@@ -42,8 +42,9 @@
     </table>
     </database>
     <updateurl>https://raw.githubusercontent.com/mrpbueno/tarifador/master/tarifador.json</updateurl>
-    <description>Tarifador para FreePBX</description>
+    <description>Advanced Call Accounting and Billing module for FreePBX. Features include rate management, real-time cost calculation, detailed reporting with LinkedID support, and visual dashboards.</description>
     <changelog>
+        *17.0.5* - Added translations for Polish (pl_PL), Portuguese-Brazil (pt_BR), Spanish (es), French (fr), and Italian (it).
         *17.0.4* - Bug fixes
         *17.0.3* - Code improvements
         *17.0.2* - Code improvements

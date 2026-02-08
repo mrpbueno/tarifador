@@ -63,7 +63,7 @@ $(function () {
                 data: {
                     labels: src,
                     datasets: [{
-                        label: 'Chamadas',
+                        label: _('Calls'),
                         data: total,
                         backgroundColor: [
                             'rgba(76, 148, 113, 0.4)'
@@ -117,7 +117,7 @@ $(function () {
                 data: {
                     labels: dst,
                     datasets: [{
-                        label: 'Chamadas',
+                        label: _('Calls'),
                         data: total,
                         backgroundColor: [
                             'rgba(76, 148, 113, 0.4)'
@@ -171,7 +171,7 @@ $(function () {
                 data: {
                     labels: hour,
                     datasets: [{
-                        label: 'Chamadas',
+                        label: _('Calls'),
                         data: total,
                         backgroundColor: [
                             'rgba(76, 148, 113, 0.4)'
@@ -211,14 +211,14 @@ $(function () {
 $(function () {
     $('#accountcode').select2({
         language: {
-            noResults: function () { return "Nenhum resultado encontrado"; },
-            searching: function () { return "Buscando..."; },
+            noResults: function () { return _("No results found"); },
+            searching: function () { return _("Searching..."); },
             inputTooShort: function (args) {
                 var remainingChars = args.minimum - args.input.length;
-                return "Digite " + remainingChars + " ou mais caracteres";
+                return _("Type ") + remainingChars + _(" or more characters");
             }
         },
-        placeholder: 'Digite para buscar um usuário',
+        placeholder: _('Type to search for a user'),
         allowClear: true,
         minimumInputLength: 3,
         ajax: {

@@ -24,7 +24,7 @@ trait PinUserTrait
     {
         $validated_id = Sanitize::int($id);
         if ($validated_id === false || $validated_id <= 0) {
-            $_SESSION['toast_message'] = ['message' => 'Invalid or missing ID for deletion.', 'title' => 'Validation Error', 'level' => 'error'];
+            $_SESSION['toast_message'] = ['message' => _('Invalid or missing ID for deletion.'), 'title' => _('Validation Error'), 'level' => 'error'];
             return;
         }
 
@@ -34,12 +34,12 @@ trait PinUserTrait
         try {
             $stmt->execute(['id' => $validated_id]);
             if ($stmt->rowCount() > 0) {
-                $_SESSION['toast_message'] = ['message' => 'User deleted successfully!', 'title' => 'Success', 'level' => 'success'];
+                $_SESSION['toast_message'] = ['message' => _('User deleted successfully!'), 'title' => _('Success'), 'level' => 'success'];
             } else {
-                $_SESSION['toast_message'] = ['message' => 'User not found or already deleted.', 'title' => 'Warning', 'level' => 'warning'];
+                $_SESSION['toast_message'] = ['message' => _('User not found or already deleted.'), 'title' => _('Warning'), 'level' => 'warning'];
             }
         } catch (PDOException $e) {
-            $_SESSION['toast_message'] = ['message' => 'A database error occurred. The user could not be deleted.', 'title' => 'Error', 'level' => 'error'];
+            $_SESSION['toast_message'] = ['message' => _('A database error occurred. The user could not be deleted.'), 'title' => _('Error'), 'level' => 'error'];
         }
 
         redirect('config.php?display=tarifador&page=pinuser');
@@ -58,7 +58,7 @@ trait PinUserTrait
         $department = Sanitize::string($post['department'] ?? '');
 
         if ($id === false || $id <= 0 || empty($user)) {
-            $_SESSION['toast_message'] = ['message' => 'Invalid or missing ID or username.', 'title' => 'Validation Error', 'level' => 'error'];
+            $_SESSION['toast_message'] = ['message' => _('Invalid or missing ID or username.'), 'title' => _('Validation Error'), 'level' => 'error'];
             return;
         }
 
@@ -70,13 +70,13 @@ trait PinUserTrait
                 ':user' => $user,
                 ':department' => $department
             ]);
-            $_SESSION['toast_message'] = ['message' => 'User updated successfully!', 'title' => 'Success', 'level' => 'success'];
+            $_SESSION['toast_message'] = ['message' => _('User updated successfully!'), 'title' => _('Success'), 'level' => 'success'];
 
         } catch (PDOException $e) {
             if ($e->errorInfo[1] == 1062) {
-                $_SESSION['toast_message'] = ['message' => 'The provided username is already in use by another PIN.', 'title' => 'Error', 'level' => 'error'];
+                $_SESSION['toast_message'] = ['message' => _('The provided username is already in use by another PIN.'), 'title' => _('Error'), 'level' => 'error'];
             } else {
-                $_SESSION['toast_message'] = ['message' => 'An unexpected database error occurred while saving the changes.', 'title' => 'Error', 'level' => 'error'];
+                $_SESSION['toast_message'] = ['message' => _('An unexpected database error occurred while saving the changes.'), 'title' => _('Error'), 'level' => 'error'];
             }
             return;
         }
@@ -136,7 +136,7 @@ trait PinUserTrait
             if (empty($all_freepbx_pins)) {
                 // If there are no PINs in FreePBX, disable all and exit.
                 $this->db->exec("UPDATE tarifador_pinuser SET enabled = 0");
-                $_SESSION['toast_message'] = ['message' => 'No PINs found in FreePBX. All users have been disabled.', 'title' => 'Warning', 'level' => 'warning'];
+                $_SESSION['toast_message'] = ['message' => _('No PINs found in FreePBX. All users have been disabled.'), 'title' => _('Warning'), 'level' => 'warning'];
                 redirect('config.php?display=tarifador&page=pinuser');
                 return;
             }
@@ -166,14 +166,14 @@ trait PinUserTrait
 
             // 5. IF EVERYTHING WENT WELL, COMMIT THE TRANSACTION
             $this->db->commit();
-            $_SESSION['toast_message'] = ['message' => 'PIN synchronization completed successfully!', 'title' => 'Success', 'level' => 'success'];
+            $_SESSION['toast_message'] = ['message' => _('PIN synchronization completed successfully!'), 'title' => _('Success'), 'level' => 'success'];
 
         } catch (PDOException $e) {
             // 6. IF ANY ERROR OCCURRED, ROLLBACK EVERYTHING
             if ($this->db->inTransaction()) {
                 $this->db->rollBack();
             }
-            $_SESSION['toast_message'] = ['message' => 'A critical error occurred during synchronization. No changes were saved.', 'title' => 'Error', 'level' => 'error'];
+            $_SESSION['toast_message'] = ['message' => _('A critical error occurred during synchronization. No changes were saved.'), 'title' => _('Error'), 'level' => 'error'];
         }
 
         redirect('config.php?display=tarifador&page=pinuser');
@@ -201,7 +201,7 @@ trait PinUserTrait
     {
         $validated_id = Sanitize::int($id);
         if ($validated_id === false || $validated_id <= 0) {
-            $_SESSION['toast_message'] = ['message' => 'Invalid or missing ID.', 'title' => 'Validation Error', 'level' => 'error'];
+            $_SESSION['toast_message'] = ['message' => _('Invalid or missing ID.'), 'title' => _('Validation Error'), 'level' => 'error'];
             return false;
         }
         $sql = "SELECT * FROM tarifador_pinuser WHERE id = :id LIMIT 1";
@@ -238,7 +238,7 @@ trait PinUserTrait
     {
         // 1. ROBUST UPLOAD VALIDATION
         if (!isset($_FILES['user_file']) || $_FILES['user_file']['error'] !== UPLOAD_ERR_OK) {
-            $_SESSION['toast_message'] = ['message' => 'Error uploading the file or no file sent.', 'title' => 'Error', 'level' => 'error'];
+            $_SESSION['toast_message'] = ['message' => _('Error uploading the file or no file sent.'), 'title' => _('Error'), 'level' => 'error'];
             redirect('config.php?display=tarifador&page=pinuser');
             return;
         }
@@ -251,14 +251,14 @@ trait PinUserTrait
         finfo_close($finfo);
 
         if (!in_array($mime_type, ['text/csv', 'text/plain'], true)) {
-            $_SESSION['toast_message'] = ['message' => 'Invalid file format. Please upload a .csv file.', 'title' => 'Error', 'level' => 'error'];
+            $_SESSION['toast_message'] = ['message' => _('Invalid file format. Please upload a .csv file.'), 'title' => _('Error'), 'level' => 'error'];
             redirect('config.php?display=tarifador&page=pinuser');
             return;
         }
 
         $file = fopen($file_path, 'r');
         if ($file === false) {
-            $_SESSION['toast_message'] = ['message' => 'Could not open the uploaded file.', 'title' => 'Error', 'level' => 'error'];
+            $_SESSION['toast_message'] = ['message' => _('Could not open the uploaded file.'), 'title' => _('Error'), 'level' => 'error'];
             redirect('config.php?display=tarifador&page=pinuser');
             return;
         }
@@ -268,7 +268,7 @@ trait PinUserTrait
             $header = fgetcsv($file, 5000, ",");
             $expected_header = ['pin', 'user', 'department'];
             if (empty($header) || count(array_diff($expected_header, array_map('strtolower', $header))) > 0) {
-                $_SESSION['toast_message'] = ['message' => 'Invalid CSV header. The expected columns are: pin, user, department.', 'title' => 'Format Error', 'level' => 'error'];
+                $_SESSION['toast_message'] = ['message' => _('Invalid CSV header. The expected columns are: pin, user, department.'), 'title' => _('Format Error'), 'level' => 'error'];
                 redirect('config.php?display=tarifador&page=pinuser');
                 return;
             }
@@ -309,14 +309,14 @@ trait PinUserTrait
 
             // If everything went well, commit the changes
             $this->db->commit();
-            $_SESSION['toast_message'] = ['message' => 'Import completed successfully!', 'title' => 'Success', 'level' => 'success'];
+            $_SESSION['toast_message'] = ['message' => _('Import completed successfully!'), 'title' => _('Success'), 'level' => 'success'];
 
         } catch (Exception $e) {
             // 4. If any error occurs, undo ALL changes
             if ($this->db->inTransaction()) {
                 $this->db->rollBack();
             }
-            $_SESSION['toast_message'] = ['message' => "An error occurred on line {$line_number} during import. No changes were saved.", 'title' => 'Critical Error', 'level' => 'error'];
+            $_SESSION['toast_message'] = ['message' => sprintf(_("An error occurred on line %d during import. No changes were saved."), $line_number), 'title' => _('Critical Error'), 'level' => 'error'];
         } finally {
             fclose($file);
         }

@@ -1,16 +1,15 @@
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: tarifador\n"
 "POT-Creation-Date: 2026-02-08 17:09-0300\n"
-"PO-Revision-Date: 2019-02-17 19:14-0300\n"
+"PO-Revision-Date: 2026-02-08 17:50-0300\n"
 "Last-Translator: \n"
 "Language-Team: https://github.com/mrpbueno/tarifador\n"
-"Language: en_US\n"
+"Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 3.8\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: _(\n"
@@ -19,671 +18,667 @@ msgstr ""
 
 #: Tarifador.class.php:139
 msgid "Reset"
-msgstr ""
+msgstr "Reimposta"
 
 #: Tarifador.class.php:140 views/pinuser/grid.php:121
 msgid "Submit"
-msgstr ""
+msgstr "Invia"
 
 #: Tarifador.class.php:144
 msgid "Delete"
-msgstr ""
+msgstr "Elimina"
 
 #: Tarifador.class.php:248
 msgid "Call List"
-msgstr ""
+msgstr "Elenco chiamate"
 
 #: Tarifador.class.php:265
 msgid "Rate List"
-msgstr ""
+msgstr "Elenco tariffe"
 
 #: Tarifador.class.php:282
 msgid "User List"
-msgstr ""
+msgstr "Elenco utenti"
 
 #: Tarifador.class.php:293 views/rnav.php:8
 msgid "Statistics"
-msgstr ""
+msgstr "Statistiche"
 
 #: Traits/CallTrait.php:191 Traits/CallTrait.php:245
 msgid "ND"
-msgstr ""
+msgstr "ND"
 
 #: Traits/CallTrait.php:283 views/call/form.php:189
 msgid "ANSWERED"
-msgstr ""
+msgstr "Risposto"
 
 #: Traits/CallTrait.php:283 views/call/form.php:190
 msgid "NO ANSWER"
-msgstr ""
+msgstr "Non Risposto"
 
 #: Traits/CallTrait.php:283 views/call/form.php:191
 msgid "BUSY"
-msgstr ""
+msgstr "Occupato"
 
 #: Traits/CallTrait.php:283 views/call/form.php:192
 msgid "FAILED"
-msgstr ""
+msgstr "Fallito"
 
 #: Traits/PinUserTrait.php:27 Traits/RateTrait.php:206
 msgid "Invalid or missing ID for deletion."
-msgstr ""
+msgstr "ID non valido o mancante per l'eliminazione."
 
 #: Traits/PinUserTrait.php:27 Traits/PinUserTrait.php:61
-#: Traits/PinUserTrait.php:204 Traits/RateTrait.php:39
-#: Traits/RateTrait.php:67 Traits/RateTrait.php:123 Traits/RateTrait.php:206
+#: Traits/PinUserTrait.php:204 Traits/RateTrait.php:39 Traits/RateTrait.php:67
+#: Traits/RateTrait.php:123 Traits/RateTrait.php:206
 msgid "Validation Error"
-msgstr ""
+msgstr "Errore di validazione"
 
 #: Traits/PinUserTrait.php:37
 msgid "User deleted successfully!"
-msgstr ""
+msgstr "Utente eliminato con successo!"
 
 #: Traits/PinUserTrait.php:37 Traits/PinUserTrait.php:73
 #: Traits/PinUserTrait.php:169 Traits/PinUserTrait.php:312
-#: Traits/RateTrait.php:104 Traits/RateTrait.php:148
-#: Traits/RateTrait.php:219
+#: Traits/RateTrait.php:104 Traits/RateTrait.php:148 Traits/RateTrait.php:219
 msgid "Success"
-msgstr ""
+msgstr "Successo"
 
 #: Traits/PinUserTrait.php:39
 msgid "User not found or already deleted."
-msgstr ""
+msgstr "Utente non trovato o già eliminato."
 
 #: Traits/PinUserTrait.php:39 Traits/PinUserTrait.php:139
 #: Traits/RateTrait.php:221
 msgid "Warning"
-msgstr ""
+msgstr "Attenzione"
 
 #: Traits/PinUserTrait.php:42
 msgid "A database error occurred. The user could not be deleted."
-msgstr ""
+msgstr "Si è verificato un errore del database. Impossibile eliminare l'utente."
 
 #: Traits/PinUserTrait.php:42 Traits/PinUserTrait.php:77
 #: Traits/PinUserTrait.php:79 Traits/PinUserTrait.php:176
 #: Traits/PinUserTrait.php:241 Traits/PinUserTrait.php:254
-#: Traits/PinUserTrait.php:261 Traits/RateTrait.php:99
-#: Traits/RateTrait.php:143 Traits/RateTrait.php:160
-#: Traits/RateTrait.php:170 Traits/RateTrait.php:192
+#: Traits/PinUserTrait.php:261 Traits/RateTrait.php:99 Traits/RateTrait.php:143
+#: Traits/RateTrait.php:160 Traits/RateTrait.php:170 Traits/RateTrait.php:192
 #: Traits/RateTrait.php:225
 msgid "Error"
-msgstr ""
+msgstr "Errore"
 
 #: Traits/PinUserTrait.php:61
 msgid "Invalid or missing ID or username."
-msgstr ""
+msgstr "ID o nome utente non valido o mancante."
 
 #: Traits/PinUserTrait.php:73
 msgid "User updated successfully!"
-msgstr ""
+msgstr "Utente aggiornato con successo!"
 
 #: Traits/PinUserTrait.php:77
 msgid "The provided username is already in use by another PIN."
-msgstr ""
+msgstr "Il nome utente fornito è già in uso da un altro PIN."
 
 #: Traits/PinUserTrait.php:79
 msgid "An unexpected database error occurred while saving the changes."
-msgstr ""
+msgstr "Si è verificato un errore imprevisto del database durante il salvataggio delle modifiche."
 
 #: Traits/PinUserTrait.php:139
 msgid "No PINs found in FreePBX. All users have been disabled."
-msgstr ""
+msgstr "Nessun PIN trovato in FreePBX. Tutti gli utenti sono stati disabilitati."
 
 #: Traits/PinUserTrait.php:169
 msgid "PIN synchronization completed successfully!"
-msgstr ""
+msgstr "Sincronizzazione PIN completata con successo!"
 
 #: Traits/PinUserTrait.php:176
-msgid ""
-"A critical error occurred during synchronization. No changes were saved."
-msgstr ""
+msgid "A critical error occurred during synchronization. No changes were saved."
+msgstr "Si è verificato un errore critico durante la sincronizzazione. Nessuna modifica è stata salvata."
 
 #: Traits/PinUserTrait.php:204 Traits/RateTrait.php:39
 msgid "Invalid or missing ID."
-msgstr ""
+msgstr "ID non valido o mancante."
 
 #: Traits/PinUserTrait.php:241
 msgid "Error uploading the file or no file sent."
-msgstr ""
+msgstr "Errore durante il caricamento del file o nessun file inviato."
 
 #: Traits/PinUserTrait.php:254
 msgid "Invalid file format. Please upload a .csv file."
-msgstr ""
+msgstr "Formato file non valido. Caricare un file .csv."
 
 #: Traits/PinUserTrait.php:261
 msgid "Could not open the uploaded file."
-msgstr ""
+msgstr "Impossibile aprire il file caricato."
 
 #: Traits/PinUserTrait.php:271
 msgid "Invalid CSV header. The expected columns are: pin, user, department."
-msgstr ""
+msgstr "Intestazione CSV non valida. Le colonne previste sono: pin, user, department."
 
 #: Traits/PinUserTrait.php:271
 msgid "Format Error"
-msgstr ""
+msgstr "Errore di formato"
 
 #: Traits/PinUserTrait.php:312
 msgid "Import completed successfully!"
-msgstr ""
+msgstr "Importazione completata con successo!"
 
 #: Traits/PinUserTrait.php:319
 #, php-format
 msgid "An error occurred on line %d during import. No changes were saved."
-msgstr ""
+msgstr "Si è verificato un errore alla riga %d durante l'importazione. Nessuna modifica è stata salvata."
 
 #: Traits/PinUserTrait.php:319
 msgid "Critical Error"
-msgstr ""
+msgstr "Errore critico"
 
 #: Traits/PinUserTrait.php:378
 msgid "Not Registered"
-msgstr ""
+msgstr "Non registrato"
 
 #: Traits/RateTrait.php:67
 msgid "All fields are required and the rate must be a valid number."
-msgstr ""
+msgstr "Tutti i campi sono obbligatori e la tariffa deve essere un numero valido."
 
 #: Traits/RateTrait.php:74
 #, php-format
-msgid ""
-"A dial pattern already exists in the chosen effective date: %s - %s - %s"
-msgstr ""
+msgid "A dial pattern already exists in the chosen effective date: %s - %s - %s"
+msgstr "Esiste già uno schema di composizione nella data effettiva scelta: %s - %s - %s"
 
 #: Traits/RateTrait.php:80
 msgid "Rate Conflict"
-msgstr ""
+msgstr "Conflitto tariffario"
 
 #: Traits/RateTrait.php:99 Traits/RateTrait.php:143
 msgid "A database error occurred while saving the rate."
-msgstr ""
+msgstr "Si è verificato un errore del database durante il salvataggio della tariffa."
 
 #: Traits/RateTrait.php:104
 msgid "Rate added successfully!"
-msgstr ""
+msgstr "Tariffa aggiunta con successo!"
 
 #: Traits/RateTrait.php:123
 msgid "All fields are required, the ID must be valid and the rate a number."
-msgstr ""
+msgstr "Tutti i campi sono obbligatori, l'ID deve essere valido e la tariffa un numero."
 
 #: Traits/RateTrait.php:148
 msgid "Rate updated successfully!"
-msgstr ""
+msgstr "Tariffa aggiornata con successo!"
 
 #: Traits/RateTrait.php:160
 msgid "Invalid or missing sort data."
-msgstr ""
+msgstr "Dati di ordinamento non validi o mancanti."
 
 #: Traits/RateTrait.php:170
 msgid "One of the items in the sort contained invalid data."
-msgstr ""
+msgstr "Uno degli elementi nell'ordinamento conteneva dati non validi."
 
 #: Traits/RateTrait.php:192
-msgid ""
-"A database error occurred and the order could not be saved. No changes "
-"were made."
-msgstr ""
+msgid "A database error occurred and the order could not be saved. No changes were made."
+msgstr "Si è verificato un errore del database e l'ordine non può essere salvato. Nessuna modifica è stata apportata."
 
 #: Traits/RateTrait.php:219
 msgid "Rate deleted successfully!"
-msgstr ""
+msgstr "Tariffa eliminata con successo!"
 
 #: Traits/RateTrait.php:221
 msgid "The rate was not found or has already been deleted."
-msgstr ""
+msgstr "La tariffa non è stata trovata o è già stata eliminata."
 
 #: Traits/RateTrait.php:225
-msgid ""
-"A database error occurred. The rate could not be deleted, possibly "
-"because it is in use."
-msgstr ""
+msgid "A database error occurred. The rate could not be deleted, possibly because it is in use."
+msgstr "Si è verificato un errore del database. Impossibile eliminare la tariffa, probabilmente perché è in uso."
 
 #: assets/js/views/call.js:31 views/call/grid.php:140
 msgid "Answered"
-msgstr ""
+msgstr "Risposta"
 
 #: assets/js/views/call.js:31 views/call/grid.php:170
 msgid "Busy"
-msgstr ""
+msgstr "Occupato"
 
 #: assets/js/views/call.js:31 views/call/grid.php:185
 msgid "Failed"
-msgstr ""
+msgstr "Fallita"
 
 #: assets/js/views/call.js:31 views/call/grid.php:155
 msgid "No Answer"
-msgstr ""
+msgstr "Nessuna risposta"
 
 #: assets/js/views/call.js:39
 msgid "Inbound"
-msgstr ""
+msgstr "In entrata"
 
 #: assets/js/views/call.js:43
 msgid "Outbound"
-msgstr ""
+msgstr "In uscita"
 
 #: assets/js/views/call.js:47
 msgid "Internal"
-msgstr ""
+msgstr "Interna"
 
 #: assets/js/views/call.js:51
 msgid "Unknown"
-msgstr ""
+msgstr "Sconosciuto"
 
 #: assets/js/views/call.js:68
 msgid "Total"
-msgstr ""
+msgstr "Totale"
 
 #: assets/js/views/call.js:125 assets/js/views/stats.js:214
 msgid "No results found"
-msgstr ""
+msgstr "Nessun risultato trovato"
 
 #: assets/js/views/call.js:126 assets/js/views/stats.js:215
 msgid "Searching..."
-msgstr ""
+msgstr "Ricerca in corso..."
 
 #: assets/js/views/call.js:129 assets/js/views/stats.js:218
 msgid "Type "
-msgstr ""
+msgstr "Digita "
 
 #: assets/js/views/call.js:129 assets/js/views/stats.js:218
 msgid " or more characters"
-msgstr ""
+msgstr " o più caratteri"
 
 #: assets/js/views/call.js:132 assets/js/views/stats.js:221
 msgid "Type to search for a user"
-msgstr ""
+msgstr "Digita per cercare un utente"
 
 #: assets/js/views/call.js:172 assets/js/views/stats.js:66
 #: assets/js/views/stats.js:120 assets/js/views/stats.js:174
 msgid "Calls"
-msgstr ""
+msgstr "Chiamate"
 
 #: assets/js/views/call.js:248
 msgid "Error loading statistics"
-msgstr ""
+msgstr "Errore durante il caricamento delle statistiche"
 
 #: assets/js/views/rate.js:14
 msgid "The rate order has been updated."
-msgstr ""
+msgstr "L'ordine delle tariffe è stato aggiornato."
 
 #: assets/js/views/rate.js:14
 msgid "Updated"
-msgstr ""
+msgstr "Aggiornato"
 
 #: views/call/form.php:29
 msgid "Start Date/Time"
-msgstr ""
+msgstr "Data/Ora inizio"
 
 #: views/call/form.php:44
 msgid "Select start date/time"
-msgstr ""
+msgstr "Seleziona data/ora di inizio"
 
 #: views/call/form.php:56 views/call/grid.php:51
 msgid "Source"
-msgstr ""
+msgstr "Origine"
 
 #: views/call/form.php:69
 msgid "Enter the source number or <BR>"
-msgstr ""
+msgstr "Inserisci il numero di origine o <BR>"
 
 #: views/call/form.php:70 views/call/form.php:163 views/rate/form.php:94
 msgid "Use Asterisk regular expressions.<br>"
-msgstr ""
+msgstr "Usa espressioni regolari Asterisk.<br>"
 
 #: views/call/form.php:71 views/call/form.php:164
 msgid "Example: _2[ZZ9]NX.<br>"
-msgstr ""
+msgstr "Esempio: _2[ZZ9]NX.<br>"
 
 #: views/call/form.php:72 views/call/form.php:165 views/rate/form.php:95
 msgid "<b>Rules:</b><br>"
-msgstr ""
+msgstr "<b>Regole:</b><br>"
 
 #: views/call/form.php:73 views/call/form.php:166 views/rate/form.php:96
 msgid "<b>X</b> = matches any digit between 0-9<br>"
-msgstr ""
+msgstr "<b>X</b> = corrisponde a qualsiasi cifra tra 0-9<br>"
 
 #: views/call/form.php:74 views/call/form.php:167 views/rate/form.php:97
 msgid "<b>Z</b> = matches any digit between 1-9<br>"
-msgstr ""
+msgstr "<b>Z</b> = corrisponde a qualsiasi cifra tra 1-9<br>"
 
 #: views/call/form.php:75 views/call/form.php:168 views/rate/form.php:98
 msgid "<b>N</b> = matches any digit between 2-9<br>"
-msgstr ""
+msgstr "<b>N</b> = corrisponde a qualsiasi cifra tra 2-9<br>"
 
 #: views/call/form.php:76 views/call/form.php:169 views/rate/form.php:99
 msgid ""
 "<b>[1237-9]</b> = matches any digit or letter in brackets (e.g., "
 "1,2,3,7,8,9)<br>"
 msgstr ""
+"<b>[1237-9]</b> = corrisponde a qualsiasi cifra o lettera tra parentesi (es. "
+"1,2,3,7,8,9)<br>"
 
 #: views/call/form.php:77 views/call/form.php:170 views/rate/form.php:100
 msgid "<b>.</b> = wildcard, matches one or more digits<br>"
-msgstr ""
+msgstr "<b>.</b> = carattere jolly, corrisponde a una o più cifre<br>"
 
 #: views/call/form.php:90 views/call/grid.php:50
 msgid "User"
-msgstr ""
+msgstr "Utente"
 
 #: views/call/form.php:108
 msgid "Enter the username"
-msgstr ""
+msgstr "Inserisci il nome utente"
 
 #: views/call/form.php:122
 msgid "End Date/Time"
-msgstr ""
+msgstr "Data/Ora fine"
 
 #: views/call/form.php:137
 msgid "Select end date/time"
-msgstr ""
+msgstr "Seleziona data/ora di fine"
 
 #: views/call/form.php:149 views/call/grid.php:54
 msgid "Destination"
-msgstr ""
+msgstr "Destinazione"
 
 #: views/call/form.php:162
 msgid "Enter the destination number or <BR>"
-msgstr ""
+msgstr "Inserisci il numero di destinazione o <BR>"
 
 #: views/call/form.php:183 views/call/grid.php:56
 msgid "Status"
-msgstr ""
+msgstr "Stato"
 
 #: views/call/form.php:188
 msgid "All"
-msgstr ""
+msgstr "Tutti"
 
 #: views/call/form.php:201
 msgid "Select the call status"
-msgstr ""
+msgstr "Seleziona lo stato della chiamata"
 
 #: views/call/form.php:211
 msgid "Search"
-msgstr ""
+msgstr "Cerca"
 
 #: views/call/grid.php:7 views/pinuser/grid.php:21 views/rate/grid.php:11
 #: views/stats/chart.php:9 views/stats/chart.php:29 views/stats/chart.php:49
 msgid "Download PDF"
-msgstr ""
+msgstr "Scarica PDF"
 
 #: views/call/grid.php:13 views/pinuser/grid.php:27 views/rate/grid.php:17
 msgid "Download Excel"
-msgstr ""
+msgstr "Scarica Excel"
 
 #: views/call/grid.php:20 views/pinuser/grid.php:34 views/rate/grid.php:24
 msgid "Download CSV"
-msgstr ""
+msgstr "Scarica CSV"
 
 #: views/call/grid.php:48 views/call/grid.php:215
 msgid "Date / Time"
-msgstr ""
+msgstr "Data / Ora"
 
 #: views/call/grid.php:49 views/call/grid.php:223
 msgid "UniqueID"
-msgstr ""
+msgstr "ID Univoco"
 
 #: views/call/grid.php:52 views/call/grid.php:218 views/pinuser/form.php:55
 #: views/pinuser/grid.php:60 views/rate/form.php:33 views/rate/grid.php:52
 msgid "Name"
-msgstr ""
+msgstr "Nome"
 
 #: views/call/grid.php:53
 msgid "DID"
-msgstr ""
+msgstr "DID"
 
 #: views/call/grid.php:55
 msgid "App"
-msgstr ""
+msgstr "App"
 
 #: views/call/grid.php:57
 msgid "Wait"
-msgstr ""
+msgstr "Attesa"
 
 #: views/call/grid.php:58
 msgid "Duration"
-msgstr ""
+msgstr "Durata"
 
 #: views/call/grid.php:59
 msgid "Type"
-msgstr ""
+msgstr "Tipo"
 
 #: views/call/grid.php:60 views/rate/form.php:113 views/rate/grid.php:55
 msgid "Rate"
-msgstr ""
+msgstr "Tariffa"
 
 #: views/call/grid.php:61
 msgid "Cost"
-msgstr ""
+msgstr "Costo"
 
 #: views/call/grid.php:76
 msgid "Total Calls"
-msgstr ""
+msgstr "Totale chiamate"
 
 #: views/call/grid.php:92
 msgid "Total Duration"
-msgstr ""
+msgstr "Durata totale"
 
 #: views/call/grid.php:108
 msgid "Average Time"
-msgstr ""
+msgstr "Tempo medio"
 
 #: views/call/grid.php:124
 msgid "Total Cost"
-msgstr ""
+msgstr "Costo totale"
 
 #: views/call/grid.php:199
 msgid "Call Details"
-msgstr ""
+msgstr "Dettagli chiamata"
 
 #: views/call/grid.php:216
 msgid "Event"
-msgstr ""
+msgstr "Evento"
 
 #: views/call/grid.php:217
 msgid "Number"
-msgstr ""
+msgstr "Numero"
 
 #: views/call/grid.php:219
 msgid "Exten"
-msgstr ""
+msgstr "Interno"
 
 #: views/call/grid.php:220
 msgid "DNID"
-msgstr ""
+msgstr "DNID"
 
 #: views/call/grid.php:221
 msgid "Context"
-msgstr ""
+msgstr "Contesto"
 
 #: views/call/grid.php:222
 msgid "Channel"
-msgstr ""
+msgstr "Canale"
 
 #: views/call/grid.php:224
 msgid "LinkedID"
-msgstr ""
+msgstr "LinkedID"
 
 #: views/call/grid.php:232
 msgid "Close"
-msgstr ""
+msgstr "Chiudi"
 
 #: views/default.php:7 views/rnav.php:5
 msgid "Billing"
-msgstr ""
+msgstr "Tariffazione"
 
 #: views/pinuser/form.php:8
 msgid "Will be generated automatically"
-msgstr ""
+msgstr "Verrà generato automaticamente"
 
 #: views/pinuser/form.php:14
 msgid "Edit User PIN"
-msgstr ""
+msgstr "Modifica PIN utente"
 
 #: views/pinuser/form.php:14
 msgid "New User PIN"
-msgstr ""
+msgstr "Nuovo PIN utente"
 
 #: views/pinuser/form.php:31 views/pinuser/grid.php:59
 msgid "PIN"
-msgstr ""
+msgstr "PIN"
 
 #: views/pinuser/form.php:43
 msgid "User's PIN number"
-msgstr ""
+msgstr "Numero PIN dell'utente"
 
 #: views/pinuser/form.php:67
 msgid "Enter the PIN user's name"
-msgstr ""
+msgstr "Inserisci il nome dell'utente PIN"
 
 #: views/pinuser/form.php:79 views/pinuser/grid.php:61
 msgid "Department / Sector"
-msgstr ""
+msgstr "Dipartimento / Settore"
 
 #: views/pinuser/form.php:97
 msgid "Enter the user's department / sector"
-msgstr ""
+msgstr "Inserisci il dipartimento / settore dell'utente"
 
 #: views/pinuser/form.php:109
 msgid "Enabled?"
-msgstr ""
+msgstr "Abilitato?"
 
 #: views/pinuser/form.php:114
 msgid "Yes"
-msgstr ""
+msgstr "Sì"
 
 #: views/pinuser/form.php:114
 msgid "No"
-msgstr ""
+msgstr "No"
 
 #: views/pinuser/form.php:123
 msgid ""
-"To disable the PIN, go to the <a href='config.php?display=pinsets'>PIN "
-"Sets</a> module"
+"To disable the PIN, go to the <a href='config.php?display=pinsets'>PIN Sets</"
+"a> module"
 msgstr ""
+"Per disabilitare il PIN, vai al modulo <a "
+"href='config.php?display=pinsets'>Set di PIN</a>"
 
 #: views/pinuser/form.php:135
 msgid "PIN Set"
-msgstr ""
+msgstr "Set di PIN"
 
 #: views/pinuser/form.php:155
 msgid "User's PIN Set"
-msgstr ""
+msgstr "Set di PIN dell'utente"
 
 #: views/pinuser/grid.php:6
 msgid "Synchronize PINs"
-msgstr ""
+msgstr "Sincronizza PIN"
 
 #: views/pinuser/grid.php:9
 msgid "Synchronize"
-msgstr ""
+msgstr "Sincronizza"
 
 #: views/pinuser/grid.php:14 views/pinuser/grid.php:84
 msgid "CSV Upload"
-msgstr ""
+msgstr "Caricamento CSV"
 
 #: views/pinuser/grid.php:17
 msgid "Upload"
-msgstr ""
+msgstr "Carica"
 
 #: views/pinuser/grid.php:62 views/rate/grid.php:58
 msgid "Actions"
-msgstr ""
+msgstr "Azioni"
 
 #: views/pinuser/grid.php:71
 msgid "Please wait!"
-msgstr ""
+msgstr "Attendere prego!"
 
 #: views/pinuser/grid.php:74
 msgid "Synchronizing ..."
-msgstr ""
+msgstr "Sincronizzazione in corso..."
 
 #: views/pinuser/grid.php:94
 msgid "CSV File"
-msgstr ""
+msgstr "File CSV"
 
 #: views/pinuser/grid.php:99
 msgid "Browse"
-msgstr ""
+msgstr "Sfoglia"
 
 #: views/pinuser/grid.php:110
 msgid "The file header must contain: pin, user, department"
-msgstr ""
+msgstr "L'intestazione del file deve contenere: pin, user, department"
 
 #: views/pinuser/grid.php:116
 msgid "File to Import"
-msgstr ""
+msgstr "File da importare"
 
 #: views/rate/form.php:16
 msgid "Edit Rate"
-msgstr ""
+msgstr "Modifica tariffa"
 
 #: views/rate/form.php:16
 msgid "New Rate"
-msgstr ""
+msgstr "Nuova tariffa"
 
 #: views/rate/form.php:45
 msgid "Enter the rate name"
-msgstr ""
+msgstr "Inserisci il nome della tariffa"
 
 #: views/rate/form.php:57 views/rate/grid.php:53
 msgid "Carrier"
-msgstr ""
+msgstr "Operatore"
 
 #: views/rate/form.php:69
 msgid "Enter the carrier name"
-msgstr ""
+msgstr "Inserisci il nome dell'operatore"
 
 #: views/rate/form.php:81 views/rate/grid.php:54
 msgid "Dial Pattern"
-msgstr ""
+msgstr "Schema di composizione"
 
 #: views/rate/form.php:125
 msgid "Enter the rate per minute"
-msgstr ""
+msgstr "Inserisci la tariffa al minuto"
 
 #: views/rate/form.php:137 views/rate/grid.php:56
 msgid "Start Date"
-msgstr ""
+msgstr "Data di inizio"
 
 #: views/rate/form.php:149
 msgid "Select the rate's start date"
-msgstr ""
+msgstr "Seleziona la data di inizio della tariffa"
 
 #: views/rate/form.php:161 views/rate/grid.php:57
 msgid "End Date"
-msgstr ""
+msgstr "Data di fine"
 
 #: views/rate/form.php:173
 msgid "Select the rate's end date"
-msgstr ""
+msgstr "Seleziona la data di fine della tariffa"
 
 #: views/rate/grid.php:4
 msgid "Add Rate"
-msgstr ""
+msgstr "Aggiungi tariffa"
 
 #: views/rate/grid.php:7
 msgid "Add"
-msgstr ""
+msgstr "Aggiungi"
 
 #: views/rnav.php:3
 msgid "Menu"
-msgstr ""
+msgstr "Menu"
 
 #: views/rnav.php:6
 msgid "Rates"
-msgstr ""
+msgstr "Tariffe"
 
 #: views/rnav.php:7
 msgid "Users"
-msgstr ""
+msgstr "Utenti"
 
 #: views/stats/chart.php:12
 msgid "Call Destination (top 50)"
-msgstr ""
+msgstr "Destinazione chiamata (top 50)"
 
 #: views/stats/chart.php:32
 msgid "Call Source (top 50)"
-msgstr ""
+msgstr "Origine chiamata (top 50)"
 
 #: views/stats/chart.php:52
 msgid "Call distribution by hour"
-msgstr ""
+msgstr "Distribuzione chiamate per ora"

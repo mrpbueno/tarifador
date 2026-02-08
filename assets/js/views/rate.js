@@ -11,7 +11,7 @@ $('#rate').on('reorder-row.bs.table', function (e, data){
         data: {'data' : order},
         dataType: 'json',
         success: function(data) {
-            fpbxToast(_('A ordem da tarifa foi atualizada.'),_('Updated'),'success');
+            fpbxToast(_('The rate order has been updated.'),_('Updated'),'success');
         }
     });
 });
