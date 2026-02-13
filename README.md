@@ -1,4 +1,4 @@
-# Tarifador - Call Accounting for FreePBX
+# Tarifador - Call Accounting
 
 ## Description
 
@@ -20,8 +20,8 @@ The module allows for precise cost calculation based on customizable rate decks 
 
 ## Requirements
 
-* FreePBX 17+
-* PHP 8.2+
+* FreePBX 17
+* PHP 8.2
 
 ## Installation
 
