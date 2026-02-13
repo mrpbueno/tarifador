@@ -2,7 +2,7 @@
 
 ## Description
 
-**Tarifador** is an advanced **Call Accounting and Billing** module for FreePBX. It is designed to provide administrators and managers with detailed analysis and cost tracking of phone calls.
+**Tarifador** is an advanced **Call Accounting and Billing** module for FreePBX®. It is designed to provide administrators and managers with detailed analysis and cost tracking of phone calls.
 
 The module allows for precise cost calculation based on customizable rate decks and offers a comprehensive visual dashboard to monitor call traffic and expenses effectively.
 
@@ -20,17 +20,17 @@ The module allows for precise cost calculation based on customizable rate decks 
 
 ## Requirements
 
-* FreePBX 17
+* FreePBX® 17
 * PHP 8.2
 
 ## Installation
 
 1.  Download the latest version of the module from https://github.com/mrpbueno/tarifador/releases
-2.  Upload the module via the **Module Admin** in FreePBX or install it manually.
+2.  Upload the module via the **Module Admin** in FreePBX® or install it manually.
 3.  Enable the module and reload the configuration.
 
 ## License
 
 This module is distributed under the **AGPLv3** license.
 
-[FreePBX](http://www.freepbx.org/) is a registered trademark of [Sangoma Technologies Inc.](http://www.freepbx.org/copyright.html)
+[FreePBX®](http://www.freepbx.org/) is a registered trademark of [Sangoma Technologies Inc.](http://www.freepbx.org/copyright.html)
