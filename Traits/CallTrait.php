@@ -103,11 +103,8 @@ trait CallTrait
         ];
         $sortCol = $sortMap[$orderBy] ?? 'MIN(calldate)';
 
-        $whereParts = ["calldate BETWEEN :startDateTime AND :endDateTime"];
-        $params = [
-            ':startDateTime' => $post['startDate'] . ' ' . $post['startTime'],
-            ':endDateTime' => $post['endDate'] . ' ' . $post['endTime'],
-        ];
+        $whereParts = ["calldate >= :startDateTime AND calldate < :endDateTimeExclusive"];
+        $params = $this->buildDateRange($post);
 
         if (!empty($filters)) {
             foreach ($filters as $filter) {
@@ -260,11 +257,8 @@ trait CallTrait
     {
         $post = $this->filterDateTime($post);
         $filters = $this->filterSelect($post);
-        $sql_parts = ['SELECT disposition, COUNT(DISTINCT linkedid) AS value FROM asteriskcdrdb.cdr WHERE calldate BETWEEN :startDateTime AND :endDateTime'];
-        $params = [
-            ':startDateTime' => $post['startDate'] . ' ' . $post['startTime'],
-            ':endDateTime' => $post['endDate'] . ' ' . $post['endTime'],
-        ];
+        $sql_parts = ['SELECT disposition, COUNT(DISTINCT linkedid) AS value FROM asteriskcdrdb.cdr WHERE calldate >= :startDateTime AND calldate < :endDateTimeExclusive'];
+        $params = $this->buildDateRange($post);
 
         if (!empty($filters)) {
             foreach ($filters as $filter) {
@@ -490,10 +484,7 @@ trait CallTrait
     {
         $post = $this->filterDateTime($post);
         $filters = $this->filterSelect($post);
-        $params = [
-            ':startDateTime' => $post['startDate'] . ' ' . $post['startTime'],
-            ':endDateTime'   => $post['endDate'] . ' ' . $post['endTime'],
-        ];
+        $params = $this->buildDateRange($post);
         $sqlParts = [$baseSql];
         if (!empty($filters)) {
             foreach ($filters as $filter) {
@@ -517,7 +508,7 @@ trait CallTrait
      */
     private function getTopSrcCount(array $post): array
     {
-        $sql = "SELECT cnum, COUNT(*) AS total FROM asteriskcdrdb.cdr WHERE calldate BETWEEN :startDateTime AND :endDateTime";
+        $sql = "SELECT cnum, COUNT(*) AS total FROM asteriskcdrdb.cdr WHERE calldate >= :startDateTime AND calldate < :endDateTimeExclusive";
         $groupBy = "GROUP BY cnum ORDER BY total DESC LIMIT 50";
         return $this->runFilteredQuery($post, $sql, $groupBy);
     }
@@ -529,7 +520,7 @@ trait CallTrait
      */
     private function getTopDstCount(array $post): array
     {
-        $sql = "SELECT dst, COUNT(*) AS total FROM asteriskcdrdb.cdr WHERE calldate BETWEEN :startDateTime AND :endDateTime";
+        $sql = "SELECT dst, COUNT(*) AS total FROM asteriskcdrdb.cdr WHERE calldate >= :startDateTime AND calldate < :endDateTimeExclusive";
         $groupBy = "GROUP BY dst ORDER BY total DESC LIMIT 50";
         return $this->runFilteredQuery($post, $sql, $groupBy);
     }
@@ -541,7 +532,7 @@ trait CallTrait
      */
     public function getCallsHour(array $post): array
     {
-        $sql = "SELECT HOUR(calldate) AS hour, COUNT(*) AS total FROM asteriskcdrdb.cdr WHERE calldate BETWEEN :startDateTime AND :endDateTime";
+        $sql = "SELECT HOUR(calldate) AS hour, COUNT(*) AS total FROM asteriskcdrdb.cdr WHERE calldate >= :startDateTime AND calldate < :endDateTimeExclusive";
         $groupBy = "GROUP BY hour ORDER BY hour";
         return $this->runFilteredQuery($post, $sql, $groupBy);
     }
@@ -554,7 +545,7 @@ trait CallTrait
     public function getTotalCalls(array $post): array
     {
 
-        $sql = "SELECT dst, billsec, channel, dstchannel, src, cnum, disposition, calldate, linkedid FROM asteriskcdrdb.cdr WHERE calldate BETWEEN :startDateTime AND :endDateTime";
+        $sql = "SELECT dst, billsec, channel, dstchannel, src, cnum, disposition, calldate, linkedid FROM asteriskcdrdb.cdr WHERE calldate >= :startDateTime AND calldate < :endDateTimeExclusive";
         $rows = $this->runFilteredQuery($post, $sql); 
         
         $uniqueCalls = [];
@@ -643,5 +634,64 @@ trait CallTrait
         $minutes = floor(($seconds % 3600) / 60);
         $secs = $seconds % 60;
         return sprintf('%d:%02d:%02d', $hours, $minutes, $secs);
+    }
+
+    /**
+     * Builds a secure and exclusive date range array for PDO bindings.
+     *
+     * This method parses the start and end date/time from the user request.
+     * It safely handles the end date by falling back to 23:59:00 if the provided 
+     * time format is invalid. To support robust SQL range queries (>= and <), 
+     * it adds exactly one minute to the end boundary.
+     *
+     * Expected array keys in $post:
+     * - 'startDate' (string) Format Y-m-d
+     * - 'startTime' (string) Format H:i
+     * - 'endDate'   (string) Format Y-m-d
+     * - 'endTime'   (string) Format H:i
+     *
+     * @param array $post Sanitized input array containing date and time keys.
+     * 
+     * @return array Returns an associative array with PDO named parameters:
+     *               [':startDateTime' => string, ':endDateTimeExclusive' => string]
+     */
+    private function buildDateRange(array $post): array
+    {
+        $startDateTime = $post['startDate'] . ' ' . $post['startTime'] . ':00';
+
+        $endDateTimeObj = \DateTime::createFromFormat(
+            'Y-m-d H:i:s',
+            $post['endDate'] . ' ' . $post['endTime'] . ':00'
+        );
+
+        if ($endDateTimeObj === false) {
+            $endDateTimeObj = \DateTime::createFromFormat(
+                'Y-m-d H:i:s',
+                $post['endDate'] . ' 23:59:00'
+            );
+        }
+
+        $endDateTimeObj->modify('+1 minute');
+
+        return [
+            ':startDateTime'        => $startDateTime,
+            ':endDateTimeExclusive' => $endDateTimeObj->format('Y-m-d H:i:s'),
+        ];
+    }
+
+    /**
+     * Sanitizes and validates a HH:MM time string.
+     * Falls back to a safe default if the value is malformed or URL-encoded.
+     *
+    * @param string $time
+    * @return string Valid HH:MM string.
+    */
+    private function sanitizeTime(string $time): string
+    {
+        $decoded = urldecode($time);
+        if (preg_match('/^([01]\d|2[0-3]):([0-5]\d)$/', $decoded, $matches)) {
+            return $matches[1] . ':' . $matches[2];
+        }
+        return '00:00';
     }
 }
